@@ -1,5 +1,7 @@
 #include <iostream>
 #include <GLFW\glfw3.h>
+#include "KeyConfig.h"
+
 //----------------------------------Globals----------------------------------//
 const double TICKRATE = 0.05; //The time between update "ticks" in seconds
 const char* TITLE = "Gravitate (Title WIP)"; //The game's title
@@ -12,6 +14,11 @@ void keyHandler(GLFWwindow* window, int key, int scan, int action, int mods) {
 ///Handles mouse buttons
 void mouseHandler(GLFWwindow* window, int button, int action, int mods) {
 
+}
+///Starts the game and loads anything that needs loading
+void start() {
+	keyconfig::loadBindings();
+	cout << keyconfig::keyBindings["moveLeft"] << endl;
 }
 ///Draws the scene
 void draw(double ex) {
@@ -40,6 +47,7 @@ int main() {
 	glfwSwapInterval(1);
 	glfwSetKeyCallback(window, keyHandler);
 	glfwSetMouseButtonCallback(window, mouseHandler);
+	start();
 	//Game loop, calls update every 1/TPS ms and renders whenever it can
 	double previous = glfwGetTime();
 	double lastUpdate = 0.0f;
