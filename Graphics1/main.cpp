@@ -17,8 +17,8 @@ void mouseHandler(GLFWwindow* window, int button, int action, int mods) {
 }
 ///Starts the game and loads anything that needs loading
 void start() {
+	//Load the key bindings
 	keyconfig::loadBindings();
-	cout << keyconfig::keyBindings["moveLeft"] << endl;
 }
 ///Draws the scene
 void draw(double ex) {

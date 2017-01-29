@@ -26,3 +26,14 @@ void keyconfig::loadBindings() {
 	bindings->saveToFile("keybindings.do");
 	delete bindings;
 }
+
+void keyconfig::saveBindings() {
+	DataObject* bindings = new DataObject();
+
+	for (auto const& key : keyBindings) {
+		int v = key.second;
+		bindings->add(key.first, INT, &v);
+	}
+	bindings->saveToFile("keybindings.do");
+	delete bindings;
+}

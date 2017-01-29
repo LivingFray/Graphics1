@@ -12,4 +12,5 @@ namespace keyconfig {
 	extern keyMap keyBindings;
 
 	void loadBindings();
+	void saveBindings();
 }
