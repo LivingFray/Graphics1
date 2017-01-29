@@ -19,7 +19,7 @@ void keyconfig::loadBindings() {
 	bindings->loadFromFile("keybindings.do");
 	DATATYPE datatype;
 	//By the power of macros, check if each key is bound and rebind if possible
-	bindControl("moveLeft",GLFW_KEY_A);
+	bindControl("moveLeft", GLFW_KEY_A);
 	bindControl("moveRight", GLFW_KEY_D);
 	bindControl("jump", GLFW_KEY_W);
 	//Save the keybindings (some newer default bindings may have been missing)

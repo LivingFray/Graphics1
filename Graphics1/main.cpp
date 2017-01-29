@@ -1,11 +1,13 @@
 #include <iostream>
 #include <GLFW\glfw3.h>
 #include "KeyConfig.h"
-
+#include "Entity.h"
 //----------------------------------Globals----------------------------------//
 const double TICKRATE = 0.05; //The time between update "ticks" in seconds
 const char* TITLE = "Gravitate (Title WIP)"; //The game's title
-enum GameState {GAME_MENU, GAME_PLAYING}; //The different states of the game
+enum GameState { GAME_MENU, GAME_PLAYING }; //The different states of the game
+GLFWwindow* window;
+Entity* test;
 //-------------------Callback functions and state handlers-------------------//
 ///Handles key presses
 void keyHandler(GLFWwindow* window, int key, int scan, int action, int mods) {
@@ -19,18 +21,39 @@ void mouseHandler(GLFWwindow* window, int button, int action, int mods) {
 void start() {
 	//Load the key bindings
 	keyconfig::loadBindings();
+	//Load the player (TEMP)
+	test = new Entity();
+	test->setX(400);
+	test->setY(300);
 }
 ///Draws the scene
 void draw(double ex) {
-
+	//"Fix" the viewport
+	int width, height;
+	glfwGetWindowSize(window, &width, &height);
+	glViewport(0, 0, width, height);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0.0, width, height, 0.0, -1.0, 1.0);
+	glMatrixMode(GL_MODELVIEW);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glClearColor(0.0, 0.0, 0.0, 1.0);
+	test->draw();
 }
 ///Updates the game
 void update() {
-
+	double vX = 0.0;
+	if (glfwGetKey(window, keyconfig::keyBindings["moveLeft"]) == GLFW_PRESS) {
+		vX -= 5.0;
+	}
+	if (glfwGetKey(window, keyconfig::keyBindings["moveRight"]) == GLFW_PRESS) {
+		vX += 5.0;
+	}
+	test->setVelX(vX);
+	test->update();
 }
 //-----------------------Window creation and game loop-----------------------//
 int main() {
-	GLFWwindow* window;
 	if (!glfwInit()) {
 		std::cerr << "Failed to initialise GLFW";
 		exit(EXIT_FAILURE);
