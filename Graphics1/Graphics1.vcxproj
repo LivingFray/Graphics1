@@ -140,12 +140,17 @@
     <ClCompile Include="DataObject.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="KeyConfig.cpp" />
+    <ClCompile Include="Level.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Platform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataObject.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="Globals.h" />
     <ClInclude Include="KeyConfig.h" />
+    <ClInclude Include="Level.h" />
+    <ClInclude Include="Platform.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -13,4 +13,5 @@ namespace keyconfig {
 
 	void loadBindings();
 	void saveBindings();
+	int get(string key);
 }
