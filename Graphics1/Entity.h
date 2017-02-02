@@ -1,4 +1,9 @@
 #pragma once
+#include "Level.h"
+using namespace std;
+
+class Level;
+
 class Entity {
 public:
 	Entity();
@@ -8,6 +13,8 @@ protected:
 	double posY;
 	double velX;
 	double velY;
+	double angle;
+	Level* level;
 public:
 	// Gets the x-coordinate of the entity
 	double getX();
@@ -37,5 +44,24 @@ public:
 	void addPosX(double x);
 	// Adds the value to the vertical position
 	void addPosY(double y);
+protected:
+	double maxSpeed;
+public:
+	// Sets the entity's max speed
+	void setMaxSpeed(double speed);
+	// Gets the entity's max speed
+	double getMaxSpeed();
+	// Gets the horizontal (relative to the rotation) velocity
+	double getVelRelX(double theta);
+	// Gets the vertical (relative to the rotation) velocity
+	double getVelRelY(double theta);
+	// Sets the level in which the entity exists
+	void setLevel(Level* level);
+	// Gets the level in which the entity exists
+	Level* getLevel();
+	// Gets the angle of the entity
+	double getAngle();
+	// Sets the angle of the entity
+	void setAngle(double angle);
 };
 

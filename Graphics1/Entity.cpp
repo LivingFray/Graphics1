@@ -1,12 +1,14 @@
 #include "Entity.h"
 #include "Globals.h"
 #include <GLFW\glfw3.h>
+#include <math.h>
 
 Entity::Entity() {
 	posX = 0.0;
 	posY = 0.0;
 	velX = 0.0;
 	velY = 0.0;
+	maxSpeed = 0.0;
 }
 
 
@@ -73,13 +75,17 @@ void Entity::update() {
 // Draws the entity
 void Entity::draw() {
 	//TODO: Images and stuff
+	glPushMatrix();
 	glColor3ub(255, 0, 0);
+	glTranslated(posX, posY, 0.0);
+	glRotated(angle, 0.0, 0.0, 1.0);
 	glBegin(GL_QUADS);
-	glVertex2d(posX - 5, posY - 5);
-	glVertex2d(posX - 5, posY + 5);
-	glVertex2d(posX + 5, posY + 5);
-	glVertex2d(posX + 5, posY - 5);
+	glVertex2d(-5, -5);
+	glVertex2d(-5, +5);
+	glVertex2d(+5, +5);
+	glVertex2d(+5, -5);
 	glEnd();
+	glPopMatrix();
 }
 
 /*TODO:
@@ -111,4 +117,56 @@ void Entity::addPosX(double x) {
 // Adds the value to the vertical position
 void Entity::addPosY(double y) {
 	posY += y;
+}
+
+
+// Sets the entity's max speed
+void Entity::setMaxSpeed(double speed) {
+	maxSpeed = speed;
+}
+
+
+// Gets the entity's max speed
+double Entity::getMaxSpeed() {
+	return maxSpeed;
+}
+
+
+// Gets the horizontal (relative to the rotation) velocity
+double Entity::getVelRelX(double theta) {
+	double cTheta = cos(-DEG_TO_RAD * theta);
+	double sTheta = sin(-DEG_TO_RAD * theta);
+	return velX * cTheta - velY * sTheta;
+}
+
+
+// Gets the vertical (relative to the rotation) velocity
+double Entity::getVelRelY(double theta) {
+	double cTheta = cos(-DEG_TO_RAD * theta);
+	double sTheta = sin(-DEG_TO_RAD * theta);
+	return velY * cTheta + velX * sTheta;
+}
+
+
+// Sets the level in which the entity exists
+void Entity::setLevel(Level* level) {
+	this->level = level;
+}
+
+
+// Gets the level in which the entity exists
+Level* Entity::getLevel() {
+	return level;
+}
+
+
+// Gets the angle of the entity
+double Entity::getAngle() {
+	return angle;
+}
+
+
+// Sets the angle of the entity
+void Entity::setAngle(double angle) {
+	this->angle = angle;
 }

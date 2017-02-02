@@ -4,11 +4,14 @@
 #include "KeyConfig.h"
 #include "Level.h"
 #include "Entity.h"
+#include "Player.h"
 //----------------------------------Globals----------------------------------//
 enum GameState { GAME_MENU, GAME_PLAYING }; //The different states of the game
-GLFWwindow* window;
+GLFWwindow* gameWindow;
 Entity* test;
 Level* level;
+int sWidth;
+int sHeight;
 //-------------------Callback functions and state handlers-------------------//
 ///Handles key presses
 void keyHandler(GLFWwindow* window, int key, int scan, int action, int mods) {
@@ -22,12 +25,15 @@ void mouseHandler(GLFWwindow* window, int button, int action, int mods) {
 void init() {
 	//Load the key bindings
 	keyconfig::loadBindings();
+	//Allow keyconfig to get key states
+	keyconfig::win = gameWindow;
 	//Load the player (TEMP)
-	test = new Entity();
-	test->setX(400);
-	test->setY(300);
 	level = new Level();
 	level->loadLevel("temp");
+	test = new Player();
+	test->setX(400);
+	test->setY(300);
+	test->setLevel(level);
 
 	//GL Alpha channel stuff
 	glEnable(GL_BLEND);
@@ -37,30 +43,38 @@ void init() {
 void draw(double ex) {
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
+	//Camera stuff
+	glPushMatrix();
+	glTranslated(sWidth/2, sHeight/2, 0.0);
+	glRotated(-test->getAngle(), 0.0, 0.0, 1.0);
+	glTranslated(-test->getX(), -test->getY(), 0.0);
 	level->draw(ex);
 	test->draw();
+	glPopMatrix();
 }
 ///Updates the game
 void update() {
+	/*
 	double vX = 0.0;
 	double vY = 0.0;
-	if (glfwGetKey(window, keyconfig::keyBindings["moveLeft"]) == GLFW_PRESS) {
+	if (glfwGetKey(gameWindow, keyconfig::keyBindings["moveLeft"]) == GLFW_PRESS) {
 		vX -= 50.0;
 	}
-	if (glfwGetKey(window, keyconfig::keyBindings["moveRight"]) == GLFW_PRESS) {
+	if (glfwGetKey(gameWindow, keyconfig::keyBindings["moveRight"]) == GLFW_PRESS) {
 		vX += 50.0;
 	}
-	if (glfwGetKey(window, keyconfig::keyBindings["dbUp"]) == GLFW_PRESS) {
-		vY -= 50.0;
-	}
-	if (glfwGetKey(window, keyconfig::keyBindings["dbDown"]) == GLFW_PRESS) {
+	if (glfwGetKey(gameWindow, keyconfig::keyBindings["dbUp"]) == GLFW_PRESS) {
 		vY += 50.0;
+	}
+	if (glfwGetKey(gameWindow, keyconfig::keyBindings["dbDown"]) == GLFW_PRESS) {
+		vY -= 50.0;
 	}
 	double fx = 0.0;
 	double fy = 0.0;
 	level->getGravityAtPos(test->getX(), test->getY(), &fx, &fy);
 	test->addVelX(vX + fx);
 	test->addVelY(vY + fy);
+	*/
 	test->update();
 	level->update();
 }
@@ -68,10 +82,13 @@ void update() {
 void resize(GLFWwindow* window, int width, int height) {
 	//Fix the viewport
 	//TODO: Maybe fix for different resolutions
+	sWidth = width;
+	sHeight = height;
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0.0, width, height, 0.0, -1.0, 1.0);
+	//Invert y-axis for screen coords
+	glOrtho(0.0, width, 0.0, height, -1.0, 1.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -84,21 +101,21 @@ int main() {
 	//GLFW needs to know which version of opengl I am targeting
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-	window = glfwCreateWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, TITLE, NULL, NULL);
-	if (!window) {
+	gameWindow = glfwCreateWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, TITLE, NULL, NULL);
+	if (!gameWindow) {
 		std::cerr << "Failed to create window";
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
-	glfwMakeContextCurrent(window);
+	glfwMakeContextCurrent(gameWindow);
 	//I am given to understand this is glfw's way of enabling v-sync
 	glfwSwapInterval(1);
 	//Handle window events
-	glfwSetWindowSizeCallback(window, resize);
+	glfwSetWindowSizeCallback(gameWindow, resize);
 	//Call resize to initialise display
-	resize(window, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-	glfwSetKeyCallback(window, keyHandler);
-	glfwSetMouseButtonCallback(window, mouseHandler);
+	resize(gameWindow, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+	glfwSetKeyCallback(gameWindow, keyHandler);
+	glfwSetMouseButtonCallback(gameWindow, mouseHandler);
 	//Initialise the game
 	init();
 	//Game loop, calls update every TICKRATE ms and renders whenever it can
@@ -106,7 +123,7 @@ int main() {
 	//I did, however, implement it
 	double previous = glfwGetTime();
 	double lastUpdate = 0.0f;
-	while (!glfwWindowShouldClose(window)) {
+	while (!glfwWindowShouldClose(gameWindow)) {
 		//Calculate time taken for last frame
 		double current = glfwGetTime();
 		double elapsed = current - previous;
@@ -124,9 +141,9 @@ int main() {
 		//Draw the game, allowing for any extrapolation
 		draw(lastUpdate / TICKRATE);
 		//Display the back buffer
-		glfwSwapBuffers(window);
+		glfwSwapBuffers(gameWindow);
 	}
 	//Shutdown properly
-	glfwDestroyWindow(window);
+	glfwDestroyWindow(gameWindow);
 	glfwTerminate();
 }

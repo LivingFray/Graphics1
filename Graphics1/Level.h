@@ -6,6 +6,8 @@
 
 using namespace std;
 
+class Entity;
+
 class Level {
 public:
 	Level();
@@ -28,7 +30,7 @@ private:
 	vector<Entity*> entities;
 	vector<Platform*> platforms;
 	vector<GravityField*> gravFields;
-	double defaultGravity = 0; //Fallback for outside the fields
+	double defaultGravity = 2; //Fallback for outside the fields
 public:
 	// Loads a level from the given file
 	void loadLevel(string filePath);

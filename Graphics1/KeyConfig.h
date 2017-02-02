@@ -10,8 +10,8 @@ typedef map<string, int> keyMap;
 
 namespace keyconfig {
 	extern keyMap keyBindings;
-
+	extern GLFWwindow* win;
 	void loadBindings();
 	void saveBindings();
-	int get(string key);
+	bool isDown(string key);
 }
