@@ -54,27 +54,6 @@ void draw(double ex) {
 }
 ///Updates the game
 void update() {
-	/*
-	double vX = 0.0;
-	double vY = 0.0;
-	if (glfwGetKey(gameWindow, keyconfig::keyBindings["moveLeft"]) == GLFW_PRESS) {
-		vX -= 50.0;
-	}
-	if (glfwGetKey(gameWindow, keyconfig::keyBindings["moveRight"]) == GLFW_PRESS) {
-		vX += 50.0;
-	}
-	if (glfwGetKey(gameWindow, keyconfig::keyBindings["dbUp"]) == GLFW_PRESS) {
-		vY += 50.0;
-	}
-	if (glfwGetKey(gameWindow, keyconfig::keyBindings["dbDown"]) == GLFW_PRESS) {
-		vY -= 50.0;
-	}
-	double fx = 0.0;
-	double fy = 0.0;
-	level->getGravityAtPos(test->getX(), test->getY(), &fx, &fy);
-	test->addVelX(vX + fx);
-	test->addVelY(vY + fy);
-	*/
 	test->update();
 	level->update();
 }
