@@ -3,6 +3,7 @@
 #include <vector>
 #include "Entity.h"
 #include "Platform.h"
+#include "Vec2D.h"
 
 using namespace std;
 
@@ -20,8 +21,7 @@ private:
 	//A Gravity field always pulls down (towards lowest y-value)
 	//Change this by rotating field or inverting the field strength
 	struct GravityField {
-		double x;
-		double y;
+		Vec2D pos;
 		double width;
 		double height;
 		double rotation;
@@ -35,6 +35,6 @@ public:
 	// Loads a level from the given file
 	void loadLevel(string filePath);
 	// Calculates the force of gravity applied to an object at a location
-	void getGravityAtPos(double posX, double posY, double* forceX, double* forceY);
+	void getGravityAtPos(Vec2D pos, Vec2D* grav);
 };
 

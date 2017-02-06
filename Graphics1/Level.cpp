@@ -28,7 +28,7 @@ void Level::draw(double ex) {
 		double w = f->width / 2;
 		double h = f->height / 2;
 		glPushMatrix();
-		glTranslated(f->x, f->y, 0.0);
+		glTranslated(f->pos.getX(), f->pos.getY(), 0.0);
 		//0 degrees should be down, rather than right
 		glRotated(f->rotation, 0, 0, 1);
 		glBegin(GL_QUADS);
@@ -51,8 +51,7 @@ void Level::loadLevel(string filePath) {
 	t->height = 450;
 	t->width = 250;
 	t->strength = 2;
-	t->x = 400;
-	t->y = 100;
+	t->pos = Vec2D(400, 100);
 	t->rotation = 45;
 	gravFields.insert(gravFields.begin(),t);
 	/*
@@ -83,30 +82,29 @@ void Level::loadLevel(string filePath) {
 	*/
 }
 
-
 // Calculates the force of gravity applied to an object at a location
-void Level::getGravityAtPos(double posX, double posY, double* forceX, double* forceY) {
-	*forceX = 0;
-	*forceY = 0;
+void Level::getGravityAtPos(Vec2D pos, Vec2D* grav) {
+	grav->set(0, 0);
 	for (GravityField* f : gravFields) {
 		//Translate point to be relative to the field's centre
-		double x = posX - f->x;
-		double y = posY - f->y;
+		Vec2D p = pos.subtract(f->pos);
 		//Rotate the point back to be AA with the field (-angle)
 		double cTheta = cos(-DEG_TO_RAD * f->rotation); //Slight optimisation as trig is expensive
 		double sTheta = sin(-DEG_TO_RAD * f->rotation);
-		double xPrime = x * cTheta - y * sTheta;
-		double yPrime = y * cTheta + x * sTheta;
+		double xPrime = p.getX() * cTheta - p.getY() * sTheta;
+		double yPrime = p.getY() * cTheta + p.getX() * sTheta;
 		//Calculate field strength at point
 		if (xPrime >= -f->width / 2 && xPrime <= f->width / 2
 			&& yPrime >= -f->height / 2 && yPrime <= f->height / 2) {
 			//Rotate this strength back and add it to force
 			//(Forces have been rotated through 90 degrees to make 0 rotation = normal gravity
-			*forceX += f->strength * sin(DEG_TO_RAD * (f->rotation + 90));
-			*forceY += f->strength * cos(DEG_TO_RAD * (f->rotation + 90));
+			grav->addTo(Vec2D(
+				f->strength * sin(DEG_TO_RAD * (f->rotation + 90)),
+				f->strength * cos(DEG_TO_RAD * (f->rotation + 90))
+			));
 		}
 	}
-	if (*forceX == 0 && *forceY == 0) {
-		*forceY = -defaultGravity;
+	if (grav->getX()==0 && grav->getY()==0) {
+		grav->setY(-defaultGravity);
 	}
 }

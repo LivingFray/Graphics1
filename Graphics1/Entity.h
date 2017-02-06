@@ -1,5 +1,6 @@
 #pragma once
 #include "Level.h"
+#include "Vec2D.h"
 using namespace std;
 
 class Level;
@@ -9,10 +10,8 @@ public:
 	Entity();
 	~Entity();
 protected:
-	double posX;
-	double posY;
-	double velX;
-	double velY;
+	Vec2D pos;
+	Vec2D vel;
 	double angle;
 	Level* level;
 public:

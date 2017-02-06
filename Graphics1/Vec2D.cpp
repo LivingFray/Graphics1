@@ -48,17 +48,17 @@ void Vec2D::set(double x, double y) {
 
 
 
-// Adds the given vector to the original
-void Vec2D::addTo(Vec2D* other) {
-	x += other->x;
-	y += other->y;
+// Adds the given vecto to the original
+void Vec2D::addTo(Vec2D other) {
+	x += other.x;
+	y += other.y;
 }
 
 
 // Subtracts the given vector from the original
-void Vec2D::subtractFrom(Vec2D* other) {
-	x -= other->x;
-	y -= other->y;
+void Vec2D::subtractFrom(Vec2D other) {
+	x -= other.x;
+	y -= other.y;
 }
 
 
@@ -76,8 +76,8 @@ void Vec2D::divideBy(double scale) {
 
 
 // Calculates the dot product of the 2 vectors
-double Vec2D::dot(Vec2D* other) {
-	return x * other->x + y * other->y;
+double Vec2D::dot(Vec2D other) {
+	return x * other.x + y * other.y;
 }
 
 
@@ -89,25 +89,25 @@ void Vec2D::toUnit() {
 
 
 // Gets the unit vector for this vector
-Vec2D* Vec2D::unit() {
-	Vec2D* r = new Vec2D(x, y);
-	r->toUnit();
+Vec2D Vec2D::unit() {
+	Vec2D r = Vec2D(x, y);
+	r.toUnit();
 	return r;
 }
 
 
 // Returns a vector equal to the sum of the two vectors
-Vec2D* Vec2D::add(Vec2D* other) {
-	Vec2D* r = new Vec2D(x, y);
-	r->addTo(other);
+Vec2D Vec2D::add(Vec2D other) {
+	Vec2D r = Vec2D(x, y);
+	r.addTo(other);
 	return r;
 }
 
 
 // Returns a vector equal to the difference of the two vectors
-Vec2D* Vec2D::subtract(Vec2D* other) {
-	Vec2D* r = new Vec2D(x, y);
-	r->subtractFrom(other);
+Vec2D Vec2D::subtract(Vec2D other) {
+	Vec2D r = Vec2D(x, y);
+	r.subtractFrom(other);
 	return r;
 }
 
@@ -125,16 +125,16 @@ double Vec2D::magnitudeSquare() {
 
 
 // Returns a vector multiplied by scale
-Vec2D* Vec2D::multiply(double scale) {
-	Vec2D* r = new Vec2D(x, y);
-	r->multiplyBy(scale);
+Vec2D Vec2D::multiply(double scale) {
+	Vec2D r = Vec2D(x, y);
+	r.multiplyBy(scale);
 	return r;
 }
 
 
 // Returns a vector divided by scale
-Vec2D* Vec2D::divide(double scale) {
-	Vec2D* r = new Vec2D(x, y);
-	r->divideBy(scale);
+Vec2D Vec2D::divide(double scale) {
+	Vec2D r = Vec2D(x, y);
+	r.divideBy(scale);
 	return r;
 }

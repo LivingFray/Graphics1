@@ -4,9 +4,9 @@
 #include <GLFW\glfw3.h>
 
 //How much the player slows down in the horizontal axis when not moving
-#define PLAYER_FRICTION 20
+#define PLAYER_FRICTION 2
 //How fast the player accelerates when pressing a direction key
-#define PLAYER_ACCELERATION 80
+#define PLAYER_ACCELERATION 30
 //How fast the player jumps
 #define PLAYER_JUMP 80
 
@@ -20,15 +20,14 @@ Player::~Player() {
 // Updates the player
 void Player::update() {
 	//Get direction of gravity
-	double gX;
-	double gY;
-	level->getGravityAtPos(posX, posY, &gX, &gY);
+	Vec2D g;
+	level->getGravityAtPos(pos, &g);
 	//TODO: smoothing rotation?
-	if (abs(gX) < FLOAT_ZERO && abs(gY) < FLOAT_ZERO) {
+	if (abs(g.getX()) < FLOAT_ZERO && abs(g.getY()) < FLOAT_ZERO) {
 		angle = 0; //Floating in no gravity
 	}
 	else {
-		angle = atan2(gY, gX) * RAD_TO_DEG + 90;
+		angle = atan2(g.getY(), g.getX()) * RAD_TO_DEG + 90;
 	}
 	//The velocity in the frame of the current gravity
 	double vX = getVelRelX(angle);
@@ -51,45 +50,32 @@ void Player::update() {
 			dX = -vX;
 		}
 	}
-	glfwSetWindowTitle(keyconfig::win, (to_string(posX) + ", " + to_string(posY)).c_str());
-	//Apply gravity to velocity
-	velX += gX;
-	velY += gY;
 	//Rotate the vector through 90 degrees
-	double moveX = -gY;
-	double moveY = gX;
+	Vec2D move = Vec2D(-g.getY(), g.getX());
 	//Normalise the value
-	double mag = sqrt(moveX * moveX + moveY * moveY);
-	//We appear to be floating in an area of 0 gravity
-	if (mag == 0) {
-		moveX = 1; //Just pretend that gravity is normal
+	if (move.magnitudeSquare() > FLOAT_ZERO) {
+		move.toUnit();
 	}
 	else {
-		moveX /= mag;
-		moveY /= mag;
+		move.set(1.0, 0.0);
 	}
 	//Scale it to the movement
-	moveX *= dX;
-	moveY *= dX;
-	velX += moveX;
-	velY += moveY;
+	move.multiplyBy(dX);
+	//Add the movement
+	vel.addTo(move);
 	//TODO: jumping here
 	if (keyconfig::isDown("jump")) {
-		double jumpX = gX;
-		double jumpY = gY;
+		Vec2D jump = g;
 		//Normalise vector
 		//We appear to be floating in an area of 0 gravity
-		if (mag == 0) {
-			jumpY = -1; //Just pretend that gravity is normal
+		if (jump.magnitudeSquare() > FLOAT_ZERO) {
+			jump.toUnit();
 		}
 		else {
-			jumpX /= mag;
-			jumpY /= mag;
+			jump.set(0.0,-1.0); //Just pretend that gravity is normal
 		}
-		jumpX *= PLAYER_JUMP;
-		jumpY *= PLAYER_JUMP;
-		velX -= jumpX;
-		velY -= jumpY;
+		jump.multiplyBy(PLAYER_JUMP);
+		vel.subtractFrom(jump);
 	}
 	//Call inherited update (handles moving)
 	Entity::update();

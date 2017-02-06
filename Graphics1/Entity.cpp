@@ -3,12 +3,12 @@
 #include <GLFW\glfw3.h>
 #include <math.h>
 
+#define DEFAULT_MAXSPEED 100.0
+
 Entity::Entity() {
-	posX = 0.0;
-	posY = 0.0;
-	velX = 0.0;
-	velY = 0.0;
-	maxSpeed = 0.0;
+	pos = Vec2D(0.0, 0.0);
+	vel = Vec2D(0.0, 0.0);
+	maxSpeed = DEFAULT_MAXSPEED;
 }
 
 
@@ -18,57 +18,72 @@ Entity::~Entity() {
 
 // Gets the x-coordinate of the entity
 double Entity::getX() {
-	return posX;
+	return pos.getX();
 }
 
 
 // Gets the y-coordinate of the entity
 double Entity::getY() {
-	return posY;
+	return pos.getY();
 }
 
 
 // Sets the x-coordinate of the entity
 void Entity::setX(double x) {
-	posX = x;
+	pos.setX(x);
 }
 
 
 // Sets the y-coordinate of the entity
 void Entity::setY(double y) {
-	posY = y;
+	pos.setY(y);
 }
 
 
 // Gets the horizontal velocity of the entity
 double Entity::getVelX() {
-	return velX;
+	return vel.getX();
 }
 
 
 // Gets the vertical velocity of the entity
 double Entity::getVelY() {
-	return velY;
+	return vel.getY();
 }
 
 
 // Sets the horizontal velocity of the entity
 void Entity::setVelX(double x) {
-	velX = x;
+	vel.setX(x);
 }
 
 
 // Sets the vertical velocity of the entity
 void Entity::setVelY(double y) {
-	velY = y;
+	vel.setY(y);
 }
 
 
 // Updates the entity
 void Entity::update() {
-	posX += velX * TICKRATE;
-	posY += velY * TICKRATE;
-	//TODO: Gravity
+	Vec2D g;
+	level->getGravityAtPos(pos, &g);
+	vel.addTo(g);
+	//TODO: Max speed checks
+	double dX = getVelRelX(angle);
+	if (dX > maxSpeed) {
+		Vec2D h = Vec2D(-g.getY(),g.getX());
+		h.toUnit();
+		h.multiplyBy(dX - maxSpeed);
+		vel.subtractFrom(h);
+	}
+	else if (dX < -maxSpeed) {
+		Vec2D h = Vec2D(-g.getY(), g.getX());
+		h.toUnit();
+		h.multiplyBy(dX + maxSpeed);
+		vel.subtractFrom(h);
+	}
+	pos.addTo(vel.multiply(TICKRATE));
 }
 
 
@@ -77,7 +92,7 @@ void Entity::draw() {
 	//TODO: Images and stuff
 	glPushMatrix();
 	glColor3ub(255, 0, 0);
-	glTranslated(posX, posY, 0.0);
+	glTranslated(pos.getX(), pos.getY(), 0.0);
 	glRotated(angle, 0.0, 0.0, 1.0);
 	glBegin(GL_QUADS);
 	glVertex2d(-5, -5);
@@ -91,32 +106,30 @@ void Entity::draw() {
 /*TODO:
 Hitboxes
 Collision detection
-Gravity
 Graphics/Animations
-Camera
 */
 
 // Adds the given value to the horizontal velocity
 void Entity::addVelX(double x) {
-	velX += x;
+	vel.addTo(Vec2D(x,0));
 }
 
 
 // Adds the given vaue to the vertical velocity
 void Entity::addVelY(double y) {
-	velY += y;
+	vel.addTo(Vec2D(0, y));
 }
 
 
 // Adds the value to the horizontal position
 void Entity::addPosX(double x) {
-	posX += x;
+	pos.addTo(Vec2D(x, 0));
 }
 
 
 // Adds the value to the vertical position
 void Entity::addPosY(double y) {
-	posY += y;
+	pos.addTo(Vec2D(0, y));
 }
 
 
@@ -136,7 +149,7 @@ double Entity::getMaxSpeed() {
 double Entity::getVelRelX(double theta) {
 	double cTheta = cos(-DEG_TO_RAD * theta);
 	double sTheta = sin(-DEG_TO_RAD * theta);
-	return velX * cTheta - velY * sTheta;
+	return vel.getX() * cTheta - vel.getY() * sTheta;
 }
 
 
@@ -144,7 +157,7 @@ double Entity::getVelRelX(double theta) {
 double Entity::getVelRelY(double theta) {
 	double cTheta = cos(-DEG_TO_RAD * theta);
 	double sTheta = sin(-DEG_TO_RAD * theta);
-	return velY * cTheta + velX * sTheta;
+	return vel.getY() * cTheta + vel.getX() * sTheta;
 }
 
 
