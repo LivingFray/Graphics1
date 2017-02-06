@@ -88,7 +88,7 @@ void Entity::update() {
 
 
 // Draws the entity
-void Entity::draw() {
+void Entity::draw(double ex) {
 	//TODO: Images and stuff
 	glPushMatrix();
 	glColor3ub(255, 0, 0);

@@ -49,7 +49,7 @@ void draw(double ex) {
 	glRotated(-test->getAngle(), 0.0, 0.0, 1.0);
 	glTranslated(-test->getX(), -test->getY(), 0.0);
 	level->draw(ex);
-	test->draw();
+	test->draw(ex);
 	glPopMatrix();
 }
 ///Updates the game

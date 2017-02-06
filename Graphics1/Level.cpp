@@ -12,6 +12,12 @@ Level::~Level() {
 
 // Updates the level
 void Level::update() {
+	//TODO: Update world
+
+	//Update the entities
+	for (Entity* e : entities) {
+		e->update();
+	}
 }
 
 
@@ -24,6 +30,7 @@ void Level::draw(double ex) {
 	glVertex2d(800, -200);
 	glVertex2d(800, 50);
 	glEnd();
+	//Draw the gravity fields
 	for (GravityField* f : gravFields) {
 		double w = f->width / 2;
 		double h = f->height / 2;
@@ -37,9 +44,15 @@ void Level::draw(double ex) {
 		glVertex2d(w, -1 * h);
 		glColor4ub(0, 0, 0, 0);
 		glVertex2d(w, h);
-		glVertex2d(-1 * w,h);
+		glVertex2d(-1 * w, h);
 		glEnd();
 		glPopMatrix();
+	}
+	//Draw the platforms
+
+	//Draw the entities
+	for (Entity* e : entities) {
+		e->draw(ex);
 	}
 }
 
@@ -53,7 +66,7 @@ void Level::loadLevel(string filePath) {
 	t->strength = 2;
 	t->pos = Vec2D(400, 100);
 	t->rotation = 45;
-	gravFields.insert(gravFields.begin(),t);
+	gravFields.insert(gravFields.begin(), t);
 	/*
 	t = new GravityField();
 	t->height = 50;
@@ -104,7 +117,7 @@ void Level::getGravityAtPos(Vec2D pos, Vec2D* grav) {
 			));
 		}
 	}
-	if (grav->getX()==0 && grav->getY()==0) {
+	if (grav->getX() == 0 && grav->getY() == 0) {
 		grav->setY(-defaultGravity);
 	}
 }

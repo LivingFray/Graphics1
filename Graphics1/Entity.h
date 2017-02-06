@@ -34,7 +34,7 @@ public:
 	// Updates the entity
 	virtual void update();
 	// Draws the entity
-	virtual void draw();
+	virtual void draw(double ex);
 	// Adds the given value to the horizontal velocity
 	void addVelX(double x);
 	// Adds the given vaue to the vertical velocity
