@@ -84,5 +84,5 @@ void Player::update() {
 
 // Draws the player, ex seconds from last update
 void Player::draw(double ex) {
-	Entity::draw();
+	Entity::draw(ex);
 }

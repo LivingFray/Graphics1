@@ -103,12 +103,6 @@ void Entity::draw(double ex) {
 	glPopMatrix();
 }
 
-/*TODO:
-Hitboxes
-Collision detection
-Graphics/Animations
-*/
-
 // Adds the given value to the horizontal velocity
 void Entity::addVelX(double x) {
 	vel.addTo(Vec2D(x,0));

@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Collider.cpp" />
     <ClCompile Include="DataObject.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="KeyConfig.cpp" />
@@ -147,6 +148,7 @@
     <ClCompile Include="Vec2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Collider.h" />
     <ClInclude Include="DataObject.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Globals.h" />

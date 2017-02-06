@@ -5,6 +5,20 @@
 #include "Level.h"
 #include "Entity.h"
 #include "Player.h"
+/*
+Big list of things to do:
+Hitboxes
+Collision detection
+Graphics/Animations
+Cleanup code (auto generated classes, etc)
+Start and end points
+UI
+Level editor
+AI
+Multiple levels
+Level loading
+Backgrounds
+*/
 //----------------------------------Globals----------------------------------//
 enum GameState { GAME_MENU, GAME_PLAYING }; //The different states of the game
 GLFWwindow* gameWindow;
