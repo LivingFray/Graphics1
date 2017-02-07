@@ -1,3 +1,4 @@
+#include "Level.h"
 #include "Player.h"
 #include "KeyConfig.h"
 #include "Globals.h"
@@ -63,8 +64,8 @@ void Player::update() {
 	move.multiplyBy(dX);
 	//Add the movement
 	vel.addTo(move);
-	//TODO: jumping here
-	if (keyconfig::isDown("jump")) {
+	//Handle jumping
+	if (keyconfig::isDown("jump") && onGround) {
 		Vec2D jump = g;
 		//Normalise vector
 		//We appear to be floating in an area of 0 gravity

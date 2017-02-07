@@ -9,8 +9,9 @@
 Big list of things to do:
 Hitboxes
 Collision detection
+Broad collision detection
 Graphics/Animations
-Cleanup code (auto generated classes, etc)
+Cleanup code (auto generated classes, import orders, etc)
 Start and end points
 UI
 Level editor
@@ -26,10 +27,15 @@ Entity* test;
 Level* level;
 int sWidth;
 int sHeight;
+int skips = 0;
+int UPDATESKIPS = 0;
 //-------------------Callback functions and state handlers-------------------//
 ///Handles key presses
 void keyHandler(GLFWwindow* window, int key, int scan, int action, int mods) {
-
+	if (key == GLFW_KEY_SPACE && action==GLFW_PRESS) {
+		UPDATESKIPS -= 100;
+		UPDATESKIPS *= -1;
+	}
 }
 ///Handles mouse buttons
 void mouseHandler(GLFWwindow* window, int button, int action, int mods) {
@@ -44,11 +50,7 @@ void init() {
 	//Load the player (TEMP)
 	level = new Level();
 	level->loadLevel("temp");
-	test = new Player();
-	test->setX(400);
-	test->setY(300);
-	test->setLevel(level);
-
+	test = level->getPlayer();
 	//GL Alpha channel stuff
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -63,12 +65,10 @@ void draw(double ex) {
 	glRotated(-test->getAngle(), 0.0, 0.0, 1.0);
 	glTranslated(-test->getX(), -test->getY(), 0.0);
 	level->draw(ex);
-	test->draw(ex);
 	glPopMatrix();
 }
 ///Updates the game
 void update() {
-	test->update();
 	level->update();
 }
 ///Resizes the window
@@ -128,7 +128,11 @@ int main() {
 		//Call updates until the game has caught up
 		//But don't update if not enough time has elapsed
 		while (lastUpdate >= TICKRATE) {
-			update();
+			skips++;
+			if (skips >= UPDATESKIPS) {
+				update();
+				skips = 0;
+			}
 			lastUpdate -= TICKRATE;
 		}
 		//Draw the game, allowing for any extrapolation

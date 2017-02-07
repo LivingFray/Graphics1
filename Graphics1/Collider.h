@@ -5,8 +5,10 @@ public:
 	Collider();
 	~Collider();
 	// Gets the normal vectors needed to check collision
-	Vec2D* getNormals(int* numNormals);
+	virtual Vec2D* getNormals(int* numNormals);
 	// Gets the vertices of the bounding box
-	Vec2D* getVertices(int* numVertices);
+	virtual Vec2D* getVertices(int* numVertices);
+	// Called when a collision occurs
+	virtual void onCollide(Collider* other);
 };
 

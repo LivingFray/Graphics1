@@ -1,7 +1,8 @@
 #pragma once
 #include "Vec2D.h"
+#include "Collider.h"
 
-class Platform {
+class Platform: public Collider {
 public:
 	Platform();
 	~Platform();
@@ -27,4 +28,12 @@ public:
 	void setAngle(double angle);
 	// Gets the angle of the platform
 	double getAngle();
+	// Gets the normal vectors needed to check collision
+	virtual Vec2D* getNormals(int* numNormals);
+	// Gets the vertices of the bounding box
+	virtual Vec2D* getVertices(int* numVertices);
+	// Called when a collision occurs
+	virtual void onCollide(Collider* other);
+	// Draws the platform ex seconds after last update
+	virtual void draw(double ex);
 };

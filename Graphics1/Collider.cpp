@@ -21,3 +21,8 @@ Vec2D* Collider::getVertices(int* numVertices) {
 	*numVertices = 0;
 	return nullptr;
 }
+
+
+// Called when a collision occurs
+void Collider::onCollide(Collider* other) {
+}

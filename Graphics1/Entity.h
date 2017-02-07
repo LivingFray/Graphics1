@@ -1,11 +1,11 @@
 #pragma once
-#include "Level.h"
 #include "Vec2D.h"
+#include "Collider.h"
 using namespace std;
 
 class Level;
 
-class Entity {
+class Entity: public Collider {
 public:
 	Entity();
 	~Entity();
@@ -14,6 +14,9 @@ protected:
 	Vec2D vel;
 	double angle;
 	Level* level;
+	double width;
+	double height;
+	bool onGround;
 public:
 	// Gets the x-coordinate of the entity
 	double getX();
@@ -62,5 +65,27 @@ public:
 	double getAngle();
 	// Sets the angle of the entity
 	void setAngle(double angle);
+	// Gets the normal vectors needed to check collision
+	virtual Vec2D* getNormals(int* numNormals);
+	// Gets the vertices of the bounding box
+	virtual Vec2D* getVertices(int* numVertices);
+	// Called when a collision occurs
+	virtual void onCollide(Collider* other);
+	// Sets the width of the entity
+	void setWidth(double width);
+	// Gets the width of the entity
+	double getWidth();
+	// Sets the height of the entity
+	void setHeight(double height);
+	// Gets the height of the entity
+	double getHeight();
+	// Gets the current position of the entity
+	Vec2D getPos();
+	// Sets the position of the entity
+	void setPos(Vec2D pos);
+	// Sets whether the entity is currently on the ground
+	void setOnGround(bool onGround);
+	// Gets if the entity is currently on the ground
+	bool getOnGround();
 };
 

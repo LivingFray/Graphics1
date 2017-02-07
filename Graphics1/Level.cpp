@@ -1,6 +1,10 @@
 #include "Level.h"
 #include <GLFW\glfw3.h>
 #include "Globals.h"
+#include "Player.h"
+
+//The cosine of the angle between collision and vector and ground needed to count as standing on it
+#define COS_GROUND_ANGLE 0.70710678118
 
 Level::Level() {
 }
@@ -17,19 +21,47 @@ void Level::update() {
 	//Update the entities
 	for (Entity* e : entities) {
 		e->update();
+		e->setOnGround(false);
+		//TODO: Skip entities that haven't moved
+		//TODO: Handle moving platforms once implemented
+		//Perform collision detection + resolution
+		for (Platform* p : platforms) {
+			//TODO: Broad check here
+			
+			//Use SAT to check for collisions
+			Vec2D res;
+			if (intersects(e, p, &res)) {
+				//Move outside of collision
+				e->addPosX(res.getX());
+				e->addPosY(res.getY());
+				//Arrest velocity (move to inside objects?)
+				e->addVelX(res.getX());
+				e->addVelY(res.getY());
+				Vec2D grav;
+				getGravityAtPos(e->getPos(), &grav);
+				//Check resolution vector is in angle range to suggest floor
+				/*
+				a.b = |a||b|cos(theta)
+				grav.res = |grav||res|cos(theta)
+				if cos(theta)<cos(45) onGround
+				cos(theta) = grav.res / (|grav||res|)
+				*/
+				double cosAngle = grav.dot(res) / (grav.magnitude() * res.magnitude());
+				if (cosAngle < COS_GROUND_ANGLE) {
+					e->setOnGround(true);
+				}
+				//Handle other collisiony things
+				e->onCollide(p);
+				p->onCollide(e);
+			}
+
+		}
 	}
 }
 
 
 // Draws the level
 void Level::draw(double ex) {
-	glColor3ub(0, 255, 0);
-	glBegin(GL_QUADS);
-	glVertex2d(0, 50);
-	glVertex2d(0, -200);
-	glVertex2d(800, -200);
-	glVertex2d(800, 50);
-	glEnd();
 	//Draw the gravity fields
 	for (GravityField* f : gravFields) {
 		double w = f->width / 2;
@@ -49,7 +81,9 @@ void Level::draw(double ex) {
 		glPopMatrix();
 	}
 	//Draw the platforms
-
+	for (Platform* p : platforms) {
+		p->draw(ex);
+	}
 	//Draw the entities
 	for (Entity* e : entities) {
 		e->draw(ex);
@@ -67,32 +101,18 @@ void Level::loadLevel(string filePath) {
 	t->pos = Vec2D(400, 100);
 	t->rotation = 45;
 	gravFields.insert(gravFields.begin(), t);
-	/*
-	t = new GravityField();
-	t->height = 50;
-	t->width = 50;
-	t->strength = 10;
-	t->x = 200;
-	t->y = 275;
-	t->rotation = 90;
-	gravFields.insert(gravFields.begin(), t);
-	t = new GravityField();
-	t->height = 50;
-	t->width = 50;
-	t->strength = 10;
-	t->x = 275;
-	t->y = 275;
-	t->rotation = 180;
-	gravFields.insert(gravFields.begin(), t);
-	t = new GravityField();
-	t->height = 50;
-	t->width = 50;
-	t->strength = 10;
-	t->x = 275;
-	t->y = 200;
-	t->rotation = 270;
-	gravFields.insert(gravFields.begin(), t);
-	*/
+	Platform* p = new Platform();
+	p->setPos(Vec2D(400, 0));
+	p->setWidth(800);
+	p->setHeight(20);
+	p->setAngle(0);
+	platforms.push_back(p);
+	//Might keep this, make player first entity
+	Player* pl = new Player();
+	pl->setLevel(this);
+	pl->setX(400);
+	pl->setY(300);
+	entities.push_back(pl);
 }
 
 // Calculates the force of gravity applied to an object at a location
@@ -120,4 +140,71 @@ void Level::getGravityAtPos(Vec2D pos, Vec2D* grav) {
 	if (grav->getX() == 0 && grav->getY() == 0) {
 		grav->setY(-defaultGravity);
 	}
+}
+
+
+// Calculates if two colliders are intersecting and provides the vector to move one in if so
+bool Level::intersects(Collider* a, Collider* b, Vec2D* res) {
+	//Get a list of each vector to project onto
+	vector<Vec2D> normals;
+	int num;
+	Vec2D* n = a->getNormals(&num);
+	for (int i = 0; i < num; i++) {
+		normals.push_back(n[i]);
+	}
+	n = b->getNormals(&num);
+	for (int i = 0; i < num; i++) {
+		normals.push_back(n[i]);
+	}
+	//Check each normal for intersection
+	double smallestMag = HUGE;
+	for (Vec2D n : normals) {
+		n.toUnit();
+		double aMin, aMax, bMin, bMax;
+		project(a, n, &aMin, &aMax);
+		project(b, n, &bMin, &bMax);
+		if (aMax < bMin || bMax < aMin) {
+			return false;
+		}
+		//Calculate the distance needed to move the object
+		double d;
+		if (aMax < bMin) {
+			d = aMax - bMin;
+		}
+		else {
+			d = bMax - aMin;
+		}
+		//Check if smallest vector so far
+		if (d < smallestMag) {
+			smallestMag = d;
+			*res = n;
+		}
+	}
+	res->multiplyBy(smallestMag);
+	printf("%f, %f\n", res->getX(), res->getY());
+	return true;
+}
+
+
+// Projects an object onto a vector
+void Level::project(Collider* c, Vec2D vec, double* min, double* max) {
+	int n;
+	Vec2D* vertices = c->getVertices(&n);
+	*min = vertices[0].dot(vec);
+	*max = *min;
+	for (int i = 1; i < n; i++) {
+		double p = vertices[i].dot(vec);
+		if (p < *min) {
+			*min = p;
+		}
+		else if (p > *max) {
+			*max = p;
+		}
+	}
+}
+
+
+// Gets the player entity
+Player* Level::getPlayer() {
+	return (Player*)entities.at(0);
 }
