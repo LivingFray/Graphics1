@@ -20,7 +20,19 @@ void Level::update() {
 
 	//Update the entities
 	for (Entity* e : entities) {
+		Vec2D prev = e->getPos();
 		e->update();
+		//Skip entities that didn't move
+		if (abs(e->getX() - prev.getX()) < FLOAT_ZERO && abs(e->getY() - prev.getY()) < FLOAT_ZERO) {
+			//Cancel gravity
+			if (e->getOnGround()) {
+				Vec2D grav;
+				getGravityAtPos(prev, &grav);
+				e->addVelX(-grav.getX());
+				e->addVelY(-grav.getY());
+			}
+			continue;
+		}
 		e->setOnGround(false);
 		//TODO: Skip entities that haven't moved
 		//TODO: Handle moving platforms once implemented
@@ -132,8 +144,8 @@ void Level::getGravityAtPos(Vec2D pos, Vec2D* grav) {
 			//Rotate this strength back and add it to force
 			//(Forces have been rotated through 90 degrees to make 0 rotation = normal gravity
 			grav->addTo(Vec2D(
-				f->strength * sin(DEG_TO_RAD * (f->rotation + 90)),
-				f->strength * cos(DEG_TO_RAD * (f->rotation + 90))
+				f->strength * sin(DEG_TO_RAD * (180-f->rotation)),
+				f->strength * cos(DEG_TO_RAD * (180-f->rotation))
 			));
 		}
 	}
