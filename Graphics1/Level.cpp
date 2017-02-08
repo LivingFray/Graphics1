@@ -4,7 +4,8 @@
 #include "Player.h"
 
 //The cosine of the angle between collision and vector and ground needed to count as standing on it
-#define COS_GROUND_ANGLE 0.70710678118
+#define COS_GROUND_ANGLE_MIN -1
+#define COS_GROUND_ANGLE_MAX -0.70710678118
 
 Level::Level() {
 }
@@ -20,19 +21,7 @@ void Level::update() {
 
 	//Update the entities
 	for (Entity* e : entities) {
-		Vec2D prev = e->getPos();
 		e->update();
-		//Skip entities that didn't move
-		if (abs(e->getX() - prev.getX()) < FLOAT_ZERO && abs(e->getY() - prev.getY()) < FLOAT_ZERO) {
-			//Cancel gravity
-			if (e->getOnGround()) {
-				Vec2D grav;
-				getGravityAtPos(prev, &grav);
-				e->addVelX(-grav.getX());
-				e->addVelY(-grav.getY());
-			}
-			continue;
-		}
 		e->setOnGround(false);
 		//TODO: Skip entities that haven't moved
 		//TODO: Handle moving platforms once implemented
@@ -42,13 +31,26 @@ void Level::update() {
 			
 			//Use SAT to check for collisions
 			Vec2D res;
-			if (intersects(e, p, &res)) {
+			if (intersects(e, p, &res) && res.magnitudeSquare()>FLOAT_ZERO) {
 				//Move outside of collision
 				e->addPosX(res.getX());
 				e->addPosY(res.getY());
-				//Arrest velocity (move to inside objects?)
-				e->addVelX(res.getX());
-				e->addVelY(res.getY());
+				//Arrest velocity
+				//This took me longer to do than it took to implement the rest
+				//of the entire collision detection system...
+				if (abs(e->getVelX()) > FLOAT_ZERO || abs(e->getVelY()) > FLOAT_ZERO) {
+					//Only remove in direction of response
+					Vec2D vel = Vec2D(e->getVelX(), e->getVelY());
+					//cos(theta) = (res).(-vel) / (|res||vel|)
+					//newResponse = unit(response) * |vel|cos(theta)
+					//newVel = oldVel - newResponse
+					double cTheta = (res.dot(vel.multiply(-1))) / (res.magnitude() * vel.magnitude());
+					//double sTheta = sqrt(1 - cTheta * cTheta);
+					vel.addTo(res.unit().multiply(vel.magnitude() * cTheta));
+					printf("New(%f, %f) Old(%f, %f) Cos(%f)\n", vel.getX(), vel.getY(), e->getVelX(), e->getVelY(), cTheta);
+					e->setVelX(vel.getX());
+					e->setVelY(vel.getY());
+				}
 				Vec2D grav;
 				getGravityAtPos(e->getPos(), &grav);
 				//Check resolution vector is in angle range to suggest floor
@@ -59,7 +61,7 @@ void Level::update() {
 				cos(theta) = grav.res / (|grav||res|)
 				*/
 				double cosAngle = grav.dot(res) / (grav.magnitude() * res.magnitude());
-				if (cosAngle < COS_GROUND_ANGLE) {
+				if (cosAngle >= COS_GROUND_ANGLE_MIN && cosAngle <= COS_GROUND_ANGLE_MAX) {
 					e->setOnGround(true);
 				}
 				//Handle other collisiony things
@@ -112,11 +114,17 @@ void Level::loadLevel(string filePath) {
 	t->strength = 2;
 	t->pos = Vec2D(400, 100);
 	t->rotation = 45;
-	gravFields.insert(gravFields.begin(), t);
+	gravFields.push_back(t);
 	Platform* p = new Platform();
-	p->setPos(Vec2D(400, 0));
+	p->setPos(Vec2D(400, -100));
 	p->setWidth(800);
-	p->setHeight(20);
+	p->setHeight(200);
+	p->setAngle(0);
+	platforms.push_back(p);
+	p = new Platform();
+	p->setPos(Vec2D(400, -350));
+	p->setWidth(1000);
+	p->setHeight(200);
 	p->setAngle(0);
 	platforms.push_back(p);
 	//Might keep this, make player first entity
@@ -180,20 +188,19 @@ bool Level::intersects(Collider* a, Collider* b, Vec2D* res) {
 		}
 		//Calculate the distance needed to move the object
 		double d;
-		if (aMax < bMin) {
-			d = aMax - bMin;
+		if (aMax < bMax) {
+			d = bMin - aMax;
 		}
 		else {
 			d = bMax - aMin;
 		}
 		//Check if smallest vector so far
-		if (d < smallestMag) {
+		if (abs(d) < abs(smallestMag)) {
 			smallestMag = d;
 			*res = n;
 		}
 	}
 	res->multiplyBy(smallestMag);
-	printf("%f, %f\n", res->getX(), res->getY());
 	return true;
 }
 

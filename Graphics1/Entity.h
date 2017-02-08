@@ -17,6 +17,7 @@ protected:
 	double width;
 	double height;
 	bool onGround;
+	double maxSpeed;
 public:
 	// Gets the x-coordinate of the entity
 	double getX();
@@ -46,8 +47,6 @@ public:
 	void addPosX(double x);
 	// Adds the value to the vertical position
 	void addPosY(double y);
-protected:
-	double maxSpeed;
 public:
 	// Sets the entity's max speed
 	void setMaxSpeed(double speed);

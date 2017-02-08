@@ -75,7 +75,7 @@ void Entity::update() {
 	Vec2D g;
 	level->getGravityAtPos(pos, &g);
 	vel.addTo(g);
-	//TODO: Max speed checks
+	//Max speed checks
 	double dX = getVelRelX(angle);
 	if (dX > maxSpeed) {
 		Vec2D h = Vec2D(-g.getY(), g.getX());

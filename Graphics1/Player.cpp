@@ -66,6 +66,7 @@ void Player::update() {
 	vel.addTo(move);
 	//Handle jumping
 	if (keyconfig::isDown("jump") && onGround) {
+		printf("Jumping\n");
 		Vec2D jump = g;
 		//Normalise vector
 		//We appear to be floating in an area of 0 gravity
@@ -79,6 +80,7 @@ void Player::update() {
 		vel.subtractFrom(jump);
 	}
 	//Call inherited update (handles moving)
+	if (onGround) { printf("Landed\n"); }
 	Entity::update();
 }
 
