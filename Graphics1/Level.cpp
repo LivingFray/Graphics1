@@ -47,7 +47,6 @@ void Level::update() {
 					double cTheta = (res.dot(vel.multiply(-1))) / (res.magnitude() * vel.magnitude());
 					//double sTheta = sqrt(1 - cTheta * cTheta);
 					vel.addTo(res.unit().multiply(vel.magnitude() * cTheta));
-					printf("New(%f, %f) Old(%f, %f) Cos(%f)\n", vel.getX(), vel.getY(), e->getVelX(), e->getVelY(), cTheta);
 					e->setVelX(vel.getX());
 					e->setVelY(vel.getY());
 				}

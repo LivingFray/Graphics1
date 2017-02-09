@@ -1,14 +1,15 @@
 #include <iostream>
+#include <Image_Loading\glew.h>
 #include <GLFW\glfw3.h>
 #include "Globals.h"
 #include "KeyConfig.h"
 #include "Level.h"
 #include "Entity.h"
 #include "Player.h"
+#include "ImageLoader.h"
 /*
 Big list of things to do:
-Hitboxes
-Collision detection
+Fix Level to return player object + handle camera + stuff
 Broad collision detection
 Graphics/Animations
 Cleanup code (auto generated classes, import orders, etc)
@@ -19,6 +20,7 @@ AI
 Multiple levels
 Level loading
 Backgrounds
+Every stupid thing on the mark sheet
 */
 //----------------------------------Globals----------------------------------//
 enum GameState { GAME_MENU, GAME_PLAYING }; //The different states of the game
@@ -29,10 +31,11 @@ int sWidth;
 int sHeight;
 int skips = 0;
 int UPDATESKIPS = 0;
+GLuint t;
 //-------------------Callback functions and state handlers-------------------//
 ///Handles key presses
 void keyHandler(GLFWwindow* window, int key, int scan, int action, int mods) {
-	if (key == GLFW_KEY_SPACE && action==GLFW_PRESS) {
+	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
 		UPDATESKIPS -= 100;
 		UPDATESKIPS *= -1;
 	}
@@ -44,9 +47,12 @@ void mouseHandler(GLFWwindow* window, int button, int action, int mods) {
 ///Starts the game and loads anything that needs loading
 void init() {
 	//Load the key bindings
-	keyconfig::loadBindings();
-	//Allow keyconfig to get key states
-	keyconfig::win = gameWindow;
+	KeyConfig::loadBindings();
+	//Allow KeyConfig to get key states
+	KeyConfig::win = gameWindow;
+	//Initialise the texture loader
+	ImageLoader::makeMissingTexture();
+	t = ImageLoader::getImage("test.png");
 	//Load the player (TEMP)
 	level = new Level();
 	level->loadLevel("temp");
@@ -54,14 +60,29 @@ void init() {
 	//GL Alpha channel stuff
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//Default image settings
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 }
 ///Draws the scene
 void draw(double ex) {
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, t);
+	glBegin(GL_QUADS);
+	glTexCoord2d(0.0, 0.0);
+	glVertex2d(0.0, 0.0);
+	glTexCoord2d(1.0, 0.0);
+	glVertex2d(200.0, 0.0);
+	glTexCoord2d(1.0, 1.0);
+	glVertex2d(200.0, 200.0);
+	glTexCoord2d(0.0, 1.0);
+	glVertex2d(0.0, 200.0);
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
 	//Camera stuff
 	glPushMatrix();
-	glTranslated(sWidth/2, sHeight/2, 0.0);
+	glTranslated(sWidth / 2, sHeight / 2, 0.0);
 	glRotated(-test->getAngle(), 0.0, 0.0, 1.0);
 	glTranslated(-test->getX(), -test->getY(), 0.0);
 	level->draw(ex);

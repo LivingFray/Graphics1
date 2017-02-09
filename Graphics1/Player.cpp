@@ -33,10 +33,10 @@ void Player::update() {
 	//The velocity in the frame of the current gravity
 	double vX = getVelRelX(angle);
 	double dX = 0.0;
-	if (keyconfig::isDown("moveLeft")) {
+	if (KeyConfig::isDown("moveLeft")) {
 		dX -= PLAYER_ACCELERATION;
 	}
-	if (keyconfig::isDown("moveRight")) {
+	if (KeyConfig::isDown("moveRight")) {
 		dX += PLAYER_ACCELERATION;
 	}
 	//Slow down if not trying to move
@@ -65,8 +65,7 @@ void Player::update() {
 	//Add the movement
 	vel.addTo(move);
 	//Handle jumping
-	if (keyconfig::isDown("jump") && onGround) {
-		printf("Jumping\n");
+	if (KeyConfig::isDown("jump") && onGround) {
 		Vec2D jump = g;
 		//Normalise vector
 		//We appear to be floating in an area of 0 gravity
@@ -80,7 +79,6 @@ void Player::update() {
 		vel.subtractFrom(jump);
 	}
 	//Call inherited update (handles moving)
-	if (onGround) { printf("Landed\n"); }
 	Entity::update();
 }
 

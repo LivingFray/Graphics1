@@ -11,11 +11,11 @@
 								}											\
 							} while(0)
 
-keyMap keyconfig::keyBindings;
-GLFWwindow* keyconfig::win;
+keyMap KeyConfig::keyBindings;
+GLFWwindow* KeyConfig::win;
 
 // Loads default keybindings then sets custom bindings where available
-void keyconfig::loadBindings() {
+void KeyConfig::loadBindings() {
 	DataObject* bindings = new DataObject();
 	bindings->loadFromFile("keybindings.do");
 	DATATYPE datatype;
@@ -30,7 +30,7 @@ void keyconfig::loadBindings() {
 	delete bindings;
 }
 
-void keyconfig::saveBindings() {
+void KeyConfig::saveBindings() {
 	DataObject* bindings = new DataObject();
 
 	for (auto const& key : keyBindings) {
@@ -41,6 +41,6 @@ void keyconfig::saveBindings() {
 	delete bindings;
 }
 
-bool keyconfig::isDown(string key) {
+bool KeyConfig::isDown(string key) {
 	return glfwGetKey(win, keyBindings[key]) == GLFW_PRESS;
 }

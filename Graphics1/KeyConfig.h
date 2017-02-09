@@ -8,7 +8,7 @@
 using namespace std;
 typedef map<string, int> keyMap;
 
-namespace keyconfig {
+namespace KeyConfig {
 	extern keyMap keyBindings;
 	extern GLFWwindow* win;
 	void loadBindings();
