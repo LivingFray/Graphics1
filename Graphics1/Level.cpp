@@ -6,7 +6,7 @@
 
 //The cosine of the angle between collision and vector and ground needed to count as standing on it
 #define COS_GROUND_ANGLE_MIN -1
-#define COS_GROUND_ANGLE_MAX -0.70710678118
+#define COS_GROUND_ANGLE_MAX -0.707106
 
 Level::Level() {
 	planet = ImageLoader::getImage("Resources\\planet.png");
@@ -27,7 +27,11 @@ void Level::update() {
 	//Update the entities
 	for (Entity* e : entities) {
 		e->update();
-		e->setOnGround(false);
+		bool onGround = e->getOnGround();
+		bool moving = abs(e->getVelX()) > FLOAT_ZERO || abs(e->getVelY()) > FLOAT_ZERO;
+		if (moving) {
+			onGround = false;
+		}
 		//TODO: Skip entities that haven't moved
 		//TODO: Handle moving platforms once implemented
 		//Perform collision detection + resolution
@@ -43,7 +47,7 @@ void Level::update() {
 				//Arrest velocity
 				//This took me longer to do than it took to implement the rest
 				//of the entire collision detection system...
-				if (abs(e->getVelX()) > FLOAT_ZERO || abs(e->getVelY()) > FLOAT_ZERO) {
+				if (moving) {
 					//Only remove in direction of response
 					Vec2D vel = Vec2D(e->getVelX(), e->getVelY());
 					//cos(theta) = (res).(-vel) / (|res||vel|)
@@ -66,14 +70,14 @@ void Level::update() {
 				*/
 				double cosAngle = grav.dot(res) / (grav.magnitude() * res.magnitude());
 				if (cosAngle >= COS_GROUND_ANGLE_MIN && cosAngle <= COS_GROUND_ANGLE_MAX) {
-					e->setOnGround(true);
+					onGround = true;
 				}
 				//Handle other collisiony things
 				e->onCollide(p);
 				p->onCollide(e);
 			}
-
 		}
+		e->setOnGround(onGround);
 	}
 }
 

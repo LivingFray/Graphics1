@@ -76,7 +76,9 @@ void Entity::setVelY(double y) {
 void Entity::update() {
 	Vec2D g;
 	level->getGravityAtPos(pos, &g);
-	vel.addTo(g);
+	if (!onGround) {
+		vel.addTo(g);
+	}
 	//Rotation
 	if (abs(g.getX()) < FLOAT_ZERO && abs(g.getY()) < FLOAT_ZERO) {
 		angle = 0; //Floating in no gravity
