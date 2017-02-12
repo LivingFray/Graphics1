@@ -14,3 +14,9 @@
 #define RAD_TO_DEG 57.2957795131
 //Small value to compare floating points to zero with
 #define FLOAT_ZERO 1e-5
+//How many units in world size the smallest side of the screen sees
+#define WORLD_SIZE 800
+//How many degrees an entity can turn per second (visually) to match gravity
+#define ENTITY_ROTATE_SPEED 180
+extern int sWidth;
+extern int sHeight;

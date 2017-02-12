@@ -13,6 +13,7 @@ protected:
 	Vec2D pos;
 	Vec2D vel;
 	double angle;
+	double visAngle;
 	Level* level;
 	double width;
 	double height;
@@ -86,5 +87,11 @@ public:
 	void setOnGround(bool onGround);
 	// Gets if the entity is currently on the ground
 	bool getOnGround();
+	// Gets the angle the entity seen at
+	double getVisAngle();
+	// Sets the angle the entity is seen at
+	void setVisAngle(double angle);
+	// Gets the updated visible angle for ex seconds of motion
+	double updatedVisAngle(double ex);
 };
 

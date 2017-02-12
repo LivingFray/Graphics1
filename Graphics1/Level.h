@@ -5,6 +5,8 @@
 #include "Vec2D.h"
 #include "Entity.h"
 #include "Player.h"
+#include <Image_Loading\glew.h>
+#include <GLFW\glfw3.h>
 
 using namespace std;
 
@@ -38,7 +40,11 @@ private:
 	vector<Entity*> entities;
 	vector<Platform*> platforms;
 	vector<GravityField*> gravFields;
+	//Background
+	GLuint planet;
+	GLuint stars;
 	double defaultGravity = 2; //Fallback for outside the fields
+	Player* player;
 	// Calculates if two colliders are intersecting and provides the vector to move one in if so
 	bool intersects(Collider* a, Collider* b, Vec2D* res);
 	// Projects an object onto a vector

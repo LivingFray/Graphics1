@@ -15,6 +15,8 @@ Entity::Entity() {
 	onGround = false;
 	width = DEFAULT_ENTITY_WIDTH;
 	height = DEFAULT_ENTITY_HEIGHT;
+	angle = 0.0;
+	visAngle = 0.0;
 }
 
 
@@ -75,6 +77,13 @@ void Entity::update() {
 	Vec2D g;
 	level->getGravityAtPos(pos, &g);
 	vel.addTo(g);
+	//Rotation
+	if (abs(g.getX()) < FLOAT_ZERO && abs(g.getY()) < FLOAT_ZERO) {
+		angle = 0; //Floating in no gravity
+	}
+	else {
+		angle = atan2(g.getY(), g.getX()) * RAD_TO_DEG + 90;
+	}
 	//Max speed checks
 	double dX = getVelRelX(angle);
 	if (dX > maxSpeed) {
@@ -90,16 +99,18 @@ void Entity::update() {
 		vel.subtractFrom(h);
 	}
 	pos.addTo(vel.multiply(TICKRATE));
+	visAngle = updatedVisAngle(TICKRATE);
 }
 
 
 // Draws the entity
 void Entity::draw(double ex) {
+	visAngle = updatedVisAngle(ex);
 	//TODO: Images and stuff
 	glPushMatrix();
 	glColor3ub(255, 0, 0);
-	glTranslated(pos.getX(), pos.getY(), 0.0);
-	glRotated(angle, 0.0, 0.0, 1.0);
+	glTranslated(pos.getX() + vel.getX()*ex, pos.getY() + vel.getY()*ex, 0.0);
+	glRotated(visAngle, 0.0, 0.0, 1.0);
 	glBegin(GL_QUADS);
 	glVertex2d(-5, -5);
 	glVertex2d(-5, +5);
@@ -265,4 +276,46 @@ void Entity::setOnGround(bool onGround) {
 // Gets if the entity is currently on the ground
 bool Entity::getOnGround() {
 	return onGround;
+}
+
+
+// Gets the angle the entity seen at
+double Entity::getVisAngle() {
+	return visAngle;
+}
+
+
+// Sets the angle the entity is seen at
+void Entity::setVisAngle(double angle) {
+	visAngle = angle;
+}
+
+
+// Updates the visible angle for ex seconds of motion
+double Entity::updatedVisAngle(double ex) {
+	if (visAngle == angle) {
+		return visAngle;
+	}
+	double a = visAngle;
+	double opp = 180 + angle;
+	if (opp >= 360) {
+		opp -= 360;
+	}
+	if (a > angle && a <= opp) {
+		a -= ex*ENTITY_ROTATE_SPEED;
+	}
+	else {
+		a += ex*ENTITY_ROTATE_SPEED;
+	}
+	if (a < 0) {
+		a += 360;
+	}
+	if (a >= 360) {
+		a -= 360;
+	}
+	double dif = abs(angle - a);
+	if (dif <= ex*ENTITY_ROTATE_SPEED || abs(dif - 360) <= ex*ENTITY_ROTATE_SPEED) {
+		a = angle;
+	}
+	return a;
 }

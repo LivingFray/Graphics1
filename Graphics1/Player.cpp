@@ -23,13 +23,6 @@ void Player::update() {
 	//Get direction of gravity
 	Vec2D g;
 	level->getGravityAtPos(pos, &g);
-	//TODO: smoothing rotation?
-	if (abs(g.getX()) < FLOAT_ZERO && abs(g.getY()) < FLOAT_ZERO) {
-		angle = 0; //Floating in no gravity
-	}
-	else {
-		angle = atan2(g.getY(), g.getX()) * RAD_TO_DEG + 90;
-	}
 	//The velocity in the frame of the current gravity
 	double vX = getVelRelX(angle);
 	double dX = 0.0;
