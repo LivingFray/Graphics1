@@ -1,8 +1,6 @@
 #include "Level.h"
 #include "Player.h"
-#include "KeyConfig.h"
 #include "Globals.h"
-#include <GLFW\glfw3.h>
 
 //How much the player slows down in the horizontal axis when not moving
 #define PLAYER_FRICTION 2

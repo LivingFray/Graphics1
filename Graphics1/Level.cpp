@@ -1,8 +1,6 @@
 #include "Level.h"
-#include <GLFW\glfw3.h>
 #include "Globals.h"
 #include "Player.h"
-#include "ImageLoader.h"
 
 //The cosine of the angle between collision and vector and ground needed to count as standing on it
 #define COS_GROUND_ANGLE_MIN -1

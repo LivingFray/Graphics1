@@ -1,6 +1,5 @@
 #include "Platform.h"
 #include <math.h>
-#include "GLFW\glfw3.h"
 #include "Globals.h"
 
 

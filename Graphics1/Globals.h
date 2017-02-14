@@ -1,5 +1,8 @@
 #pragma once
-#include <GLFW\glfw3.h>
+#include <string>
+#include "FreeType.h"
+#include "ImageLoader.h"
+#include "KeyConfig.h"
 //The time in seconds between updates
 #define TICKRATE 0.05
 //The games title
@@ -18,5 +21,8 @@
 #define WORLD_SIZE 800
 //How many degrees an entity can turn per second (visually) to match gravity
 #define ENTITY_ROTATE_SPEED 180
+//The default font size used
+#define FONT_SIZE 36
 extern int sWidth;
 extern int sHeight;
+extern freetype::font_data font;

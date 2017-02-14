@@ -1,7 +1,6 @@
 #include "Level.h"
 #include "Entity.h"
 #include "Globals.h"
-#include <GLFW\glfw3.h>
 #include <math.h>
 
 #define DEFAULT_MAXSPEED 100.0

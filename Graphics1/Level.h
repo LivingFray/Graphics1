@@ -1,19 +1,18 @@
 #pragma once
-#include <string>
 #include <vector>
+#include "Globals.h"
 #include "Platform.h"
 #include "Vec2D.h"
 #include "Entity.h"
 #include "Player.h"
-#include <Image_Loading\glew.h>
-#include <GLFW\glfw3.h>
+#include "BaseState.h"
 
 using namespace std;
 
 class Entity;
 class Player;
 
-class Level {
+class Level: public BaseState {
 public:
 	Level();
 	~Level();

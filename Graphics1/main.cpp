@@ -1,48 +1,37 @@
 #include <iostream>
-#include <Image_Loading\glew.h>
-#include <GLFW\glfw3.h>
 #include "Globals.h"
-#include "KeyConfig.h"
-#include "Level.h"
-#include "Entity.h"
-#include "Player.h"
-#include "ImageLoader.h"
+#include "BaseState.h"
+#include "Menu.h"
 /*
-Big list of things to do:
-Implement acceleration to entities to improve prediction
-Fix Level to return player object + handle camera + stuff
-Broad collision detection
-Graphics/Animations
-Cleanup code (auto generated classes, import orders, etc)
-Start and end points
-UI
-Level editor
-AI
-Multiple levels
-Level loading
-Backgrounds
-Every stupid thing on the mark sheet
+Task list intergration:
+TODO: Implement acceleration to entities to improve prediction
+TODO: Broad collision detection
+TODO: Graphics/Animations
+TODO: Cleanup code (auto generated classes, import orders, etc)
+TODO: Start and end points
+TODO: UI
+TODO: Level editor
+TODO: AI
+TODO: Multiple levels
+TODO: Level loading
+TODO: Backgrounds
+TODO: Every stupid thing on the mark sheet
 */
 //----------------------------------Globals----------------------------------//
-enum GameState { GAME_MENU, GAME_PLAYING }; //The different states of the game
+enum GameState { GAME_MENU, GAME_PLAYING }; //The different states of the game (defunct?)
+BaseState* state;
 GLFWwindow* gameWindow;
-Entity* test;
-Level* level;
-int skips = 0;
-int UPDATESKIPS = 0;
 int sWidth;
 int sHeight;
+freetype::font_data font;
 //-------------------Callback functions and state handlers-------------------//
 ///Handles key presses
 void keyHandler(GLFWwindow* window, int key, int scan, int action, int mods) {
-	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
-		UPDATESKIPS -= 100;
-		UPDATESKIPS *= -1;
-	}
+	state->keyEvent(window, key, scan, action, mods);
 }
 ///Handles mouse buttons
 void mouseHandler(GLFWwindow* window, int button, int action, int mods) {
-
+	state->mouseEvent(window, button, action, mods);
 }
 ///Starts the game and loads anything that needs loading
 void init() {
@@ -52,28 +41,33 @@ void init() {
 	KeyConfig::win = gameWindow;
 	//Initialise the texture loader
 	ImageLoader::makeMissingTexture();
-	//Load the player (TEMP)
-	level = new Level();
-	level->loadLevel("temp");
-	test = level->getPlayer();
-	//GL Alpha channel stuff
+	//Create the font
+	font.init("arial.ttf", FONT_SIZE);
+	//Enable alpha channel for OpenGL
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//Default image settings
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	//Set state to main menu
+	state = new Menu();
+	/*
+	//Load test level
+	level = new Level();
+	level->loadLevel("temp");
+	*/
 }
 ///Draws the scene
 void draw(double ex) {
 	//For the sake of checking the background is correct clear to purple
 	glClearColor(1.0, 0.0, 1.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
+	glColor3ub(255, 255, 255);
 	glPushMatrix();
-	level->draw(ex);
+	state->draw(ex);
 	glPopMatrix();
 }
 ///Updates the game
 void update() {
-	level->update();
+	state->update();
 }
 ///Resizes the window
 void resize(GLFWwindow* window, int width, int height) {
@@ -132,11 +126,7 @@ int main() {
 		//Call updates until the game has caught up
 		//But don't update if not enough time has elapsed
 		while (lastUpdate >= TICKRATE) {
-			skips++;
-			if (skips >= UPDATESKIPS) {
-				update();
-				skips = 0;
-			}
+			update();
 			lastUpdate -= TICKRATE;
 		}
 		//Draw the game, allowing for any extrapolation

@@ -1,8 +1,6 @@
 #pragma once
 #include <map>
-#include <string>
-#include <Image_Loading\glew.h>
-#include <GLFW\glfw3.h>
+#include "Globals.h"
 
 using namespace std;
 typedef map<string, GLuint> imageMap;
