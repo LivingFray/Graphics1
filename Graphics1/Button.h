@@ -20,6 +20,12 @@ public:
 	void Button::setHeight(int height);
 	// Gets the height of the button
 	int Button::getHeight();
+	// Sets the label on the button
+	void setLabel(std::string label);
+	// Gets the label of the button
+	std::string getLabel();
+	// Draw the button
+	void draw();
 protected:
 	int x;
 	int y;
@@ -27,12 +33,11 @@ protected:
 	int height;
 	std::string label;
 	GLuint img;
+	void(*callback)();
 public:
-	// Sets the label on the button
-	void setLabel(std::string label);
-	// Gets the label of the button
-	std::string getLabel();
-	// Draw the button
-	void draw();
+	// Sets the function called when the button is pressed
+	void setCallback(void(*callback)());
+	// Called when the left mouse button is clicked
+	void mouseDown(int x, int y);
 };
 

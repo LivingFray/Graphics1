@@ -104,5 +104,22 @@ void Button::draw() {
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 	glColor3ub(0, 0, 0);
-	freetype::print(font, (float)x - width * 0.5f + BUTTON_PADDING, (float)y - FONT_SIZE * 0.5f, "This is a test");
+	//Oh the wonders of fonts and their heights not including the entire letter
+	freetype::print(font, (float)x - width * 0.5f + BUTTON_PADDING, (float)y - font.h * 0.375f, label.c_str());
+}
+
+
+// Sets the function called when the button is pressed
+void Button::setCallback(void (*callback)()) {
+	this->callback = callback;
+}
+
+
+// Called when the left mouse button is clicked
+void Button::mouseDown(int x, int y) {
+	float w = width*0.5f;
+	float h = height*0.5f;
+	if (x >= this->x - w && x <= this->x + w && y >= this->y - h && y <= this->y + h) {
+		(*callback)();
+	}
 }

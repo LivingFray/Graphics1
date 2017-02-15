@@ -10,9 +10,11 @@ public:
 	void draw(double ex);
 	// Updates the menu
 	void update();
+	// Called when a mouse event is fired
+	void Menu::mouseEvent(GLFWwindow* window, int button, int action, int mods);
 protected:
-	Button test;
 	GLuint planet;
 	GLuint stars;
+	vector<Button*> buttons;
 };
 
