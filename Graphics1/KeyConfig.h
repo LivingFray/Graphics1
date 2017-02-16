@@ -1,8 +1,5 @@
 #pragma once
-#include <map>
 #include "Globals.h"
-
-#include "DataObject.h"
 
 using namespace std;
 typedef map<string, int> keyMap;

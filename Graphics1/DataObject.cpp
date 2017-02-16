@@ -211,8 +211,6 @@ int DataObject::loadObject(char* data, int length) {
 			//Save the string
 			add(key, STRING, strStr);
 			pos += *strLen;
-			DATATYPE tmp;
-			cout << *(string*)get("astring", tmp);
 		}
 		else if (type == DATAOBJECT) {
 			//Recurvisely load the sub objects

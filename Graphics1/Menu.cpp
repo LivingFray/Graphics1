@@ -1,4 +1,5 @@
 #include "Menu.h"
+#include "LevelSelect.h"
 
 #define MENU_BUTTON_HEIGHT 50
 
@@ -10,7 +11,7 @@ Menu::Menu() {
 	play->setHeight(MENU_BUTTON_HEIGHT);
 	play->setLabel("Play");
 	auto playCall = []() {
-		printf("Clickity\n");
+		newState = new LevelSelect();
 	};
 	play->setCallback(playCall);
 	buttons.push_back(play);
@@ -94,7 +95,7 @@ void Menu::draw(double ex) {
 	//TODO: Resize + reposition buttons
 	for (Button* b : buttons) {
 		b->setX(sWidth / 2);
-		b->setWidth(sWidth * 0.9);
+		b->setWidth((int) sWidth * 0.9);
 		b->draw();
 	}
 }

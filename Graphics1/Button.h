@@ -38,6 +38,6 @@ public:
 	// Sets the function called when the button is pressed
 	void setCallback(void(*callback)());
 	// Called when the left mouse button is clicked
-	void mouseDown(int x, int y);
+	virtual void mouseDown(int x, int y);
 };
 

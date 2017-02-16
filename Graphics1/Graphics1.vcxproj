@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BaseMenu.cpp" />
     <ClCompile Include="BaseState.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Collider.cpp" />
@@ -146,6 +147,8 @@
     <ClCompile Include="ImageLoader.cpp" />
     <ClCompile Include="KeyConfig.cpp" />
     <ClCompile Include="Level.cpp" />
+    <ClCompile Include="LevelButton.cpp" />
+    <ClCompile Include="LevelSelect.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Platform.cpp" />
@@ -153,6 +156,7 @@
     <ClCompile Include="Vec2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BaseMenu.h" />
     <ClInclude Include="BaseState.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Collider.h" />
@@ -163,6 +167,8 @@
     <ClInclude Include="ImageLoader.h" />
     <ClInclude Include="KeyConfig.h" />
     <ClInclude Include="Level.h" />
+    <ClInclude Include="LevelButton.h" />
+    <ClInclude Include="LevelSelect.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Player.h" />

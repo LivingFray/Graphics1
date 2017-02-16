@@ -1,6 +1,9 @@
 #pragma once
 #include <string>
+#include <map>
+#include <vector>
 #include "FreeType.h"
+#include "DataObject.h"
 #include "ImageLoader.h"
 #include "KeyConfig.h"
 //The time in seconds between updates
@@ -26,3 +29,6 @@
 extern int sWidth;
 extern int sHeight;
 extern freetype::font_data font;
+class BaseState;
+extern BaseState* state;
+extern BaseState* newState;

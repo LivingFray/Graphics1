@@ -1,8 +1,7 @@
 #pragma once
-#include "BaseState.h"
-#include "Button.h"
+#include "BaseMenu.h"
 
-class Menu: public BaseState {
+class Menu: public BaseMenu {
 public:
 	Menu();
 	~Menu();
@@ -15,6 +14,5 @@ public:
 protected:
 	GLuint planet;
 	GLuint stars;
-	vector<Button*> buttons;
 };
 

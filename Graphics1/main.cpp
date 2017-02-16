@@ -20,6 +20,7 @@ TODO: Every stupid thing on the mark sheet
 //----------------------------------Globals----------------------------------//
 enum GameState { GAME_MENU, GAME_PLAYING }; //The different states of the game (defunct?)
 BaseState* state;
+BaseState* newState;
 GLFWwindow* gameWindow;
 int sWidth;
 int sHeight;
@@ -49,11 +50,6 @@ void init() {
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	//Set state to main menu
 	state = new Menu();
-	/*
-	//Load test level
-	level = new Level();
-	level->loadLevel("temp");
-	*/
 }
 ///Draws the scene
 void draw(double ex) {
@@ -123,6 +119,12 @@ int main() {
 		lastUpdate += elapsed;
 		//Do any input things here
 		glfwPollEvents();
+		//Handle the state of the game
+		if (newState != NULL) {
+			delete state;
+			state = newState;
+			newState = NULL;
+		}
 		//Call updates until the game has caught up
 		//But don't update if not enough time has elapsed
 		while (lastUpdate >= TICKRATE) {
