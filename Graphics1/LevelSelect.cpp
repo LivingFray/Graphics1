@@ -77,11 +77,13 @@ void LevelSelect::draw(double ex) {
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 	//TODO: Resize + reposition buttons
+	//TODO: Handle too many levels
 	int c = 0;
 	for (Button* b : buttons) {
 		b->setX((c%2==0?1:3)*sWidth / 4);
 		c++;
-		b->setWidth(sWidth / 4);
+		b->setWidth(sWidth / 2 - 50);
+		b->setY(sHeight - ((c+1) / 2) * 60);
 		b->draw();
 	}
 }
