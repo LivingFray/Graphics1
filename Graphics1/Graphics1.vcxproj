@@ -149,9 +149,10 @@
     <ClCompile Include="KeyConfig.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelButton.cpp" />
+    <ClCompile Include="LevelEditor.cpp" />
     <ClCompile Include="LevelSelect.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Vec2D.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="KeyConfig.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="LevelButton.h" />
+    <ClInclude Include="LevelEditor.h" />
     <ClInclude Include="LevelSelect.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Platform.h" />

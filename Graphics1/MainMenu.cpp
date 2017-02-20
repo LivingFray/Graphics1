@@ -4,7 +4,7 @@
 
 #define MENU_BUTTON_HEIGHT 50
 
-Menu::Menu() {
+MainMenu::MainMenu() {
 	Button* play = new GradButton();
 	play->setX(sWidth / 2);
 	play->setY(250);
@@ -54,12 +54,12 @@ Menu::Menu() {
 }
 
 
-Menu::~Menu() {
+MainMenu::~MainMenu() {
 }
 
 
 // Draws the main menu ex seconds after last update
-void Menu::draw(double ex) {
+void MainMenu::draw(double ex) {
 	//Stars are 1px at 512x512, so scale to make visible
 	//TODO: Scale stars in level as well
 	float sX = sWidth / 512.0f;
@@ -107,12 +107,12 @@ void Menu::draw(double ex) {
 
 
 // Updates the menu
-void Menu::update() {
+void MainMenu::update() {
 }
 
 
 // Called when a mouse event is fired
-void Menu::mouseEvent(GLFWwindow* window, int button, int action, int mods) {
+void MainMenu::mouseEvent(GLFWwindow* window, int button, int action, int mods) {
 	double x, y;
 	glfwGetCursorPos(window, &x, &y);
 	y = sHeight - y;

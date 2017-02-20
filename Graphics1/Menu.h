@@ -1,16 +1,16 @@
 #pragma once
 #include "BaseMenu.h"
 
-class Menu: public BaseMenu {
+class MainMenu: public BaseMenu {
 public:
-	Menu();
-	~Menu();
+	MainMenu();
+	~MainMenu();
 	// Draws the main menu ex seconds after last update
 	void draw(double ex);
 	// Updates the menu
 	void update();
 	// Called when a mouse event is fired
-	void Menu::mouseEvent(GLFWwindow* window, int button, int action, int mods);
+	void MainMenu::mouseEvent(GLFWwindow* window, int button, int action, int mods);
 protected:
 	GLuint planet;
 	GLuint stars;

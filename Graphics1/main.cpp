@@ -49,7 +49,7 @@ void init() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	//Set state to main menu
-	state = new Menu();
+	state = new MainMenu();
 }
 ///Draws the scene
 void draw(double ex) {
