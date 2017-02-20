@@ -25,7 +25,8 @@ public:
 	// Gets the label of the button
 	std::string getLabel();
 	// Draw the button
-	void draw();
+	virtual void draw();
+	virtual void draw(double ex);
 protected:
 	int x;
 	int y;

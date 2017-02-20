@@ -108,6 +108,10 @@ void Button::draw() {
 	freetype::print(font, (float)x - width * 0.5f + BUTTON_PADDING, (float)y - font.h * 0.375f, label.c_str());
 }
 
+void Button::draw(double ex) {
+	draw();
+}
+
 
 // Sets the function called when the button is pressed
 void Button::setCallback(void (*callback)()) {

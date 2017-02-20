@@ -1,0 +1,3 @@
+wall,window_tl,window_tm,window_tr
+wall,window_ml,window_mm,window_mr
+wall,window_bl,window_bm,window_br

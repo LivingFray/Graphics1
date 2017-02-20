@@ -1,10 +1,11 @@
 #include "Menu.h"
 #include "LevelSelect.h"
+#include "GradButton.h"
 
 #define MENU_BUTTON_HEIGHT 50
 
 Menu::Menu() {
-	Button* play = new Button();
+	Button* play = new GradButton();
 	play->setX(sWidth / 2);
 	play->setY(250);
 	play->setWidth(400);
@@ -15,7 +16,7 @@ Menu::Menu() {
 	};
 	play->setCallback(playCall);
 	buttons.push_back(play);
-	Button* editor = new Button();
+	Button* editor = new GradButton();
 	editor->setX(sWidth / 2);
 	editor->setY(190);
 	editor->setWidth(400);
@@ -26,7 +27,7 @@ Menu::Menu() {
 	};
 	editor->setCallback(editorCall);
 	buttons.push_back(editor);
-	Button* settings = new Button();
+	Button* settings = new GradButton();
 	settings->setX(sWidth / 2);
 	settings->setY(130);
 	settings->setWidth(400);
@@ -37,7 +38,7 @@ Menu::Menu() {
 	};
 	settings->setCallback(settingsCall);
 	buttons.push_back(settings);
-	Button* quit = new Button();
+	Button* quit = new GradButton();
 	quit->setX(sWidth / 2);
 	quit->setY(70);
 	quit->setWidth(400);
@@ -92,11 +93,15 @@ void Menu::draw(double ex) {
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
-	//TODO: Resize + reposition buttons
+	int i = 0;
+	int n = buttons.size();
 	for (Button* b : buttons) {
-		b->setX(sWidth / 2);
-		b->setWidth((int) sWidth * 0.9);
-		b->draw();
+		int h = sHeight / 12;
+		b->setWidth((int) sWidth * 0.5 + h * i);
+		b->setY(h * (n - i));
+		b->setHeight(h*0.9);
+		i++;
+		b->draw(ex);
 	}
 }
 
