@@ -23,6 +23,10 @@ void BaseState::keyEvent(GLFWwindow* window, int key, int scan, int action, int 
 }
 
 
-// //Called when a mouse event is fired
+// Called when a mouse event is fired
 void BaseState::mouseEvent(GLFWwindow* window, int button, int action, int mods) {
+}
+
+// Called when a mousemove event is fired
+void BaseState::mouseMoveEvent(GLFWwindow * window, double x, double y) {
 }

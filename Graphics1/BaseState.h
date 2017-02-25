@@ -10,7 +10,9 @@ public:
 	virtual void update();
 	// Called when a key event is fired
 	virtual void keyEvent(GLFWwindow* window, int key, int scan, int action, int mods);
-	// //Called when a mouse event is fired
+	// Called when a mouse event is fired
 	virtual void mouseEvent(GLFWwindow* window, int button, int action, int mods);
+	// Called when a mousemove event is fired
+	virtual void mouseMoveEvent(GLFWwindow* window, double x, double y);
 };
 

@@ -25,6 +25,8 @@ GLFWwindow* gameWindow;
 int sWidth;
 int sHeight;
 freetype::font_data font;
+GLFWcursor* cursorNormal;
+GLFWcursor* cursorPan;
 //-------------------Callback functions and state handlers-------------------//
 ///Handles key presses
 void keyHandler(GLFWwindow* window, int key, int scan, int action, int mods) {
@@ -33,6 +35,10 @@ void keyHandler(GLFWwindow* window, int key, int scan, int action, int mods) {
 ///Handles mouse buttons
 void mouseHandler(GLFWwindow* window, int button, int action, int mods) {
 	state->mouseEvent(window, button, action, mods);
+}
+///Handles mouse movement
+void mouseMoveHandler(GLFWwindow* window, double x, double y) {
+	state->mouseMoveEvent(window, x, y);
 }
 ///Starts the game and loads anything that needs loading
 void init() {
@@ -48,6 +54,9 @@ void init() {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	//Create cursors
+	cursorNormal = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
+	cursorPan = glfwCreateStandardCursor(GLFW_CROSSHAIR_CURSOR);
 	//Set state to main menu
 	state = new MainMenu();
 }
@@ -103,6 +112,7 @@ int main() {
 	resize(gameWindow, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	glfwSetKeyCallback(gameWindow, keyHandler);
 	glfwSetMouseButtonCallback(gameWindow, mouseHandler);
+	glfwSetCursorPosCallback(gameWindow, mouseMoveHandler);
 	//Initialise the game
 	init();
 	//Game loop, calls update every TICKRATE ms and renders whenever it can

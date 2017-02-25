@@ -22,7 +22,7 @@ LevelSelect::LevelSelect() {
 		}
 	}
 	//TODO: Scaling
-	for (int i = 0; i < levels.size(); i++) {
+	for (unsigned int i = 0; i < levels.size(); i++) {
 		LevelButton* l = new LevelButton();
 		l->setX((i%2==0?1:3)*sWidth/4);
 		l->setY(sHeight - (1 + (i/2)) * 50);

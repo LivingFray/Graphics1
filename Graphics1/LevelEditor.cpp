@@ -142,6 +142,11 @@ void LevelEditor::keyEvent(GLFWwindow * window, int key, int scan, int action, i
 	}
 	if (key == KeyConfig::keyBindings["editorMenu"] && action == GLFW_RELEASE) {
 		inItemMenu = !inItemMenu;
+		//Fix cursor
+		if (panning) {
+			glfwSetCursor(window, cursorNormal);
+			panning = false;
+		}
 		//TODO: handle closing menu?
 	}
 }
@@ -150,6 +155,18 @@ void LevelEditor::keyEvent(GLFWwindow * window, int key, int scan, int action, i
 void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mods) {
 	double x, y;
 	glfwGetCursorPos(window, &x, &y);
+	//Drag editor
+	if (!inItemMenu && button == GLFW_MOUSE_BUTTON_RIGHT) {
+		panning = action == GLFW_PRESS;
+		if (panning) {
+			panFrom = Vec2D(x, sHeight - y);
+			glfwSetCursor(window, cursorPan);
+		}
+		else {
+			glfwSetCursor(window, cursorNormal);
+		}
+	}
+	//Handle Button press stuff below
 	y = sHeight - y;
 	if (action != GLFW_RELEASE) {
 		return;
@@ -163,6 +180,18 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 }
 
 
+// Called when a mouse move event is fired
+void LevelEditor::mouseMoveEvent(GLFWwindow* window, double x, double y) {
+	if (panning) {
+		double scale = WORLD_SIZE / (double)(sWidth < sHeight ? sWidth : sHeight);
+		//TODO: rotate camera
+		Vec2D dif = Vec2D(x, sHeight - y).subtract(panFrom);
+		dif.multiplyBy(scale);
+		camPos.subtractFrom(dif);
+		panFrom = Vec2D(x, sHeight - y);
+	}
+}
+
 // Sets whether the item menu is visible
 void LevelEditor::setInItemMenu(bool inMenu) {
 	inItemMenu = inMenu;
@@ -171,6 +200,12 @@ void LevelEditor::setInItemMenu(bool inMenu) {
 
 // Gets the current position of the camera
 Vec2D LevelEditor::getCameraPos() {
+	return camPos;
+}
+
+
+// Gets the camera position ex seconds after last update
+Vec2D LevelEditor::getCameraAt(double ex) {
 	return camPos;
 }
 

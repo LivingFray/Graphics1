@@ -32,3 +32,5 @@ extern freetype::font_data font;
 class BaseState;
 extern BaseState* state;
 extern BaseState* newState;
+extern GLFWcursor* cursorNormal;
+extern GLFWcursor* cursorPan;
