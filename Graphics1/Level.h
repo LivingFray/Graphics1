@@ -6,42 +6,32 @@
 #include "Entity.h"
 #include "Player.h"
 #include "BaseState.h"
+#include "LevelRenderer.h"
 
 using namespace std;
 
 class Entity;
 class Player;
 
-class Level: public BaseState {
+class Level: public BaseState, LevelRenderer {
 public:
 	Level();
 	~Level();
 	// Updates the level
 	void update();
-	// Draws the level
-	void draw(double ex);
 	// Loads a level from the given file
 	void loadLevel(string filePath);
+	// Draws the level
+	void draw(double ex);
 	// Calculates the force of gravity applied to an object at a location
 	void getGravityAtPos(Vec2D pos, Vec2D* grav);
 	// Gets the player entity
 	Player* getPlayer();
-private:
-	//A Gravity field always pulls down (towards lowest y-value)
-	//Change this by rotating field or inverting the field strength
-	struct GravityField {
-		Vec2D pos;
-		double width;
-		double height;
-		double rotation;
-		double strength;
-	};
-	vector<Entity*> entities;
-	vector<Platform*> platforms;
-	vector<GravityField*> gravFields;
-	//Background
-	GLuint planet;
-	GLuint stars;
+	// Gets the camera position ex seconds after last update
+	Vec2D getCameraAt(double ex);
+	// Gets the angle of the camera ex seconds after last update
+	double getCameraAngleAt(double ex);
+protected:
 	double defaultGravity = 2; //Fallback for outside the fields
 	Player* player;
 	// Calculates if two colliders are intersecting and provides the vector to move one in if so

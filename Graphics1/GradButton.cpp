@@ -30,6 +30,6 @@ void GradButton::draw(double ex) {
 void GradButton::mouseDown(int x, int y) {
 	float h = height*0.5f;
 	if (x >= sWidth - width && y >= this->y - h && y <= this->y + h) {
-		(*callback)();
+		(*callback)(state);
 	}
 }

@@ -1,50 +1,35 @@
-#include "Menu.h"
+#include "MainMenu.h"
 #include "LevelSelect.h"
+#include "LevelEditor.h"
 #include "GradButton.h"
 
 #define MENU_BUTTON_HEIGHT 50
 
 MainMenu::MainMenu() {
 	Button* play = new GradButton();
-	play->setX(sWidth / 2);
-	play->setY(250);
-	play->setWidth(400);
-	play->setHeight(MENU_BUTTON_HEIGHT);
 	play->setLabel("Play");
-	auto playCall = []() {
+	auto playCall = [](BaseState* s) {
 		newState = new LevelSelect();
 	};
 	play->setCallback(playCall);
 	buttons.push_back(play);
 	Button* editor = new GradButton();
-	editor->setX(sWidth / 2);
-	editor->setY(190);
-	editor->setWidth(400);
-	editor->setHeight(MENU_BUTTON_HEIGHT);
 	editor->setLabel("Level Editor");
-	auto editorCall = []() {
-		printf("Level editor NYI\n");
+	auto editorCall = [](BaseState* s) {
+		newState = new LevelEditor();
 	};
 	editor->setCallback(editorCall);
 	buttons.push_back(editor);
 	Button* settings = new GradButton();
-	settings->setX(sWidth / 2);
-	settings->setY(130);
-	settings->setWidth(400);
-	settings->setHeight(MENU_BUTTON_HEIGHT);
 	settings->setLabel("Settings");
-	auto settingsCall = []() {
+	auto settingsCall = [](BaseState* s) {
 		printf("Clickity\n");
 	};
 	settings->setCallback(settingsCall);
 	buttons.push_back(settings);
 	Button* quit = new GradButton();
-	quit->setX(sWidth / 2);
-	quit->setY(70);
-	quit->setWidth(400);
-	quit->setHeight(MENU_BUTTON_HEIGHT);
 	quit->setLabel("Quit");
-	auto quitCall = []() {
+	auto quitCall = [](BaseState* s) {
 		exit(EXIT_SUCCESS);
 	};
 	quit->setCallback(quitCall);
@@ -97,9 +82,9 @@ void MainMenu::draw(double ex) {
 	int n = buttons.size();
 	for (Button* b : buttons) {
 		int h = sHeight / 12;
-		b->setWidth((int) sWidth * 0.5 + h * i);
+		b->setWidth((int)( sWidth * 0.5 + h * i));
 		b->setY(h * (n - i));
-		b->setHeight(h*0.9);
+		b->setHeight((int)(h*0.9));
 		i++;
 		b->draw(ex);
 	}

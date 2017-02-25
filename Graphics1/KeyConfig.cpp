@@ -23,8 +23,11 @@ void KeyConfig::loadBindings() {
 	bindControl("moveLeft", GLFW_KEY_LEFT);
 	bindControl("moveRight", GLFW_KEY_RIGHT);
 	bindControl("jump", GLFW_KEY_UP);
-	bindControl("dbUp", GLFW_KEY_UP);
-	bindControl("dbDown", GLFW_KEY_DOWN);
+	bindControl("editorLeft", GLFW_KEY_LEFT);
+	bindControl("editorRight", GLFW_KEY_RIGHT);
+	bindControl("editorUp", GLFW_KEY_UP);
+	bindControl("editorDown", GLFW_KEY_DOWN);
+	bindControl("editorMenu", GLFW_KEY_ENTER);
 	//Save the keybindings (some newer default bindings may have been missing)
 	bindings->saveToFile("keybindings.do");
 	delete bindings;

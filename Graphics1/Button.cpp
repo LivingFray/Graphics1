@@ -114,7 +114,7 @@ void Button::draw(double ex) {
 
 
 // Sets the function called when the button is pressed
-void Button::setCallback(void (*callback)()) {
+void Button::setCallback(void (*callback)(BaseState* s)) {
 	this->callback = callback;
 }
 
@@ -124,6 +124,6 @@ void Button::mouseDown(int x, int y) {
 	float w = width*0.5f;
 	float h = height*0.5f;
 	if (x >= this->x - w && x <= this->x + w && y >= this->y - h && y <= this->y + h) {
-		(*callback)();
+		(*callback)(state);
 	}
 }

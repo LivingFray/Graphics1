@@ -320,3 +320,8 @@ double Entity::updatedVisAngle(double ex) {
 	}
 	return a;
 }
+
+// Gets the current velocity of the entity
+Vec2D Entity::getVel() {
+	return vel;
+}

@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Globals.h"
 #include "BaseState.h"
-#include "Menu.h"
+#include "MainMenu.h"
 /*
 Task list intergration:
 TODO: Implement acceleration to entities to improve prediction

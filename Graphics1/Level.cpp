@@ -7,8 +7,7 @@
 #define COS_GROUND_ANGLE_MAX -0.707106
 
 Level::Level() {
-	planet = ImageLoader::getImage("Resources\\planet.png");
-	stars = ImageLoader::getImage("Resources\\stars.png");
+
 }
 
 
@@ -80,116 +79,22 @@ void Level::update() {
 }
 
 
-// Draws the level
-void Level::draw(double ex) {
-	double pX = player->getX() + player->getVelX()*ex;
-	double pY = player->getY() + player->getVelY()*ex;
-	/*
-	Camera displays a box of fixed world size (to be determined)
-	If screen is larger then box is scaled to fit
-	If resolution is wrong (most likely the case) the smallest dimension is box size
-	*/
-	float resize = WORLD_SIZE / (float)(sWidth < sHeight ? sWidth : sHeight);
-	//Move the camera
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0.0, sWidth * resize, 0.0, sHeight * resize, -1.0, 1.0);
-	glMatrixMode(GL_MODELVIEW);
-	glTranslated(0.5 * sWidth * resize, 0.5 * sHeight * resize, 0.0);
-	glRotated(-player->updatedVisAngle(ex), 0.0, 0.0, 1.0);
-	glTranslated(-pX, -pY, 0.0);
-	//Draw the background
-	glPushMatrix();
-	double pHeight = sqrt(sWidth * sWidth + sHeight * sHeight) * resize;
-	glTranslated(pX - pHeight, pY - pHeight * 0.5, 0.0);
-	glEnable(GL_TEXTURE_2D);
-	//Draw the stars
-	glBindTexture(GL_TEXTURE_2D, stars);
-	glBegin(GL_QUADS);
-	glTexCoord2d(0.0, 0.0);
-	glVertex2d(0.0, 0.0);
-	glTexCoord2d(4.0, 0.0);
-	glVertex2d(pHeight * 2, 0.0);
-	glTexCoord2d(4.0, 2.0);
-	glVertex2d(pHeight * 2, pHeight);
-	glTexCoord2d(0.0, 2.0);
-	glVertex2d(0.0, pHeight);
-	glEnd();
-	//Draw the planet
-	glBindTexture(GL_TEXTURE_2D, planet);
-	glBegin(GL_QUADS);
-	glTexCoord2d(0.0, 0.0);
-	glVertex2d(0.0, 0.0);
-	glTexCoord2d(1.0, 0.0);
-	glVertex2d(pHeight * 2, 0.0);
-	glTexCoord2d(1.0, 1.0);
-	glVertex2d(pHeight * 2, pHeight * 0.75);
-	glTexCoord2d(0.0, 1.0);
-	glVertex2d(0.0, pHeight * 0.75);
-	glEnd();
-	glDisable(GL_TEXTURE_2D);
-	glPopMatrix();
-	//Draw the parallax backing
-
-	//Draw the gravity fields
-	for (GravityField* f : gravFields) {
-		double w = f->width / 2;
-		double h = f->height / 2;
-		glPushMatrix();
-		glTranslated(f->pos.getX(), f->pos.getY(), 0.0);
-		//0 degrees should be down, rather than right
-		glRotated(f->rotation, 0, 0, 1);
-		glBegin(GL_QUADS);
-		glColor3ub(0, 0, 255);
-		glVertex2d(-1 * w, -1 * h);
-		glVertex2d(w, -1 * h);
-		glColor4ub(0, 0, 0, 0);
-		glVertex2d(w, h);
-		glVertex2d(-1 * w, h);
-		glEnd();
-		glPopMatrix();
-	}
-	//Draw the platforms
-	for (Platform* p : platforms) {
-		p->draw(ex);
-	}
-	//Draw the entities
-	for (Entity* e : entities) {
-		e->draw(ex);
-	}
-	glColor3ub(0, 0, 0);
-}
-
-
 // Loads a level from the given file
 void Level::loadLevel(string filePath) {
-	//TEMP TESTING
-	GravityField* t = new GravityField();
-	t->height = 450;
-	t->width = 250;
-	t->strength = 2;
-	t->pos = Vec2D(400, 100);
-	t->rotation = 45;
-	gravFields.push_back(t);
-	Platform* p = new Platform();
-	p->setPos(Vec2D(400, -100));
-	p->setWidth(800);
-	p->setHeight(200);
-	p->setAngle(0);
-	platforms.push_back(p);
-	p = new Platform();
-	p->setPos(Vec2D(400, -350));
-	p->setWidth(1000);
-	p->setHeight(200);
-	p->setAngle(0);
-	platforms.push_back(p);
-	//Might keep this, make player first entity
+	//Make player first entity
 	player = new Player();
 	player->setLevel(this);
-	player->setX(400);
-	player->setY(300);
 	entities.push_back(player);
+	LevelRenderer::loadLevel(filePath);
+	//TODO: Set player position
 }
+
+// Draws the level
+void Level::draw(double ex) {
+	LevelRenderer::draw(ex);
+	//Insert any UI stuff here
+}
+
 
 // Calculates the force of gravity applied to an object at a location
 void Level::getGravityAtPos(Vec2D pos, Vec2D* grav) {
@@ -282,4 +187,16 @@ void Level::project(Collider* c, Vec2D vec, double* min, double* max) {
 // Gets the player entity
 Player* Level::getPlayer() {
 	return (Player*)entities.at(0);
+}
+
+
+// Gets the camera position ex seconds after last update
+Vec2D Level::getCameraAt(double ex) {
+	return player->getPos().add(player->getVel().multiply(ex));
+}
+
+
+// Gets the angle of the camera ex seconds after last update
+double Level::getCameraAngleAt(double ex) {
+	return player->getVisAngle();
 }

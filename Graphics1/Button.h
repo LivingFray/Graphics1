@@ -21,23 +21,24 @@ public:
 	// Gets the height of the button
 	int Button::getHeight();
 	// Sets the label on the button
-	void setLabel(std::string label);
+	void setLabel(string label);
 	// Gets the label of the button
-	std::string getLabel();
+	string getLabel();
 	// Draw the button
 	virtual void draw();
+	// Draw the button with exrapolation
 	virtual void draw(double ex);
 protected:
 	int x;
 	int y;
 	int width;
 	int height;
-	std::string label;
+	string label;
 	GLuint img;
-	void(*callback)();
+	void(*callback)(BaseState* s);
 public:
 	// Sets the function called when the button is pressed
-	void setCallback(void(*callback)());
+	void setCallback(void(*callback)(BaseState* s));
 	// Called when the left mouse button is clicked
 	virtual void mouseDown(int x, int y);
 };

@@ -93,5 +93,7 @@ public:
 	void setVisAngle(double angle);
 	// Gets the updated visible angle for ex seconds of motion
 	double updatedVisAngle(double ex);
+	// Gets the current velocity of the entity
+	Vec2D getVel();
 };
 
