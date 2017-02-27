@@ -27,6 +27,8 @@ void KeyConfig::loadBindings() {
 	bindControl("editorRight", GLFW_KEY_RIGHT);
 	bindControl("editorUp", GLFW_KEY_UP);
 	bindControl("editorDown", GLFW_KEY_DOWN);
+	bindControl("editorAntiClockwise", GLFW_KEY_RIGHT_CONTROL);
+	bindControl("editorClockwise", GLFW_KEY_RIGHT_SHIFT);
 	bindControl("editorMenu", GLFW_KEY_ENTER);
 	//Save the keybindings (some newer default bindings may have been missing)
 	bindings->saveToFile("keybindings.do");

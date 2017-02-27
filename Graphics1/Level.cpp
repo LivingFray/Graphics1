@@ -87,6 +87,7 @@ void Level::loadLevel(string filePath) {
 	entities.push_back(player);
 	LevelRenderer::loadLevel(filePath);
 	//TODO: Set player position
+	player->setX(100);
 }
 
 // Draws the level

@@ -25,10 +25,16 @@
 //How many degrees an entity can turn per second (visually) to match gravity
 #define ENTITY_ROTATE_SPEED 180
 //The default font size used
-#define FONT_SIZE 24
+#define FONT_SIZE_LARGE 24
+//The default smaller font size used
+#define FONT_SIZE_SMALL 12
+//Useful angles
+#define PI 3.14159265359
+#define TAU 6.28318530718
 extern int sWidth;
 extern int sHeight;
-extern freetype::font_data font;
+extern freetype::font_data fontLarge;
+extern freetype::font_data fontSmall;
 class BaseState;
 extern BaseState* state;
 extern BaseState* newState;

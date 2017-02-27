@@ -34,5 +34,7 @@ protected:
 	double camAngle;
 	Vec2D panFrom;
 	bool panning;
+	// Updates the camera position and rotation
+	void updateCamera(double time);
 };
 

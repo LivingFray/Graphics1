@@ -24,7 +24,8 @@ BaseState* newState;
 GLFWwindow* gameWindow;
 int sWidth;
 int sHeight;
-freetype::font_data font;
+freetype::font_data fontLarge;
+freetype::font_data fontSmall;
 GLFWcursor* cursorNormal;
 GLFWcursor* cursorPan;
 //-------------------Callback functions and state handlers-------------------//
@@ -49,7 +50,8 @@ void init() {
 	//Initialise the texture loader
 	ImageLoader::makeMissingTexture();
 	//Create the font
-	font.init("arial.ttf", FONT_SIZE);
+	fontLarge.init("arial.ttf", FONT_SIZE_LARGE);
+	fontSmall.init("arial.ttf", FONT_SIZE_SMALL);
 	//Enable alpha channel for OpenGL
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

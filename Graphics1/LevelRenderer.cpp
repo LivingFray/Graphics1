@@ -29,7 +29,7 @@ void LevelRenderer::draw(double ex) {
 	glOrtho(0.0, sWidth * resize, 0.0, sHeight * resize, -1.0, 1.0);
 	glMatrixMode(GL_MODELVIEW);
 	glTranslated(0.5 * sWidth * resize, 0.5 * sHeight * resize, 0.0);
-	glRotated(getCameraAngleAt(ex), 0.0, 0.0, 1.0);
+	glRotated(-getCameraAngleAt(ex), 0.0, 0.0, 1.0);
 	glTranslated(-pX, -pY, 0.0);
 	//Draw the background
 	glPushMatrix();

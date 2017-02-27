@@ -105,7 +105,7 @@ void Button::draw() {
 	glPopMatrix();
 	glColor3ub(0, 0, 0);
 	//Oh the wonders of fonts and their heights not including the entire letter
-	freetype::print(font, (float)x - width * 0.5f + BUTTON_PADDING, (float)y - font.h * 0.375f, label.c_str());
+	freetype::print(fontLarge, (float)x - width * 0.5f + BUTTON_PADDING, (float)y - fontLarge.h * 0.375f, label.c_str());
 }
 
 void Button::draw(double ex) {

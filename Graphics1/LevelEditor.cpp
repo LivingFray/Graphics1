@@ -2,7 +2,7 @@
 #include "MainMenu.h"
 #include "GradButton.h"
 #define EDITOR_MOVE_SPEED 50
-
+#define EDITOR_ROTATE_SPEED 90
 
 LevelEditor::LevelEditor() {
 	//Initialise variables
@@ -20,7 +20,7 @@ LevelEditor::LevelEditor() {
 		pl->setPos(l->getCameraPos());
 		pl->setWidth(50);
 		pl->setHeight(50);
-		pl->setAngle(0);
+		pl->setAngle(l->getCameraAngleAt(0));
 		l->addPlatform(pl);
 		l->setInItemMenu(false);
 	};
@@ -46,40 +46,14 @@ LevelEditor::~LevelEditor() {
 
 // Updates the editor
 void LevelEditor::update() {
-	//Move "camera" (tick only)
-	double dX = 0.0, dY = 0.0;
-	if (KeyConfig::isDown("editorLeft")) {
-		dX -= TICKRATE * EDITOR_MOVE_SPEED;
-	}
-	if (KeyConfig::isDown("editorRight")) {
-		dX += TICKRATE * EDITOR_MOVE_SPEED;
-	}
-	if (KeyConfig::isDown("editorUp")) {
-		dY += TICKRATE * EDITOR_MOVE_SPEED;
-	}
-	if (KeyConfig::isDown("editorDown")) {
-		dY -= TICKRATE * EDITOR_MOVE_SPEED;
-	}
-	camPos.addTo(Vec2D(dX, dY));
+	//Move camera (tick only)
+	updateCamera(TICKRATE);
 }
 
 // Draws the level
 void LevelEditor::draw(double ex) {
-	//Move "camera" (extrapolation only)
-	double dX = 0.0, dY = 0.0;
-	if (KeyConfig::isDown("editorLeft")) {
-		dX -= ex * EDITOR_MOVE_SPEED;
-	}
-	if (KeyConfig::isDown("editorRight")) {
-		dX += ex * EDITOR_MOVE_SPEED;
-	}
-	if (KeyConfig::isDown("editorUp")) {
-		dY += ex * EDITOR_MOVE_SPEED;
-	}
-	if (KeyConfig::isDown("editorDown")) {
-		dY -= ex * EDITOR_MOVE_SPEED;
-	}
-	camPos.addTo(Vec2D(dX, dY));
+	//Move camera (extrapolation only)
+	updateCamera(ex);
 	//Draw the level thus far 
 	LevelRenderer::draw(ex);
 	//Draw movement arrows/ resize arrows
@@ -100,14 +74,14 @@ void LevelEditor::draw(double ex) {
 		glVertex2i(sWidth, 0);
 		glEnd();
 		glColor3ub(255, 255, 255);
-		freetype::print(font, 10, sHeight - font.h * 1.325f, "Select An Item To Add...");
+		freetype::print(fontLarge, 10, sHeight - fontLarge.h * 1.325f, "Select An Item To Add...");
 		//Draw menu buttons
 		//TODO: Scrolling, smaller font
 		int n = buttons.size();
 		int i = 0;
 		for (GradButton* b : buttons) {
 			int h = sHeight / 12;
-			b->setY((int)(sHeight - font.h * 1.325f - h * (i + 1)));
+			b->setY((int)(sHeight - fontLarge.h * 1.325f - h * (i + 1)));
 			b->setWidth((int)(sWidth * 0.5 + h * i));
 			b->setHeight((int)(h * 0.9));
 			b->draw(ex);
@@ -125,6 +99,10 @@ void LevelEditor::draw(double ex) {
 		glVertex2i(sWidth, (int)(sHeight * 0.95));
 		glEnd();
 		//TODO: buttons for add item, move item, rotate item, scale item
+
+		//Draw coordinates
+		glColor3ub(255, 255, 255);
+		freetype::print(fontSmall, 10, fontSmall.h * 2.625f, "Position: (%.2f, %.2f)\nAngle: %.2f", camPos.getX(), camPos.getY(), camAngle);
 	}
 	//Draw edit menu (fine tune properties)
 }
@@ -187,6 +165,14 @@ void LevelEditor::mouseMoveEvent(GLFWwindow* window, double x, double y) {
 		//TODO: rotate camera
 		Vec2D dif = Vec2D(x, sHeight - y).subtract(panFrom);
 		dif.multiplyBy(scale);
+		double h = dif.magnitude();
+		double ang = atan2(dif.getY(), dif.getX());
+		if (ang < 0) {
+			ang = TAU + ang;
+		}
+		ang += camAngle * DEG_TO_RAD;
+		dif.setX(h * cos(ang));
+		dif.setY(h * sin(ang));
 		camPos.subtractFrom(dif);
 		panFrom = Vec2D(x, sHeight - y);
 	}
@@ -215,3 +201,43 @@ double LevelEditor::getCameraAngleAt(double ex) {
 	return camAngle;
 }
 
+
+
+// Updates the camera position and rotation
+void LevelEditor::updateCamera(double time) {
+	double dX = 0.0, dY = 0.0;
+	if (KeyConfig::isDown("editorLeft")) {
+		dX -= time * EDITOR_MOVE_SPEED;
+	}
+	if (KeyConfig::isDown("editorRight")) {
+		dX += time * EDITOR_MOVE_SPEED;
+	}
+	if (KeyConfig::isDown("editorUp")) {
+		dY += time * EDITOR_MOVE_SPEED;
+	}
+	if (KeyConfig::isDown("editorDown")) {
+		dY -= time * EDITOR_MOVE_SPEED;
+	}
+	if (KeyConfig::isDown("editorAntiClockwise")) {
+		camAngle += time * EDITOR_ROTATE_SPEED;
+	}
+	if (KeyConfig::isDown("editorClockwise")) {
+		camAngle -= time * EDITOR_ROTATE_SPEED;
+	}
+	double h = sqrt(dX * dX + dY * dY);
+	double ang = atan2(dY, dX);
+	if (ang < 0) {
+		ang = TAU + ang;
+	}
+	ang += camAngle * DEG_TO_RAD;
+	dX = h * cos(ang);
+	dY = h * sin(ang);
+	//Keep angle between 0 and 360
+	if (camAngle < 0) {
+		camAngle += 360;
+	}
+	if (camAngle >= 360) {
+		camAngle -= 360;
+	}
+	camPos.addTo(Vec2D(dX, dY));
+}

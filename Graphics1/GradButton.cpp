@@ -23,7 +23,7 @@ void GradButton::draw(double ex) {
 	glVertex2i(sWidth - width, y - height / 2);
 	glEnd();
 	glColor3ub(255, 255, 255);
-	freetype::print(font, (float)(sWidth - width + height), (float)y - font.h * 0.375f, label.c_str());
+	freetype::print(fontLarge, (float)(sWidth - width + height), (float)y - fontLarge.h * 0.375f, label.c_str());
 }
 
 // Called when the left mouse button is clicked
