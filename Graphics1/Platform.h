@@ -1,17 +1,12 @@
 #pragma once
 #include "Vec2D.h"
 #include "Collider.h"
+#include "Selectable.h"
 
-class Platform: public Collider {
+class Platform: public Collider, public Selectable {
 public:
 	Platform();
 	~Platform();
-protected:
-	Vec2D pos;
-	double width;
-	double height;
-	double angle;
-public:
 	// Gets the position of the platform
 	Vec2D getPos();
 	// Sets the position of the platform
@@ -36,4 +31,23 @@ public:
 	virtual void onCollide(Collider* other);
 	// Draws the platform ex seconds after last update
 	virtual void draw(double ex);
+	// Called when the selectable is moved
+	virtual void onMove(double dX, double dY);
+	// Called when the selectable is resized
+	virtual void onResize(double dX, double dY);
+	// Called when the selectable is rotated
+	virtual void onRotate(double dAngle);
+	// Returns if the selectable can be moved
+	virtual bool canMove();
+	// Returns if the selectable can be rotated
+	virtual bool canResize();
+	// Returns if the selectable can be rotated
+	virtual bool canRotate();
+	// Returns if the selectable is selected
+	virtual bool isInBoundingBox(double x, double y);
+protected:
+	Vec2D pos;
+	double width;
+	double height;
+	double angle;
 };

@@ -2,6 +2,8 @@
 #include "LevelRenderer.h"
 #include "BaseState.h"
 #include "GradButton.h"
+//The number of buttons in the editor bar
+#define EDITOR_BAR_BUTTONS 4
 class LevelEditor:
 	public BaseState, LevelRenderer {
 public:
@@ -36,5 +38,10 @@ protected:
 	bool panning;
 	// Updates the camera position and rotation
 	void updateCamera(double time);
+	int current;
+	GLuint barButtons[EDITOR_BAR_BUTTONS];
+	Selectable* selected;
+	Vec2D moveDir;
+	bool moving;
 };
 

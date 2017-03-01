@@ -135,3 +135,22 @@ Vec2D LevelRenderer::getCameraAt(double ex) {
 double LevelRenderer::getCameraAngleAt(double ex) {
 	return 0.0;
 }
+
+
+// Gets the world coordinates from the screen coordinates
+Vec2D LevelRenderer::getWorldCoordinates(Vec2D screen) {
+	double scale = WORLD_SIZE / (double)(sWidth < sHeight ? sWidth : sHeight);
+	//Offset from the centre of the screen
+	Vec2D world = Vec2D(screen.getX(), screen.getY());
+	world.subtractFrom(Vec2D(sWidth * 0.5, sHeight * 0.5));
+	world.multiplyBy(scale);
+	//Offset from the centre of the screen (inc rotation)
+	double cTheta = cos(getCameraAngleAt(0) * DEG_TO_RAD);
+	double sTheta = sin(getCameraAngleAt(0) * DEG_TO_RAD);
+	double tX = world.getX();
+	world.setX(world.getX() * cTheta - world.getY() * sTheta);
+	world.setY(world.getY() * cTheta + tX * sTheta);
+	//Offset from the world origin
+	world.addTo(getCameraAt(0));
+	return world;
+}

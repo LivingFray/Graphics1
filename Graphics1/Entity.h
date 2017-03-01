@@ -48,7 +48,6 @@ public:
 	void addPosX(double x);
 	// Adds the value to the vertical position
 	void addPosY(double y);
-public:
 	// Sets the entity's max speed
 	void setMaxSpeed(double speed);
 	// Gets the entity's max speed
@@ -95,5 +94,15 @@ public:
 	double updatedVisAngle(double ex);
 	// Gets the current velocity of the entity
 	Vec2D getVel();
+	// Called when the selectable is moved
+	virtual void onMove(double dX, double dY);
+	// Called when the selectable is rotated
+	virtual void onRotate(double dAngle);
+	// Returns if the selectable can be moved
+	virtual bool canMove();
+	// Returns if the selectable can be rotated
+	virtual bool canResize();
+	// Returns if the selectable can be rotated
+	virtual bool canRotate();
 };
 

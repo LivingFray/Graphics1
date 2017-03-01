@@ -20,6 +20,8 @@ public:
 	virtual Vec2D getCameraAt(double ex);
 	// Gets the angle of the camera ex seconds after last update
 	virtual double getCameraAngleAt(double ex);
+	// Gets the world coordinates from the screen coordinates
+	virtual Vec2D getWorldCoordinates(Vec2D screen);
 protected:
 	//A Gravity field always pulls down (towards lowest y-value)
 	//Change this by rotating field or inverting the field strength

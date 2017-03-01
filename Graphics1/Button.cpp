@@ -7,8 +7,12 @@ Button::Button() {
 	y = 0;
 	width = 0;
 	height = 0;
-	img = ImageLoader::getImage("Resources\\button_corner.png");
+	img = ImageLoader::getImage("Resources\\button.png");
+	imgSelected = ImageLoader::getImage("Resources\\buttonSelected.png");
 	glBindTexture(GL_TEXTURE_2D, img);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glBindTexture(GL_TEXTURE_2D, imgSelected);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 }
@@ -83,10 +87,18 @@ void Button::draw() {
 	glPushMatrix();
 	glTranslatef((float)x, (float)y, 0.0f);
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, img);
-	//Draw corners
+	double mx, my;
 	float sX = width * 0.5f;
 	float sY = height * 0.5f;
+	glfwGetCursorPos(gameWindow, &mx, &my);
+	my = sHeight - my;
+	if (mx >= x - sX && mx <= x + sX && my >= y - sY && my <= y + sY) {
+		glBindTexture(GL_TEXTURE_2D, imgSelected);
+	}
+	else {
+		glBindTexture(GL_TEXTURE_2D, img);
+	}
+	//Draw corners
 	for (int i = 0; i < 4; i++) {
 		glBegin(GL_QUADS);
 		glTexCoord2d(0.0, 0.0);
@@ -103,9 +115,9 @@ void Button::draw() {
 	}
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
-	glColor3ub(0, 0, 0);
+	glColor3ub(255, 255, 255);
 	//Oh the wonders of fonts and their heights not including the entire letter
-	freetype::print(fontLarge, (float)x - width * 0.5f + BUTTON_PADDING, (float)y - fontLarge.h * 0.375f, label.c_str());
+	freetype::print(fontLarge, (float)x - sX + BUTTON_PADDING, (float)y - fontLarge.h * 0.375f, label.c_str());
 }
 
 void Button::draw(double ex) {

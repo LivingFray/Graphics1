@@ -31,6 +31,7 @@
 //Useful angles
 #define PI 3.14159265359
 #define TAU 6.28318530718
+extern GLFWwindow* gameWindow;
 extern int sWidth;
 extern int sHeight;
 extern freetype::font_data fontLarge;

@@ -17,7 +17,7 @@ Platform::~Platform() {
 
 // Gets the position of the platform
 Vec2D Platform::getPos() {
-	return Vec2D();
+	return pos;
 }
 
 
@@ -109,4 +109,66 @@ void Platform::draw(double ex) {
 	glVertex2d(width / 2, -height / 2);
 	glEnd();
 	glPopMatrix();
+}
+
+
+// Called when the selectable is moved
+void Platform::onMove(double dX, double dY) {
+	pos.addTo(Vec2D(dX, dY));
+}
+
+
+// Called when the selectable is resized
+void Platform::onResize(double dX, double dY) {
+	if (width + dX > 0) {
+		width += dX;
+	}
+	if (height + dX > 0) {
+		height += dY;
+	}
+}
+
+
+// Called when the selectable is rotated
+void Platform::onRotate(double dAngle) {
+	angle += dAngle;
+	if (angle > 360) {
+		angle -= 360;
+	}
+	if (angle < 0) {
+		angle += 360;
+	}
+}
+
+
+// Returns if the selectable can be moved
+bool Platform::canMove() {
+	return true;
+}
+
+
+// Returns if the selectable can be rotated
+bool Platform::canResize() {
+	return true;
+}
+
+
+// Returns if the selectable can be rotated
+bool Platform::canRotate() {
+	return true;
+}
+
+
+// Returns if the selectable is selected
+bool Platform::isInBoundingBox(double x, double y) {
+	//Translate point to be relative to the BB's centre
+	Vec2D p = Vec2D(x, y).subtract(pos);
+	//Rotate the point back to be AA with the BB (-angle)
+	double cTheta = cos(-DEG_TO_RAD * angle);
+	double sTheta = sin(-DEG_TO_RAD * angle);
+	double xPrime = p.getX() * cTheta - p.getY() * sTheta;
+	double yPrime = p.getY() * cTheta + p.getX() * sTheta;
+	//Calculate field strength at point
+	return xPrime >= -width / 2 && xPrime <= width / 2
+		&& yPrime >= -height / 2 && yPrime <= height / 2;
 }

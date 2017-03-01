@@ -35,6 +35,7 @@ protected:
 	int height;
 	string label;
 	GLuint img;
+	GLuint imgSelected;
 	void(*callback)(BaseState* s);
 public:
 	// Sets the function called when the button is pressed

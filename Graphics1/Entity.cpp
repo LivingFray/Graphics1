@@ -321,7 +321,44 @@ double Entity::updatedVisAngle(double ex) {
 	return a;
 }
 
+
 // Gets the current velocity of the entity
 Vec2D Entity::getVel() {
 	return vel;
+}
+
+
+// Called when the selectable is moved
+void Entity::onMove(double dX, double dY) {
+	pos.addTo(Vec2D(dX, dY));
+}
+
+
+// Called when the selectable is rotated
+void Entity::onRotate(double dAngle) {
+	angle += dAngle;
+	if (angle > 360) {
+		angle -= 360;
+	}
+	if (angle < 0) {
+		angle += 360;
+	}
+}
+
+
+// Returns if the selectable can be moved
+bool Entity::canMove() {
+	return true;
+}
+
+
+// Returns if the selectable can be rotated
+bool Entity::canResize() {
+	return false;
+}
+
+
+// Returns if the selectable can be rotated
+bool Entity::canRotate() {
+	return true;
 }

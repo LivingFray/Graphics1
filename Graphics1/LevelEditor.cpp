@@ -2,13 +2,28 @@
 #include "MainMenu.h"
 #include "GradButton.h"
 #define EDITOR_MOVE_SPEED 50
-#define EDITOR_ROTATE_SPEED 90
+#define EDITOR_ROTATE_SPEED 30
+#define MOVE_SIZE 50
+#define SELECT_RADIUS 5
+#define POS_SNAP 5
+#define ANG_SNAP 5
 
 LevelEditor::LevelEditor() {
 	//Initialise variables
 	inItemMenu = false;
 	camPos = Vec2D(0.0, 0.0);
 	camAngle = 0.0;
+	current = 0;
+	selected = NULL;
+	panning = false;
+	panFrom = Vec2D(0, 0);
+	moving = false;
+	moveDir = Vec2D(0, 0);
+	//Load button images
+	barButtons[0] = ImageLoader::getImage("Resources\\selectButton.png");
+	barButtons[1] = ImageLoader::getImage("Resources\\moveButton.png");
+	barButtons[2] = ImageLoader::getImage("Resources\\rotateButton.png");
+	barButtons[3] = ImageLoader::getImage("Resources\\scaleButton.png");
 	//Create elements of spawn menu
 	MenuItem item;
 	//Reset item
@@ -57,7 +72,44 @@ void LevelEditor::draw(double ex) {
 	//Draw the level thus far 
 	LevelRenderer::draw(ex);
 	//Draw movement arrows/ resize arrows
+	if (selected) {
+		//Draw point showing centre of object
+		Vec2D pos = selected->getPos();
+		glColor3ub(255, 127, 0);
+		glPointSize(8);
+		glLineWidth(4);
+		glBegin(GL_POINTS);
+		glVertex2d(pos.getX(), pos.getY());
+		glEnd();
+		switch (current) {
+		case 1: //Move
+			if (!selected->canMove()) {
+				break;
+			}
+			glBegin(GL_LINES);
+			glVertex2d(pos.getX() + MOVE_SIZE, pos.getY());
+			glVertex2d(pos.getX() - MOVE_SIZE, pos.getY());
+			glVertex2d(pos.getX(), pos.getY() - MOVE_SIZE);
+			glVertex2d(pos.getX(), pos.getY() + MOVE_SIZE);
+			glEnd();
+			glBegin(GL_POINTS);
+			glVertex2d(pos.getX() + MOVE_SIZE, pos.getY());
+			glVertex2d(pos.getX() - MOVE_SIZE, pos.getY());
+			glVertex2d(pos.getX(), pos.getY() - MOVE_SIZE);
+			glVertex2d(pos.getX(), pos.getY() + MOVE_SIZE);
+			glEnd();
+			break;
+		case 2: //Resize
 
+			break;
+		case 3: //Rotate
+
+			break;
+		case 4: //Scale
+
+			break;
+		}
+	}
 	//Reset viewport
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -89,17 +141,51 @@ void LevelEditor::draw(double ex) {
 		}
 	}
 	else {
+		int bSize = (int)(sHeight * 0.05);
 		//Draw editor bar
 		glBegin(GL_QUADS);
 		glColor4ub(33, 179, 242, 150);
 		glVertex2i(sWidth, sHeight);
 		glVertex2i(0, sHeight);
 		glColor4ub(33, 179, 242, 10);
-		glVertex2i(0, (int)(sHeight * 0.95));
-		glVertex2i(sWidth, (int)(sHeight * 0.95));
+		glVertex2i(0, sHeight - bSize);
+		glVertex2i(sWidth, sHeight - bSize);
 		glEnd();
-		//TODO: buttons for add item, move item, rotate item, scale item
-
+		glPushMatrix();
+		//Buttons for add item, move item, rotate item, scale item
+		for (int i = 0; i < EDITOR_BAR_BUTTONS; i++) {
+			if (current == i) {
+				//Draw button selected image
+				glColor4ub(255, 255, 255, 50);
+			}
+			else {
+				//Draw button image
+				glColor4ub(255, 255, 255, 00);
+			}
+			glBegin(GL_QUADS);
+			glVertex2i(0, sHeight);
+			glVertex2i(0, sHeight - bSize);
+			glVertex2i(bSize, sHeight - bSize);
+			glVertex2i(bSize, sHeight);
+			glEnd();
+			glBindTexture(GL_TEXTURE_2D, barButtons[i]);
+			glEnable(GL_TEXTURE_2D);
+			//Draw image
+			glColor3ub(255, 255, 255);
+			glBegin(GL_QUADS);
+			glTexCoord2d(0.0, 1.0);
+			glVertex2i(0, sHeight);
+			glTexCoord2d(0.0, 0.0);
+			glVertex2i(0, sHeight - bSize);
+			glTexCoord2d(1.0, 0.0);
+			glVertex2i(bSize, sHeight - bSize);
+			glTexCoord2d(1.0, 1.0);
+			glVertex2i(bSize, sHeight);
+			glEnd();
+			glTranslated(bSize, 0.0, 0.0);
+			glDisable(GL_TEXTURE_2D);
+		}
+		glPopMatrix();
 		//Draw coordinates
 		glColor3ub(255, 255, 255);
 		freetype::print(fontSmall, 10, fontSmall.h * 2.625f, "Position: (%.2f, %.2f)\nAngle: %.2f", camPos.getX(), camPos.getY(), camAngle);
@@ -133,11 +219,12 @@ void LevelEditor::keyEvent(GLFWwindow * window, int key, int scan, int action, i
 void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mods) {
 	double x, y;
 	glfwGetCursorPos(window, &x, &y);
+	y = sHeight - y;
 	//Drag editor
 	if (!inItemMenu && button == GLFW_MOUSE_BUTTON_RIGHT) {
 		panning = action == GLFW_PRESS;
 		if (panning) {
-			panFrom = Vec2D(x, sHeight - y);
+			panFrom = Vec2D(x, y);
 			glfwSetCursor(window, cursorPan);
 		}
 		else {
@@ -145,14 +232,76 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 		}
 	}
 	//Handle Button press stuff below
-	y = sHeight - y;
-	if (action != GLFW_RELEASE) {
+	if (button != GLFW_MOUSE_BUTTON_LEFT) {
 		return;
 	}
 	//Handle clicks in menu
 	if (inItemMenu) {
-		for (GradButton* b : buttons) {
-			b->mouseDown((int)x, (int)y);
+		if (action == GLFW_RELEASE) {
+			for (GradButton* b : buttons) {
+				b->mouseDown((int)x, (int)y);
+			}
+		}
+	}
+	else {
+		//If in editor bar
+		if (y >= sHeight * 0.95) {
+			int index = (int)x / ((int)(sHeight * 0.05));
+			if (action == GLFW_RELEASE && index < EDITOR_BAR_BUTTONS) {
+				current = index;
+			}
+		}
+		else {
+			//Convert coords to world coords
+			Vec2D world = getWorldCoordinates(Vec2D(x, y));
+			switch (current) {
+			case 0: //Select
+				selected = NULL;
+				//TODO: Gravfields first
+				for (Platform* p : platforms) {
+					if (p->isInBoundingBox(world.getX(), world.getY())) {
+						selected = p;
+						break;
+					}
+				}
+				//TODO: Entities
+				break;
+			case 1: //Move
+				//If the current object cannot be moved or doesn't exist
+				if (!selected || !selected->canMove()) {
+					break;
+				}
+				//Stop moving the object
+				if (action == GLFW_RELEASE) {
+					moving = false;
+					break;
+				}
+				Vec2D pos = selected->getPos();
+				//For each direction check if mouse is grabbing
+				//Possible vertical match
+				if (world.getX() >= pos.getX() - SELECT_RADIUS && world.getX() <= pos.getX() + SELECT_RADIUS) {
+					if (world.getY() >= pos.getY() + MOVE_SIZE - SELECT_RADIUS && world.getY() <= pos.getY() + MOVE_SIZE + SELECT_RADIUS) {
+						moveDir = Vec2D(0, 1);
+						moving = true;
+					}
+					else if (world.getY() >= pos.getY() - MOVE_SIZE - SELECT_RADIUS && world.getY() <= pos.getY() - MOVE_SIZE + SELECT_RADIUS) {
+						moveDir = Vec2D(0, -1);
+						moving = true;
+					}
+				}
+				//Possible horizontal match
+				else if (world.getY() >= pos.getY() - SELECT_RADIUS && world.getY() <= pos.getY() + SELECT_RADIUS) {
+					if (world.getX() >= pos.getX() + MOVE_SIZE - SELECT_RADIUS && world.getX() <= pos.getX() + MOVE_SIZE + SELECT_RADIUS) {
+						moveDir = Vec2D(1, 0);
+						moving = true;
+					}
+					else if (world.getX() >= pos.getX() - MOVE_SIZE - SELECT_RADIUS && world.getX() <= pos.getX() - MOVE_SIZE + SELECT_RADIUS) {
+						moveDir = Vec2D(-1, 0);
+						moving = true;
+					}
+				}
+				break;
+			}
 		}
 	}
 }
@@ -176,7 +325,20 @@ void LevelEditor::mouseMoveEvent(GLFWwindow* window, double x, double y) {
 		camPos.subtractFrom(dif);
 		panFrom = Vec2D(x, sHeight - y);
 	}
+	if (moving) {
+		//Move the object so the correct point is in line with the mouse
+		Vec2D node = moveDir.multiply(MOVE_SIZE).add(selected->getPos());
+		Vec2D dif = getWorldCoordinates(Vec2D(x, sHeight - y)).subtract(node);
+		//Move up and down
+		if (moveDir.getX() == 0.0) {
+			selected->setPos(selected->getPos().add(Vec2D(0, dif.getY())));
+		}
+		else {
+			selected->setPos(selected->getPos().add(Vec2D(dif.getX(), 0)));
+		}
+	}
 }
+
 
 // Sets whether the item menu is visible
 void LevelEditor::setInItemMenu(bool inMenu) {
@@ -202,27 +364,34 @@ double LevelEditor::getCameraAngleAt(double ex) {
 }
 
 
-
 // Updates the camera position and rotation
 void LevelEditor::updateCamera(double time) {
 	double dX = 0.0, dY = 0.0;
+	bool move = false;
+	bool rot = false;
 	if (KeyConfig::isDown("editorLeft")) {
 		dX -= time * EDITOR_MOVE_SPEED;
+		move = true;
 	}
 	if (KeyConfig::isDown("editorRight")) {
 		dX += time * EDITOR_MOVE_SPEED;
+		move = true;
 	}
 	if (KeyConfig::isDown("editorUp")) {
 		dY += time * EDITOR_MOVE_SPEED;
+		move = true;
 	}
 	if (KeyConfig::isDown("editorDown")) {
 		dY -= time * EDITOR_MOVE_SPEED;
+		move = true;
 	}
 	if (KeyConfig::isDown("editorAntiClockwise")) {
 		camAngle += time * EDITOR_ROTATE_SPEED;
+		rot = true;
 	}
 	if (KeyConfig::isDown("editorClockwise")) {
 		camAngle -= time * EDITOR_ROTATE_SPEED;
+		rot = true;
 	}
 	double h = sqrt(dX * dX + dY * dY);
 	double ang = atan2(dY, dX);
@@ -240,4 +409,15 @@ void LevelEditor::updateCamera(double time) {
 		camAngle -= 360;
 	}
 	camPos.addTo(Vec2D(dX, dY));
+	//Snapping
+	if (!move && !panning) {
+		double sX, sY;
+		sX = floor(camPos.getX() / POS_SNAP) * POS_SNAP;
+		camPos.setX(sX);
+		sY = floor(camPos.getY() / POS_SNAP) * POS_SNAP;
+		camPos.setY(sY);
+	}
+	if (!rot) {
+		camAngle = floor(camAngle / ANG_SNAP) * ANG_SNAP;
+	}
 }
