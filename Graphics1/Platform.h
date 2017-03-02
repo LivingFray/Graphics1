@@ -32,11 +32,11 @@ public:
 	// Draws the platform ex seconds after last update
 	virtual void draw(double ex);
 	// Called when the selectable is moved
-	virtual void onMove(double dX, double dY);
+	virtual bool onMove(double dX, double dY);
 	// Called when the selectable is resized
-	virtual void onResize(double dX, double dY);
+	virtual bool onResize(double dX, double dY);
 	// Called when the selectable is rotated
-	virtual void onRotate(double dAngle);
+	virtual bool onRotate(double dAngle);
 	// Returns if the selectable can be moved
 	virtual bool canMove();
 	// Returns if the selectable can be rotated

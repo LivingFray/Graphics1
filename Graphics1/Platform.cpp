@@ -113,24 +113,28 @@ void Platform::draw(double ex) {
 
 
 // Called when the selectable is moved
-void Platform::onMove(double dX, double dY) {
+bool Platform::onMove(double dX, double dY) {
 	pos.addTo(Vec2D(dX, dY));
+	return true;
 }
 
 
 // Called when the selectable is resized
-void Platform::onResize(double dX, double dY) {
-	if (width + dX > 0) {
-		width += dX;
+bool Platform::onResize(double dX, double dY) {
+	if (width + dX <= SMALLEST_THICKNESS) {
+		return false;
 	}
-	if (height + dX > 0) {
-		height += dY;
+	if (height + dY <= SMALLEST_THICKNESS) {
+		return false;
 	}
+	width += dX;
+	height += dY;
+	return true;
 }
 
 
 // Called when the selectable is rotated
-void Platform::onRotate(double dAngle) {
+bool Platform::onRotate(double dAngle) {
 	angle += dAngle;
 	if (angle > 360) {
 		angle -= 360;
@@ -138,6 +142,7 @@ void Platform::onRotate(double dAngle) {
 	if (angle < 0) {
 		angle += 360;
 	}
+	return true;
 }
 
 

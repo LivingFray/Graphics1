@@ -43,5 +43,7 @@ protected:
 	Selectable* selected;
 	Vec2D moveDir;
 	bool moving;
+	Vec2D scaleDir;
+	int resizing;
 };
 

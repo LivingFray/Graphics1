@@ -5,11 +5,11 @@ public:
 	Selectable();
 	~Selectable();
 	// Called when the selectable is moved
-	virtual void onMove(double dX, double dY);
+	virtual bool onMove(double dX, double dY);
 	// Called when the selectable is resized
-	virtual void onResize(double dX, double dY);
+	virtual bool onResize(double dX, double dY);
 	// Called when the selectable is rotated
-	virtual void onRotate(double dAngle);
+	virtual bool onRotate(double dAngle);
 	// Returns if the selectable can be moved
 	virtual bool canMove();
 	// Returns if the selectable can be rotated
@@ -22,5 +22,11 @@ public:
 	virtual Vec2D getPos();
 	// Sets the position of the selectable
 	virtual void setPos(Vec2D pos);
+	// Gets the angle of the selectable
+	virtual double getAngle();
+	// Gets the width of the selectable
+	virtual double getWidth();
+	// Gets the height of the selectable
+	virtual double getHeight();
 };
 

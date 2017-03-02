@@ -24,6 +24,8 @@
 #define WORLD_SIZE 800
 //How many degrees an entity can turn per second (visually) to match gravity
 #define ENTITY_ROTATE_SPEED 180
+//How thin an object is allowed to be (smaller = more likely for collision to fail)
+#define SMALLEST_THICKNESS 10
 //The default font size used
 #define FONT_SIZE_LARGE 24
 //The default smaller font size used

@@ -11,17 +11,20 @@ Selectable::~Selectable() {
 
 
 // Called when the selectable is moved
-void Selectable::onMove(double dX, double dY) {
+bool Selectable::onMove(double dX, double dY) {
+	return false;
 }
 
 
 // Called when the selectable is resized
-void Selectable::onResize(double dX, double dY) {
+bool Selectable::onResize(double dX, double dY) {
+	return false;
 }
 
 
 // Called when the selectable is rotated
-void Selectable::onRotate(double dAngle) {
+bool Selectable::onRotate(double dAngle) {
+	return false;
 }
 
 
@@ -57,4 +60,22 @@ Vec2D Selectable::getPos() {
 
 // Sets the position of the selectable
 void Selectable::setPos(Vec2D pos) {
+}
+
+
+// Gets the angle of the selectable
+double Selectable::getAngle() {
+	return 0.0;
+}
+
+
+// Gets the width of the selectable
+double Selectable::getWidth() {
+	return 0.0;
+}
+
+
+// Gets the height of the selectable
+double Selectable::getHeight() {
+	return 0.0;
 }

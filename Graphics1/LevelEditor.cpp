@@ -19,11 +19,13 @@ LevelEditor::LevelEditor() {
 	panFrom = Vec2D(0, 0);
 	moving = false;
 	moveDir = Vec2D(0, 0);
+	resizing = 0;
+	scaleDir = Vec2D(0, 0);
 	//Load button images
 	barButtons[0] = ImageLoader::getImage("Resources\\selectButton.png");
 	barButtons[1] = ImageLoader::getImage("Resources\\moveButton.png");
-	barButtons[2] = ImageLoader::getImage("Resources\\rotateButton.png");
-	barButtons[3] = ImageLoader::getImage("Resources\\scaleButton.png");
+	barButtons[2] = ImageLoader::getImage("Resources\\resizeButton.png");
+	barButtons[3] = ImageLoader::getImage("Resources\\rotateButton.png");
 	//Create elements of spawn menu
 	MenuItem item;
 	//Reset item
@@ -100,8 +102,26 @@ void LevelEditor::draw(double ex) {
 			glEnd();
 			break;
 		case 2: //Resize
-
+		{
+			if (!selected->canResize()) {
+				break;
+			}
+			double w = selected->getWidth() * 0.5;
+			double h = selected->getHeight() * 0.5;
+			glColor3ub(0, 127, 255);
+			glPushMatrix();
+			glTranslated(pos.getX(), pos.getY(), 0.0);
+			glRotated(selected->getAngle(), 0.0, 0.0, 1.0);
+			glTranslated(-pos.getX(), -pos.getY(), 0.0);
+			glBegin(GL_POINTS);
+			glVertex2d(pos.getX() + w, pos.getY());
+			glVertex2d(pos.getX() - w, pos.getY());
+			glVertex2d(pos.getX(), pos.getY() - h);
+			glVertex2d(pos.getX(), pos.getY() + h);
+			glEnd();
+			glPopMatrix();
 			break;
+		}
 		case 3: //Rotate
 
 			break;
@@ -254,6 +274,10 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 		else {
 			//Convert coords to world coords
 			Vec2D world = getWorldCoordinates(Vec2D(x, y));
+			Vec2D pos;
+			if (selected) {
+				pos = selected->getPos();
+			}
 			switch (current) {
 			case 0: //Select
 				selected = NULL;
@@ -267,6 +291,7 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 				//TODO: Entities
 				break;
 			case 1: //Move
+			{
 				//If the current object cannot be moved or doesn't exist
 				if (!selected || !selected->canMove()) {
 					break;
@@ -276,7 +301,6 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 					moving = false;
 					break;
 				}
-				Vec2D pos = selected->getPos();
 				//For each direction check if mouse is grabbing
 				//Possible vertical match
 				if (world.getX() >= pos.getX() - SELECT_RADIUS && world.getX() <= pos.getX() + SELECT_RADIUS) {
@@ -302,6 +326,52 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 				}
 				break;
 			}
+			case 2: //Resize
+				//If the current object cannot be resized or doesn't exist
+				if (!selected || !selected->canMove()) {
+					break;
+				}
+				//Stop resizing the object
+				if (action == GLFW_RELEASE) {
+					resizing = 0;
+					break;
+				}
+				//Determine vectors handles lie upon
+				Vec2D width = Vec2D(cos(selected->getAngle() * DEG_TO_RAD), sin(selected->getAngle() * DEG_TO_RAD));
+				Vec2D height = Vec2D(-width.getY(), width.getX());
+				width.multiplyBy(selected->getWidth() * 0.5);
+				height.multiplyBy(selected->getHeight() * 0.5);
+				//Check each handle to see if it is being clicked on
+				Vec2D handle = pos.add(width);
+				if (world.getX() >= handle.getX() - SELECT_RADIUS && world.getX() <= handle.getX() + SELECT_RADIUS
+					&& world.getY() >= handle.getY() - SELECT_RADIUS && world.getY() <= handle.getY() + SELECT_RADIUS) {
+					scaleDir = width;
+					resizing = 1;
+					break;
+				}
+				handle = pos.subtract(width);
+				if (world.getX() >= handle.getX() - SELECT_RADIUS && world.getX() <= handle.getX() + SELECT_RADIUS
+					&& world.getY() >= handle.getY() - SELECT_RADIUS && world.getY() <= handle.getY() + SELECT_RADIUS) {
+					scaleDir = width.multiply(-1);
+					resizing = 2;
+					break;
+				}
+				handle = pos.add(height);
+				if (world.getX() >= handle.getX() - SELECT_RADIUS && world.getX() <= handle.getX() + SELECT_RADIUS
+					&& world.getY() >= handle.getY() - SELECT_RADIUS && world.getY() <= handle.getY() + SELECT_RADIUS) {
+					scaleDir = height;
+					resizing = 3;
+					break;
+				}
+				handle = pos.subtract(height);
+				if (world.getX() >= handle.getX() - SELECT_RADIUS && world.getX() <= handle.getX() + SELECT_RADIUS
+					&& world.getY() >= handle.getY() - SELECT_RADIUS && world.getY() <= handle.getY() + SELECT_RADIUS) {
+					scaleDir = height.multiply(-1);
+					resizing = 4;
+					break;
+				}
+				break;
+			}
 		}
 	}
 }
@@ -309,6 +379,7 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 
 // Called when a mouse move event is fired
 void LevelEditor::mouseMoveEvent(GLFWwindow* window, double x, double y) {
+	//The camera is being moved
 	if (panning) {
 		double scale = WORLD_SIZE / (double)(sWidth < sHeight ? sWidth : sHeight);
 		//TODO: rotate camera
@@ -325,16 +396,38 @@ void LevelEditor::mouseMoveEvent(GLFWwindow* window, double x, double y) {
 		camPos.subtractFrom(dif);
 		panFrom = Vec2D(x, sHeight - y);
 	}
+	//A selectable is being translated
 	if (moving) {
 		//Move the object so the correct point is in line with the mouse
-		Vec2D node = moveDir.multiply(MOVE_SIZE).add(selected->getPos());
-		Vec2D dif = getWorldCoordinates(Vec2D(x, sHeight - y)).subtract(node);
+		Vec2D handle = moveDir.multiply(MOVE_SIZE).add(selected->getPos());
+		Vec2D dif = getWorldCoordinates(Vec2D(x, sHeight - y)).subtract(handle);
 		//Move up and down
 		if (moveDir.getX() == 0.0) {
-			selected->setPos(selected->getPos().add(Vec2D(0, dif.getY())));
+			selected->onMove(0, dif.getY());
 		}
 		else {
-			selected->setPos(selected->getPos().add(Vec2D(dif.getX(), 0)));
+			selected->onMove(dif.getX(), 0);
+		}
+	}
+	//A selectable is being resized
+	if (resizing) {
+		//Resize the object so the correct point is in line with the mouse
+		Vec2D handle = scaleDir.add(selected->getPos());
+		Vec2D dif = getWorldCoordinates(Vec2D(x, sHeight - y)).subtract(handle);
+		double dis = scaleDir.dot(dif) / scaleDir.magnitude();
+		bool resized;
+		if (resizing <= 2) {
+			resized = selected->onResize(dis, 0);
+		}
+		else {
+			resized = selected->onResize(0, dis);
+		}
+		//Only move centre if could resize object
+		if (resized) {
+			Vec2D translate = scaleDir.unit().multiply(dis * 0.5);
+			selected->onMove(translate.getX(), translate.getY());
+			//Resize scaling to match new position
+			scaleDir.addTo(scaleDir.unit().multiply(dis * 0.5));
 		}
 	}
 }
