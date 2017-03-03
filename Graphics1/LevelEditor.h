@@ -48,5 +48,6 @@ protected:
 	double rotateFrom;
 	bool rotating;
 	GLuint rotateCall;
+	void select(Vec2D world);
 };
 

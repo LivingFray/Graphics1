@@ -299,26 +299,16 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 			}
 			switch (current) {
 			case 0: //Select
-				//By breaking after finding a match different types of object have different priorities
-				selected = NULL;
-				//TODO: Entities
-				for (Platform* p : platforms) {
-					if (p->isInBoundingBox(world.getX(), world.getY())) {
-						selected = p;
-						break;
-					}
+				if (action == GLFW_PRESS) {
+					select(world);
 				}
-				for (GravityField* f : gravFields) {
-					if (f->isInBoundingBox(world.getX(), world.getY())) {
-						selected = f;
-						break;
-					}
-				}
-				break;
 			case 1: //Move
 			{
 				//If the current object cannot be moved or doesn't exist
 				if (!selected || !selected->canMove()) {
+					if (action == GLFW_PRESS) {
+						select(world);
+					}
 					break;
 				}
 				//Stop moving the object
@@ -349,12 +339,18 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 						moving = true;
 					}
 				}
+				if (!moving) {
+					select(world);
+				}
 				break;
 			}
 			case 2: //Resize
 			{
 				//If the current object cannot be resized or doesn't exist
 				if (!selected || !selected->canMove()) {
+					if (action == GLFW_PRESS) {
+						select(world);
+					}
 					break;
 				}
 				//Stop resizing the object
@@ -396,6 +392,9 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 					resizing = 4;
 					break;
 				}
+				if (!resizing) {
+					select(world);
+				}
 				break;
 			}
 			case 3: //Rotate
@@ -416,6 +415,9 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 					rotating = true;
 					Vec2D dif = world.subtract(pos);
 					rotateFrom = atan2(dif.getY(), dif.getX());
+				}
+				else {
+					select(world);
 				}
 				break;
 			}
@@ -596,5 +598,25 @@ void LevelEditor::updateCamera(double time) {
 	}
 	if (!rot) {
 		camAngle = floor(camAngle / ANG_SNAP) * ANG_SNAP;
+	}
+}
+
+
+// Selects a selectable at position "world"
+void LevelEditor::select(Vec2D world) {
+	//By breaking after finding a match different types of object have different priorities
+	selected = NULL;
+	//TODO: Entities
+	for (Platform* p : platforms) {
+		if (p->isInBoundingBox(world.getX(), world.getY())) {
+			selected = p;
+			break;
+		}
+	}
+	for (GravityField* f : gravFields) {
+		if (f->isInBoundingBox(world.getX(), world.getY())) {
+			selected = f;
+			break;
+		}
 	}
 }
