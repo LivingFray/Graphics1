@@ -11,7 +11,6 @@ TODO: Cleanup code (auto generated classes, import orders, etc)
 TODO: Start and end points
 TODO: UI
 TODO: Level editor
-TODO: --Rotate objects
 TODO: --Save level
 TODO: --Load level
 TODO: --Enter exact value

@@ -5,6 +5,7 @@
 #include "Entity.h"
 #include "Player.h"
 #include "BaseState.h"
+#include "GravityField.h"
 
 class LevelRenderer {
 public:
@@ -23,15 +24,6 @@ public:
 	// Gets the world coordinates from the screen coordinates
 	virtual Vec2D getWorldCoordinates(Vec2D screen);
 protected:
-	//A Gravity field always pulls down (towards lowest y-value)
-	//Change this by rotating field or inverting the field strength
-	struct GravityField {
-		Vec2D pos;
-		double width;
-		double height;
-		double rotation;
-		double strength;
-	};
 	vector<Entity*> entities;
 	vector<Platform*> platforms;
 	vector<GravityField*> gravFields;

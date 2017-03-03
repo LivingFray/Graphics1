@@ -102,20 +102,20 @@ void Level::getGravityAtPos(Vec2D pos, Vec2D* grav) {
 	grav->set(0, 0);
 	for (GravityField* f : gravFields) {
 		//Translate point to be relative to the field's centre
-		Vec2D p = pos.subtract(f->pos);
+		Vec2D p = pos.subtract(f->getPos());
 		//Rotate the point back to be AA with the field (-angle)
-		double cTheta = cos(-DEG_TO_RAD * f->rotation); //Slight optimisation as trig is expensive
-		double sTheta = sin(-DEG_TO_RAD * f->rotation);
+		double cTheta = cos(-DEG_TO_RAD * f->getAngle()); //Slight optimisation as trig is expensive
+		double sTheta = sin(-DEG_TO_RAD * f->getAngle());
 		double xPrime = p.getX() * cTheta - p.getY() * sTheta;
 		double yPrime = p.getY() * cTheta + p.getX() * sTheta;
 		//Calculate field strength at point
-		if (xPrime >= -f->width / 2 && xPrime <= f->width / 2
-			&& yPrime >= -f->height / 2 && yPrime <= f->height / 2) {
+		if (xPrime >= -f->getWidth() / 2 && xPrime <= f->getWidth() / 2
+			&& yPrime >= -f->getHeight() / 2 && yPrime <= f->getHeight() / 2) {
 			//Rotate this strength back and add it to force
 			//(Forces have been rotated through 90 degrees to make 0 rotation = normal gravity
 			grav->addTo(Vec2D(
-				f->strength * sin(DEG_TO_RAD * (180-f->rotation)),
-				f->strength * cos(DEG_TO_RAD * (180-f->rotation))
+				f->getStrength() * sin(DEG_TO_RAD * (180-f->getAngle())),
+				f->getStrength() * cos(DEG_TO_RAD * (180-f->getAngle()))
 			));
 		}
 	}

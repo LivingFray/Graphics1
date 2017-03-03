@@ -162,21 +162,7 @@ void LevelRenderer::draw(double ex) {
 	glPopMatrix();
 	//Draw the gravity fields
 	for (GravityField* f : gravFields) {
-		double w = f->width / 2;
-		double h = f->height / 2;
-		glPushMatrix();
-		glTranslated(f->pos.getX(), f->pos.getY(), 0.0);
-		//0 degrees should be down, rather than right
-		glRotated(f->rotation, 0, 0, 1);
-		glBegin(GL_QUADS);
-		glColor3ub(0, 0, 255);
-		glVertex2d(-1 * w, -1 * h);
-		glVertex2d(w, -1 * h);
-		glColor4ub(0, 0, 0, 0);
-		glVertex2d(w, h);
-		glVertex2d(-1 * w, h);
-		glEnd();
-		glPopMatrix();
+		f->draw(ex);
 	}
 	//Draw the platforms
 	for (Platform* p : platforms) {
@@ -194,11 +180,11 @@ void LevelRenderer::draw(double ex) {
 void LevelRenderer::loadLevel(string filePath) {
 	//TEMP TESTING
 	GravityField* t = new GravityField();
-	t->height = 450;
-	t->width = 250;
-	t->strength = 2;
-	t->pos = Vec2D(400, 100);
-	t->rotation = 45;
+	t->setHeight(450);
+	t->setWidth(250);
+	t->setStrength(2);
+	t->setPos(Vec2D(400, 100));
+	t->setAngle(45);
 	gravFields.push_back(t);
 	Platform* p = new Platform();
 	p->setPos(Vec2D(400, -100));

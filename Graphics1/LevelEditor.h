@@ -3,7 +3,7 @@
 #include "BaseState.h"
 #include "GradButton.h"
 //The number of buttons in the editor bar
-#define EDITOR_BAR_BUTTONS 4
+#define EDITOR_BAR_BUTTONS 5
 class LevelEditor:
 	public BaseState, LevelRenderer {
 public:

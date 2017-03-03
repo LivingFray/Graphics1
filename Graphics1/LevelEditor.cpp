@@ -38,6 +38,7 @@ LevelEditor::LevelEditor() {
 	barButtons[1] = ImageLoader::getImage("Resources\\moveButton.png");
 	barButtons[2] = ImageLoader::getImage("Resources\\resizeButton.png");
 	barButtons[3] = ImageLoader::getImage("Resources\\rotateButton.png");
+	barButtons[4] = ImageLoader::getImage("Resources\\deleteButton.png");
 	//Create elements of spawn menu
 	MenuItem item;
 	//Reset item
@@ -412,6 +413,10 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 				}
 				break;
 			}
+			case 4: //Delete
+				if (!selected) {
+					break;
+				}
 			}
 		}
 	}
