@@ -38,5 +38,6 @@ protected:
 	//Background
 	GLuint planet;
 	GLuint stars;
+	GLuint backing;
 };
 

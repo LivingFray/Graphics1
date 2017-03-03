@@ -1,10 +1,20 @@
 #include "LevelRenderer.h"
 #include "Globals.h"
 
+#define NUM_PANELS 8
+#define PARALLAX 0.5
+#define PANELS_X 9
+#define PANELS_Y 6
 
 LevelRenderer::LevelRenderer() {
 	planet = ImageLoader::getImage("Resources\\planet.png");
 	stars = ImageLoader::getImage("Resources\\stars.png");
+	backing = ImageLoader::getImage("Resources\\backing.png");
+	glBindTexture(GL_TEXTURE_2D, backing);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
 
@@ -63,7 +73,93 @@ void LevelRenderer::draw(double ex) {
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 	//Draw the parallax backing
-
+	double size = pHeight / NUM_PANELS;
+	double parX = pX * PARALLAX;
+	double parY = pY * PARALLAX;
+	int minX = (int)((parX - pHeight * 0.5) / size);
+	int minY = (int)((parY - pHeight * 0.5) / size);
+	//To Prevent edges unloading too soon
+	minX--;
+	minY--;
+	/*
+	Tile pattern:
+	CEEEEECWW
+	EMMMMMEWW
+	EMMMMMEWW
+	CEEEEECWW
+	WWWWWWWWW
+	WWWWWWWWW
+	*/
+	//min = tile at parX - pHeight / 2
+	//For tiles min to max draw tile
+	glPushMatrix();
+	glTranslated(parX + minX * size, parY + minY * size, 0.0);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, backing);
+	double u, v;
+	int tX = minX, tY = minY;
+	if (tX < 0) {
+		tX *= -1;
+		tX %= PANELS_X;
+		tX = PANELS_X - tX;
+	}
+	if (tY < 0) {
+		tY *= -1;
+		tY %= PANELS_Y;
+		tY = PANELS_Y - tY;
+	}
+	for (int y = 0; y < NUM_PANELS + 2; y++) {
+		tY++;
+		tY %= PANELS_Y;
+		for (int x = 0; x < NUM_PANELS + 2; x++) {
+			tX++;
+			tX %= PANELS_X;
+			if (tY > 4 || tX > 6) {
+				u = 0.0;
+				v = 0.75;
+			}
+			else {
+				if (tY == 0) {
+					v = 0.25;
+				}
+				else if (tY < 4) {
+					v = 0.5;
+				}
+				else {
+					v = 0.75;
+				}
+				if (tX == 0) {
+					u = 0.25;
+				}
+				else if (tX < 6) {
+					u = 0.5;
+				}
+				else {
+					u = 0.75;
+				}
+			}
+			glBegin(GL_QUADS);
+			glTexCoord2d(u, v);
+			glVertex2d(0.0, 0.0);
+			glTexCoord2d(u + 0.25, v);
+			glVertex2d(size, 0.0);
+			glTexCoord2d(u + 0.25, v + 0.25);
+			glVertex2d(size, size);
+			glTexCoord2d(u, v + 0.25);
+			glVertex2d(0.0, size);
+			glEnd();
+			glTranslated(size, 0.0, 0.0);
+		}
+		tX = minX;
+		if (tX < 0) {
+			tX *= -1;
+			tX %= PANELS_X;
+			tX = PANELS_X - tX;
+		}
+		glTranslated(-size * (NUM_PANELS + 2), size, 0.0);
+	}
+	glDisable(GL_TEXTURE_2D);
+	glPopMatrix();
 	//Draw the gravity fields
 	for (GravityField* f : gravFields) {
 		double w = f->width / 2;
