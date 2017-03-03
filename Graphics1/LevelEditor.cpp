@@ -299,15 +299,21 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 			}
 			switch (current) {
 			case 0: //Select
+				//By breaking after finding a match different types of object have different priorities
 				selected = NULL;
-				//TODO: Gravfields first
+				//TODO: Entities
 				for (Platform* p : platforms) {
 					if (p->isInBoundingBox(world.getX(), world.getY())) {
 						selected = p;
 						break;
 					}
 				}
-				//TODO: Entities
+				for (GravityField* f : gravFields) {
+					if (f->isInBoundingBox(world.getX(), world.getY())) {
+						selected = f;
+						break;
+					}
+				}
 				break;
 			case 1: //Move
 			{
@@ -414,9 +420,34 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 				break;
 			}
 			case 4: //Delete
-				if (!selected) {
+			{
+				//Deselect current object in case it is removed
+				if (selected) {
+					selected = NULL;
+				}
+				//Prevent accidently clicking on something
+				if (action != GLFW_RELEASE) {
 					break;
 				}
+				auto gravIt = gravFields.begin();
+				while (gravIt != gravFields.end()) {
+					if ((*gravIt)->isInBoundingBox(world.getX(), world.getY())) {
+						gravIt = gravFields.erase(gravIt);
+					}
+					else {
+						gravIt++;
+					}
+				}
+				auto platIt = platforms.begin();
+				while (platIt != platforms.end()) {
+					if ((*platIt)->isInBoundingBox(world.getX(), world.getY())) {
+						platIt = platforms.erase(platIt);
+					}
+					else {
+						platIt++;
+					}
+				}
+			}
 			}
 		}
 	}
