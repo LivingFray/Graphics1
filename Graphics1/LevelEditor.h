@@ -45,5 +45,8 @@ protected:
 	bool moving;
 	Vec2D scaleDir;
 	int resizing;
+	double rotateFrom;
+	bool rotating;
+	GLuint rotateCall;
 };
 

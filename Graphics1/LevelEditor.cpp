@@ -7,6 +7,7 @@
 #define SELECT_RADIUS 5
 #define POS_SNAP 5
 #define ANG_SNAP 5
+#define ROTATE_SEGMENTS 36
 
 LevelEditor::LevelEditor() {
 	//Initialise variables
@@ -21,6 +22,17 @@ LevelEditor::LevelEditor() {
 	moveDir = Vec2D(0, 0);
 	resizing = 0;
 	scaleDir = Vec2D(0, 0);
+	//Create call list
+	rotateCall = glGenLists(1);
+	glNewList(rotateCall, GL_COMPILE);
+	glBegin(GL_LINE_LOOP);
+	for (int i = 0; i < ROTATE_SEGMENTS; i++) {
+		double x = MOVE_SIZE * cos(DEG_TO_RAD * i * (360 / ROTATE_SEGMENTS));
+		double y = MOVE_SIZE * sin(DEG_TO_RAD * i * (360 / ROTATE_SEGMENTS));
+		glVertex2d(x, y);
+	}
+	glEnd();
+	glEndList();
 	//Load button images
 	barButtons[0] = ImageLoader::getImage("Resources\\selectButton.png");
 	barButtons[1] = ImageLoader::getImage("Resources\\moveButton.png");
@@ -58,6 +70,7 @@ LevelEditor::LevelEditor() {
 
 
 LevelEditor::~LevelEditor() {
+	glDeleteLists(rotateCall, 1);
 }
 
 
@@ -123,10 +136,15 @@ void LevelEditor::draw(double ex) {
 			break;
 		}
 		case 3: //Rotate
-
-			break;
-		case 4: //Scale
-
+			if (!selected->canRotate()) {
+				break;
+			}
+			glPushMatrix();
+			glTranslated(pos.getX(), pos.getY(), 0.0);
+			glColor3ub(0, 127, 0);
+			glLineWidth(SELECT_RADIUS);
+			glCallList(rotateCall);
+			glPopMatrix();
 			break;
 		}
 	}
@@ -327,6 +345,7 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 				break;
 			}
 			case 2: //Resize
+			{
 				//If the current object cannot be resized or doesn't exist
 				if (!selected || !selected->canMove()) {
 					break;
@@ -371,6 +390,28 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 					break;
 				}
 				break;
+			}
+			case 3: //Rotate
+			{
+				//If the current object can't be rotated or doesn't exist
+				if (!selected || !selected->canRotate()) {
+					break;
+				}
+				//Stop rotating the object
+				if (action == GLFW_RELEASE) {
+					rotating = false;
+					break;
+				}
+				double d = world.subtract(pos).magnitudeSquare();
+				double min = MOVE_SIZE - SELECT_RADIUS;
+				double max = MOVE_SIZE + SELECT_RADIUS;
+				if (d >= min * min && d <= max * max) {
+					rotating = true;
+					Vec2D dif = world.subtract(pos);
+					rotateFrom = atan2(dif.getY(), dif.getX());
+				}
+				break;
+			}
 			}
 		}
 	}
@@ -429,6 +470,13 @@ void LevelEditor::mouseMoveEvent(GLFWwindow* window, double x, double y) {
 			//Resize scaling to match new position
 			scaleDir.addTo(scaleDir.unit().multiply(dis * 0.5));
 		}
+	}
+	//A selectable is being rotated
+	if (rotating) {
+		Vec2D dif = getWorldCoordinates(Vec2D(x, sHeight - y)).subtract(selected->getPos());
+		double angle = atan2(dif.getY(), dif.getX());
+		selected->onRotate(RAD_TO_DEG * (angle - rotateFrom));
+		rotateFrom = angle;
 	}
 }
 
