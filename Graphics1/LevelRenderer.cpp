@@ -176,8 +176,17 @@ void LevelRenderer::draw(double ex) {
 }
 
 
+// Saves the level to the given file
+void LevelRenderer::saveLevel(string filePath) {
+	printf("Saving test\n");
+}
+
+
 // Loads a level from the given file
 void LevelRenderer::loadLevel(string filePath) {
+	gravFields.clear();
+	platforms.clear();
+	entities.clear();
 	//TEMP TESTING
 	GravityField* t = new GravityField();
 	t->setHeight(450);

@@ -34,10 +34,10 @@ void Level::update() {
 		//Perform collision detection + resolution
 		for (Platform* p : platforms) {
 			//TODO: Broad check here
-			
+
 			//Use SAT to check for collisions
 			Vec2D res;
-			if (intersects(e, p, &res) && res.magnitudeSquare()>FLOAT_ZERO) {
+			if (intersects(e, p, &res) && res.magnitudeSquare() > FLOAT_ZERO) {
 				//Move outside of collision
 				e->addPosX(res.getX());
 				e->addPosY(res.getY());
@@ -114,8 +114,8 @@ void Level::getGravityAtPos(Vec2D pos, Vec2D* grav) {
 			//Rotate this strength back and add it to force
 			//(Forces have been rotated through 90 degrees to make 0 rotation = normal gravity
 			grav->addTo(Vec2D(
-				f->getStrength() * sin(DEG_TO_RAD * (180-f->getAngle())),
-				f->getStrength() * cos(DEG_TO_RAD * (180-f->getAngle()))
+				f->getStrength() * sin(DEG_TO_RAD * (180 - f->getAngle())),
+				f->getStrength() * cos(DEG_TO_RAD * (180 - f->getAngle()))
 			));
 		}
 	}
@@ -152,8 +152,7 @@ bool Level::intersects(Collider* a, Collider* b, Vec2D* res) {
 		double d;
 		if (aMax < bMax) {
 			d = bMin - aMax;
-		}
-		else {
+		} else {
 			d = bMax - aMin;
 		}
 		//Check if smallest vector so far
@@ -177,8 +176,7 @@ void Level::project(Collider* c, Vec2D vec, double* min, double* max) {
 		double p = vertices[i].dot(vec);
 		if (p < *min) {
 			*min = p;
-		}
-		else if (p > *max) {
+		} else if (p > *max) {
 			*max = p;
 		}
 	}

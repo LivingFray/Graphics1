@@ -13,6 +13,8 @@ public:
 	~LevelRenderer();
 	// Draws the level
 	virtual void draw(double ex);
+	// Saves the level to the given file
+	virtual void saveLevel(string filePath);
 	// Loads a level from the given file
 	virtual void loadLevel(string filePath);
 	// Adds a platform to the level

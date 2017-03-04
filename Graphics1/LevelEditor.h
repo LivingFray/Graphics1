@@ -24,8 +24,11 @@ public:
 	Vec2D getCameraAt(double ex);
 	// Gets the angle of the camera ex seconds after last update
 	double getCameraAngleAt(double ex);
+	// Gets the file location to save the level to
+	string getFileLocation();
 protected:
 	bool inItemMenu;
+	bool inSaveMenu;
 	struct MenuItem {
 		string name;
 		void(*create)(BaseState* l);
@@ -49,5 +52,8 @@ protected:
 	bool rotating;
 	GLuint rotateCall;
 	void select(Vec2D world);
+	Button saveButton;
+	Button loadButton;
+	string fileLoc;
 };
 

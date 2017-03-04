@@ -29,8 +29,7 @@ void* DataObject::get(string key, DATATYPE &type) {
 	Datum* datum = dataList[key];
 	if (datum) {
 		type = datum->type;
-	}
-	else {
+	} else {
 		//If the requested item is non existant, return null
 		type = UNKNOWN;
 		return NULL;
@@ -105,8 +104,7 @@ void DataObject::saveObject(string filePath) {
 			//If the data can simply be parsed to char* then do so
 			buffer = (char*)d.second->data;
 			file.write(buffer, normalType);
-		}
-		else if (d.second->type == STRING) {
+		} else if (d.second->type == STRING) {
 			//If the data is a string save the length and data
 			string* s = (string*)d.second->data;
 			uint16_t strLen = (uint16_t)s->length();
@@ -122,8 +120,7 @@ void DataObject::saveObject(string filePath) {
 			cpy((char*)buffer, s->data(), strLen);
 			file.write(buffer, bufferSize);
 			delete[] buffer;
-		}
-		else if (d.second->type == DATAOBJECT) {
+		} else if (d.second->type == DATAOBJECT) {
 			//A bit hacky, but recursively save the object
 			DataObject* subObj = (DataObject*)d.second->data;
 			file.flush();
@@ -195,8 +192,7 @@ int DataObject::loadObject(char* data, int length) {
 			//Add the data to this dataobject
 			add(key, type, newData);
 			pos += normalType;
-		}
-		else if (type == STRING) {
+		} else if (type == STRING) {
 			//Read the length of the string in
 			uint16_t* strLen = (uint16_t*)(data + pos);
 			pos += 2;
@@ -211,8 +207,7 @@ int DataObject::loadObject(char* data, int length) {
 			//Save the string
 			add(key, STRING, strStr);
 			pos += *strLen;
-		}
-		else if (type == DATAOBJECT) {
+		} else if (type == DATAOBJECT) {
 			//Recurvisely load the sub objects
 			DataObject* subObj = new DataObject();
 			pos += subObj->loadObject((char*)data + pos, length - pos);

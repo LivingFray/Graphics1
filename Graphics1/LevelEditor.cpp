@@ -22,6 +22,20 @@ LevelEditor::LevelEditor() {
 	moveDir = Vec2D(0, 0);
 	resizing = 0;
 	scaleDir = Vec2D(0, 0);
+	saveButton = Button();
+	saveButton.setLabel("Save level");
+	auto saveCall = [](BaseState* s) {
+		LevelEditor* r = (LevelEditor*)s;
+		r->saveLevel(r->getFileLocation());
+	};
+	saveButton.setCallback(saveCall);
+	loadButton = Button();
+	loadButton.setLabel("Load level");
+	auto loadCall = [](BaseState* s) {
+		LevelEditor* r = (LevelEditor*)s;
+		r->loadLevel(r->getFileLocation());
+	};
+	loadButton.setCallback(loadCall);
 	//Create call list
 	rotateCall = glGenLists(1);
 	glNewList(rotateCall, GL_COMPILE);
@@ -178,8 +192,37 @@ void LevelEditor::draw(double ex) {
 			b->draw(ex);
 			i++;
 		}
-	}
-	else {
+	} else if (inSaveMenu) {
+		glColor4ub(0, 0, 0, 127);
+		glBegin(GL_QUADS);
+		glVertex2i(0, 0);
+		glVertex2i(0, sHeight);
+		glVertex2i(sWidth, sHeight);
+		glVertex2i(sWidth, 0);
+		glEnd();
+		glColor3ub(255, 255, 255);
+		freetype::print(fontLarge, 10, sHeight - fontLarge.h * 1.325f, "Settings");
+		int w = (int)(sWidth * 0.25);
+		int h = (int)(sHeight * 0.1);
+		int y = (int)(sHeight * 0.2);
+		//Save button
+		saveButton.setWidth(w);
+		saveButton.setHeight(h);
+		saveButton.setX(sWidth * 0.5 - w * 0.75);
+		saveButton.setY(y);
+		saveButton.draw();
+		//Load button
+		loadButton.setWidth(w);
+		loadButton.setHeight(h);
+		loadButton.setX(sWidth * 0.5 + w * 0.75);
+		loadButton.setY(y);
+		loadButton.draw();
+		//File location
+
+		//Level name
+
+		//Default gravity
+	} else {
 		int bSize = (int)(sHeight * 0.05);
 		//Draw editor bar
 		glBegin(GL_QUADS);
@@ -196,8 +239,7 @@ void LevelEditor::draw(double ex) {
 			if (current == i) {
 				//Draw button selected image
 				glColor4ub(255, 255, 255, 50);
-			}
-			else {
+			} else {
 				//Draw button image
 				glColor4ub(255, 255, 255, 00);
 			}
@@ -237,13 +279,15 @@ void LevelEditor::keyEvent(GLFWwindow * window, int key, int scan, int action, i
 		if (inItemMenu) {
 			//TODO: Any necessary things
 			inItemMenu = false;
-		}
-		else {
-			//TODO: Save
-			newState = new MainMenu();
+		} else if (inSaveMenu) {
+			//TODO: Save information entered
+			inSaveMenu = false;
+		} else {
+			inSaveMenu = true;
+			selected = NULL;
 		}
 	}
-	if (key == KeyConfig::keyBindings["editorMenu"] && action == GLFW_RELEASE) {
+	if (key == KeyConfig::keyBindings["editorMenu"] && action == GLFW_RELEASE && !inSaveMenu) {
 		inItemMenu = !inItemMenu;
 		//Fix cursor
 		if (panning) {
@@ -260,13 +304,12 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 	glfwGetCursorPos(window, &x, &y);
 	y = sHeight - y;
 	//Drag editor
-	if (!inItemMenu && button == GLFW_MOUSE_BUTTON_RIGHT) {
+	if (!inItemMenu && !inSaveMenu && button == GLFW_MOUSE_BUTTON_RIGHT) {
 		panning = action == GLFW_PRESS;
 		if (panning) {
 			panFrom = Vec2D(x, y);
 			glfwSetCursor(window, cursorPan);
-		}
-		else {
+		} else {
 			glfwSetCursor(window, cursorNormal);
 		}
 	}
@@ -281,16 +324,19 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 				b->mouseDown((int)x, (int)y);
 			}
 		}
-	}
-	else {
+	} else if (inSaveMenu) {
+		if (action == GLFW_RELEASE) {
+			loadButton.mouseDown((int)x, (int)y);
+			saveButton.mouseDown((int)x, (int)y);
+		}
+	} else {
 		//If in editor bar
 		if (y >= sHeight * 0.95) {
 			int index = (int)x / ((int)(sHeight * 0.05));
 			if (action == GLFW_RELEASE && index < EDITOR_BAR_BUTTONS) {
 				current = index;
 			}
-		}
-		else {
+		} else {
 			//Convert coords to world coords
 			Vec2D world = getWorldCoordinates(Vec2D(x, y));
 			Vec2D pos;
@@ -322,8 +368,7 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 					if (world.getY() >= pos.getY() + MOVE_SIZE - SELECT_RADIUS && world.getY() <= pos.getY() + MOVE_SIZE + SELECT_RADIUS) {
 						moveDir = Vec2D(0, 1);
 						moving = true;
-					}
-					else if (world.getY() >= pos.getY() - MOVE_SIZE - SELECT_RADIUS && world.getY() <= pos.getY() - MOVE_SIZE + SELECT_RADIUS) {
+					} else if (world.getY() >= pos.getY() - MOVE_SIZE - SELECT_RADIUS && world.getY() <= pos.getY() - MOVE_SIZE + SELECT_RADIUS) {
 						moveDir = Vec2D(0, -1);
 						moving = true;
 					}
@@ -333,8 +378,7 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 					if (world.getX() >= pos.getX() + MOVE_SIZE - SELECT_RADIUS && world.getX() <= pos.getX() + MOVE_SIZE + SELECT_RADIUS) {
 						moveDir = Vec2D(1, 0);
 						moving = true;
-					}
-					else if (world.getX() >= pos.getX() - MOVE_SIZE - SELECT_RADIUS && world.getX() <= pos.getX() - MOVE_SIZE + SELECT_RADIUS) {
+					} else if (world.getX() >= pos.getX() - MOVE_SIZE - SELECT_RADIUS && world.getX() <= pos.getX() - MOVE_SIZE + SELECT_RADIUS) {
 						moveDir = Vec2D(-1, 0);
 						moving = true;
 					}
@@ -415,8 +459,7 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 					rotating = true;
 					Vec2D dif = world.subtract(pos);
 					rotateFrom = atan2(dif.getY(), dif.getX());
-				}
-				else {
+				} else {
 					select(world);
 				}
 				break;
@@ -435,8 +478,7 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 				while (gravIt != gravFields.end()) {
 					if ((*gravIt)->isInBoundingBox(world.getX(), world.getY())) {
 						gravIt = gravFields.erase(gravIt);
-					}
-					else {
+					} else {
 						gravIt++;
 					}
 				}
@@ -444,8 +486,7 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 				while (platIt != platforms.end()) {
 					if ((*platIt)->isInBoundingBox(world.getX(), world.getY())) {
 						platIt = platforms.erase(platIt);
-					}
-					else {
+					} else {
 						platIt++;
 					}
 				}
@@ -483,8 +524,7 @@ void LevelEditor::mouseMoveEvent(GLFWwindow* window, double x, double y) {
 		//Move up and down
 		if (moveDir.getX() == 0.0) {
 			selected->onMove(0, dif.getY());
-		}
-		else {
+		} else {
 			selected->onMove(dif.getX(), 0);
 		}
 	}
@@ -497,8 +537,7 @@ void LevelEditor::mouseMoveEvent(GLFWwindow* window, double x, double y) {
 		bool resized;
 		if (resizing <= 2) {
 			resized = selected->onResize(dis, 0);
-		}
-		else {
+		} else {
 			resized = selected->onResize(0, dis);
 		}
 		//Only move centre if could resize object
@@ -540,6 +579,12 @@ Vec2D LevelEditor::getCameraAt(double ex) {
 // Gets the angle of the camera ex seconds after last update
 double LevelEditor::getCameraAngleAt(double ex) {
 	return camAngle;
+}
+
+
+// Gets the file location to save the level to
+string LevelEditor::getFileLocation() {
+	return fileLoc;
 }
 
 

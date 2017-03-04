@@ -34,11 +34,9 @@ void Player::update() {
 	if (abs(dX) <= FLOAT_ZERO) {
 		if (vX > PLAYER_FRICTION) {
 			dX -= PLAYER_FRICTION;
-		}
-		else if (vX < -PLAYER_FRICTION) {
+		} else if (vX < -PLAYER_FRICTION) {
 			dX += PLAYER_FRICTION;
-		}
-		else {
+		} else {
 			dX = -vX;
 		}
 	}
@@ -47,8 +45,7 @@ void Player::update() {
 	//Normalise the value
 	if (move.magnitudeSquare() > FLOAT_ZERO) {
 		move.toUnit();
-	}
-	else {
+	} else {
 		move.set(1.0, 0.0);
 	}
 	//Scale it to the movement
@@ -62,9 +59,8 @@ void Player::update() {
 		//We appear to be floating in an area of 0 gravity
 		if (jump.magnitudeSquare() > FLOAT_ZERO) {
 			jump.toUnit();
-		}
-		else {
-			jump.set(0.0,-1.0); //Just pretend that gravity is normal
+		} else {
+			jump.set(0.0, -1.0); //Just pretend that gravity is normal
 		}
 		jump.multiplyBy(PLAYER_JUMP);
 		vel.subtractFrom(jump);

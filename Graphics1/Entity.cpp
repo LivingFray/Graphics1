@@ -81,8 +81,7 @@ void Entity::update() {
 	//Rotation
 	if (abs(g.getX()) < FLOAT_ZERO && abs(g.getY()) < FLOAT_ZERO) {
 		angle = 0; //Floating in no gravity
-	}
-	else {
+	} else {
 		angle = atan2(g.getY(), g.getX()) * RAD_TO_DEG + 90;
 	}
 	//Max speed checks
@@ -92,8 +91,7 @@ void Entity::update() {
 		h.toUnit();
 		h.multiplyBy(dX - maxSpeed);
 		vel.subtractFrom(h);
-	}
-	else if (dX < -maxSpeed) {
+	} else if (dX < -maxSpeed) {
 		Vec2D h = Vec2D(-g.getY(), g.getX());
 		h.toUnit();
 		h.multiplyBy(dX + maxSpeed);
@@ -304,8 +302,7 @@ double Entity::updatedVisAngle(double ex) {
 	}
 	if (a > angle && a <= opp) {
 		a -= ex*ENTITY_ROTATE_SPEED;
-	}
-	else {
+	} else {
 		a += ex*ENTITY_ROTATE_SPEED;
 	}
 	if (a < 0) {

@@ -94,8 +94,7 @@ void Button::draw() {
 	my = sHeight - my;
 	if (mx >= x - sX && mx <= x + sX && my >= y - sY && my <= y + sY) {
 		glBindTexture(GL_TEXTURE_2D, imgSelected);
-	}
-	else {
+	} else {
 		glBindTexture(GL_TEXTURE_2D, img);
 	}
 	//Draw corners
@@ -126,7 +125,7 @@ void Button::draw(double ex) {
 
 
 // Sets the function called when the button is pressed
-void Button::setCallback(void (*callback)(BaseState* s)) {
+void Button::setCallback(void(*callback)(BaseState* s)) {
 	this->callback = callback;
 }
 

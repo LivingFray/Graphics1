@@ -14,9 +14,9 @@ LevelSelect::LevelSelect() {
 		DataObject* lvl = new DataObject();
 		lvl->loadFromFile(d.path().string());
 		void* dat = lvl->get("name", t);
-		if (t==STRING) {
+		if (t == STRING) {
 			//TODO: TMP, REMOVE OUTPUT
-			std::cout << d << " " << *((string*) dat) << std::endl;
+			std::cout << d << " " << *((string*)dat) << std::endl;
 			levels.push_back(lvl);
 			paths.push_back(d.path().string());
 		}
@@ -24,8 +24,8 @@ LevelSelect::LevelSelect() {
 	//TODO: Scaling
 	for (unsigned int i = 0; i < levels.size(); i++) {
 		LevelButton* l = new LevelButton();
-		l->setX((i%2==0?1:3)*sWidth/4);
-		l->setY(sHeight - (1 + (i/2)) * 50);
+		l->setX((i % 2 == 0 ? 1 : 3)*sWidth / 4);
+		l->setY(sHeight - (1 + (i / 2)) * 50);
 		l->setWidth(sWidth / 4);
 		l->setHeight(50);
 		l->setLabel(*(string*)levels[i]->get("name", t));
@@ -80,10 +80,10 @@ void LevelSelect::draw(double ex) {
 	//TODO: Handle too many levels
 	int c = 0;
 	for (Button* b : buttons) {
-		b->setX((c%2==0?1:3)*sWidth / 4);
+		b->setX((c % 2 == 0 ? 1 : 3)*sWidth / 4);
 		c++;
 		b->setWidth(sWidth / 2 - 50);
-		b->setY(sHeight - ((c+1) / 2) * 60);
+		b->setY(sHeight - ((c + 1) / 2) * 60);
 		b->draw();
 	}
 }

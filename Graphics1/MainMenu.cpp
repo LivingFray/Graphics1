@@ -82,7 +82,7 @@ void MainMenu::draw(double ex) {
 	int n = buttons.size();
 	for (Button* b : buttons) {
 		int h = sHeight / 12;
-		b->setWidth((int)( sWidth * 0.5 + h * i));
+		b->setWidth((int)(sWidth * 0.5 + h * i));
 		b->setY(h * (n - i));
 		b->setHeight((int)(h*0.9));
 		i++;
