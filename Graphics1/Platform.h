@@ -2,8 +2,10 @@
 #include "Vec2D.h"
 #include "Collider.h"
 #include "Selectable.h"
+#include "Storable.h"
 
-class Platform: public Collider, public Selectable {
+class Platform:
+	public Collider, public Selectable, public Storable {
 public:
 	Platform();
 	~Platform();
@@ -45,6 +47,10 @@ public:
 	virtual bool canRotate();
 	// Returns if the selectable is selected
 	virtual bool isInBoundingBox(double x, double y);
+	// Returns a DataObject representing the storable object
+	virtual DataObject* save();
+	// Loads the storable object from the DataObject
+	virtual void load(DataObject* obj);
 protected:
 	Vec2D pos;
 	double width;

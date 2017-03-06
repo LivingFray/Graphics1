@@ -8,6 +8,7 @@ Platform::Platform() {
 	width = 0.0;
 	height = 0.0;
 	angle = 0.0;
+	id = "platform";
 }
 
 
@@ -176,4 +177,55 @@ bool Platform::isInBoundingBox(double x, double y) {
 	//Calculate field strength at point
 	return xPrime >= -width / 2 && xPrime <= width / 2
 		&& yPrime >= -height / 2 && yPrime <= height / 2;
+}
+
+
+// Returns a DataObject representing the storable object
+DataObject* Platform::save() {
+	DataObject* platform = new DataObject();
+	double* x = new double(pos.getX());
+	double* y = new double(pos.getY());
+	platform->add("id", STRING, &id);
+	platform->add("x", DOUBLE, x);
+	platform->add("y", DOUBLE, y);
+	platform->add("width", DOUBLE, &width);
+	platform->add("height", DOUBLE, &height);
+	platform->add("angle", DOUBLE, &angle);
+	return platform;
+}
+
+
+// Loads the storable object from the DataObject
+void Platform::load(DataObject* obj) {
+	DATATYPE type;
+	void* data;
+	//Default values
+	double x = 0.0, y = 0.0;
+	double w = 0.0, h = 0.0;
+	double a = 0.0;
+	//Load in values where possible
+	data = obj->get("x", type);
+	if (type == DOUBLE) {
+		x = *(double*)data;
+	}
+	data = obj->get("y", type);
+	if (type == DOUBLE) {
+		y = *(double*)data;
+	}
+	data = obj->get("width", type);
+	if (type == DOUBLE) {
+		w = *(double*)data;
+	}
+	data = obj->get("height", type);
+	if (type == DOUBLE) {
+		h = *(double*)data;
+	}
+	data = obj->get("angle", type);
+	if (type == DOUBLE) {
+		a = *(double*)data;
+	}
+	pos = Vec2D(x, y);
+	width = w>0 ? w : 0;
+	height = h>0 ? h : 0;
+	angle = a;
 }

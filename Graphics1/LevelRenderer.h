@@ -19,6 +19,8 @@ public:
 	virtual void loadLevel(string filePath);
 	// Adds a platform to the level
 	virtual void addPlatform(Platform* platform);
+	// Adds a gravity field to the level
+	virtual void addGravityField(GravityField* field);
 	// Gets the camera position ex seconds after last update
 	virtual Vec2D getCameraAt(double ex);
 	// Gets the angle of the camera ex seconds after last update
@@ -29,9 +31,14 @@ protected:
 	vector<Entity*> entities;
 	vector<Platform*> platforms;
 	vector<GravityField*> gravFields;
-	//Background
 	GLuint planet;
 	GLuint stars;
 	GLuint backing;
+	string levelName;
+	double defaultGravity;
+	Vec2D spawn;
+	double spawnAngle;
+	Vec2D goal;
+	double goalAngle;
 };
 

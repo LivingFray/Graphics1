@@ -21,19 +21,22 @@ LevelEditor::LevelEditor() {
 	moving = false;
 	moveDir = Vec2D(0, 0);
 	resizing = 0;
+	levelName = "Untitled";
+	fileLoc = "Untitled.do";
+	defaultGravity = 0;
 	scaleDir = Vec2D(0, 0);
 	saveButton = Button();
 	saveButton.setLabel("Save level");
 	auto saveCall = [](BaseState* s) {
-		LevelEditor* r = (LevelEditor*)s;
-		r->saveLevel(r->getFileLocation());
+		LevelEditor* e = (LevelEditor*)s;
+		e->saveLevel(e->getFileLocation());
 	};
 	saveButton.setCallback(saveCall);
 	loadButton = Button();
 	loadButton.setLabel("Load level");
 	auto loadCall = [](BaseState* s) {
-		LevelEditor* r = (LevelEditor*)s;
-		r->loadLevel(r->getFileLocation());
+		LevelEditor* e = (LevelEditor*)s;
+		e->loadLevel(e->getFileLocation());
 	};
 	loadButton.setCallback(loadCall);
 	//Create call list
@@ -69,6 +72,20 @@ LevelEditor::LevelEditor() {
 		l->setInItemMenu(false);
 	};
 	menuItems.push_back(item);
+	item = MenuItem();
+	item.name = "TEST GravField";
+	item.create = [](BaseState* s) {
+		LevelEditor* l = (LevelEditor*)s;
+		GravityField* f = new GravityField();
+		f->setPos(l->getCameraPos());
+		f->setWidth(50);
+		f->setHeight(50);
+		f->setAngle(l->getCameraAngleAt(0));
+		f->setStrength(1);
+		l->addGravityField(f);
+		l->setInItemMenu(false);
+	};
+	menuItems.push_back(item);
 	//Create buttons for menu
 	for (MenuItem i : menuItems) {
 		GradButton* b = new GradButton();
@@ -80,7 +97,7 @@ LevelEditor::LevelEditor() {
 		buttons.push_back(b);
 	}
 	//Test
-	loadLevel("tmp");
+	loadLevel("notalevel");
 }
 
 
@@ -208,13 +225,13 @@ void LevelEditor::draw(double ex) {
 		//Save button
 		saveButton.setWidth(w);
 		saveButton.setHeight(h);
-		saveButton.setX(sWidth * 0.5 - w * 0.75);
+		saveButton.setX((int)(sWidth * 0.5 - w * 0.75));
 		saveButton.setY(y);
 		saveButton.draw();
 		//Load button
 		loadButton.setWidth(w);
 		loadButton.setHeight(h);
-		loadButton.setX(sWidth * 0.5 + w * 0.75);
+		loadButton.setX((int)(sWidth * 0.5 + w * 0.75));
 		loadButton.setY(y);
 		loadButton.draw();
 		//File location
@@ -588,6 +605,22 @@ string LevelEditor::getFileLocation() {
 }
 
 
+// Saves the level to the given file
+void LevelEditor::saveLevel(string filePath) {
+	//TODO: Checks for valid file location/name etc
+	LevelRenderer::saveLevel(filePath);
+	inSaveMenu = false;
+}
+
+
+// Loads a level from the given file
+void LevelEditor::loadLevel(string filePath) {
+	//TODO: Checks for valid path
+	LevelRenderer::loadLevel(filePath);
+	inSaveMenu = false;
+}
+
+
 // Updates the camera position and rotation
 void LevelEditor::updateCamera(double time) {
 	double dX = 0.0, dY = 0.0;
@@ -655,13 +688,13 @@ void LevelEditor::select(Vec2D world) {
 	for (Platform* p : platforms) {
 		if (p->isInBoundingBox(world.getX(), world.getY())) {
 			selected = p;
-			break;
+			return;
 		}
 	}
 	for (GravityField* f : gravFields) {
 		if (f->isInBoundingBox(world.getX(), world.getY())) {
 			selected = f;
-			break;
+			return;
 		}
 	}
 }

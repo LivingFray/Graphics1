@@ -1,11 +1,14 @@
 #pragma once
 #include "Vec2D.h"
 #include "Collider.h"
+#include "Storable.h"
+
 using namespace std;
 
 class Level;
 
-class Entity: public Collider {
+class Entity:
+	public Collider, public Storable {
 public:
 	Entity();
 	~Entity();
@@ -104,5 +107,9 @@ public:
 	virtual bool canResize();
 	// Returns if the selectable can be rotated
 	virtual bool canRotate();
+	// Returns a DataObject representing the storable object
+	virtual DataObject* save();
+	// Loads the storable object from the DataObject
+	virtual void load(DataObject* obj);
 };
 

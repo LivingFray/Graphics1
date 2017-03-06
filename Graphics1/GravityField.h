@@ -1,7 +1,9 @@
 #pragma once
 #include "Selectable.h"
+#include "Storable.h"
+
 class GravityField:
-	public Selectable {
+	public Selectable, public Storable {
 public:
 	GravityField();
 	~GravityField();
@@ -41,6 +43,10 @@ public:
 	virtual void setHeight(double height);
 	// Sets the strength of the gravity field
 	virtual void setStrength(double strength);
+	// Returns a DataObject representing the storable object
+	virtual DataObject* save();
+	// Loads the storable object from the DataObject
+	virtual void load(DataObject* obj);
 protected:
 	Vec2D pos;
 	double width;

@@ -26,6 +26,10 @@ public:
 	double getCameraAngleAt(double ex);
 	// Gets the file location to save the level to
 	string getFileLocation();
+	// Saves the level to the given file
+	void saveLevel(string filePath);
+	// Loads a level from the given file
+	void loadLevel(string filePath);
 protected:
 	bool inItemMenu;
 	bool inSaveMenu;

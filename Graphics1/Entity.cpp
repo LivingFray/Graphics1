@@ -16,6 +16,7 @@ Entity::Entity() {
 	height = DEFAULT_ENTITY_HEIGHT;
 	angle = 0.0;
 	visAngle = 0.0;
+	id = "entity";
 }
 
 
@@ -358,4 +359,56 @@ bool Entity::canResize() {
 // Returns if the selectable can be rotated
 bool Entity::canRotate() {
 	return true;
+}
+
+
+// Returns a DataObject representing the storable object
+DataObject* Entity::save() {
+	DataObject* entity = new DataObject();
+	double* x = new double(pos.getX());
+	double* y = new double(pos.getY());
+	double* vx = new double(vel.getX());
+	double* vy = new double(vel.getY());
+	entity->add("id", STRING, &id);
+	entity->add("x", DOUBLE, x);
+	entity->add("y", DOUBLE, y);
+	entity->add("angle", DOUBLE, &angle);
+	entity->add("velX", DOUBLE, vx);
+	entity->add("velY", DOUBLE, vy);
+	return entity;
+}
+
+
+// Loads the storable object from the DataObject
+void Entity::load(DataObject* obj) {
+	DATATYPE type;
+	void* data;
+	//Default values
+	double x = 0.0, y = 0.0;
+	double vx = 0, vy = 0.0;
+	double a = 0.0;
+	//Load in values where possible
+	data = obj->get("x", type);
+	if (type == DOUBLE) {
+		x = *(double*)data;
+	}
+	data = obj->get("y", type);
+	if (type == DOUBLE) {
+		y = *(double*)data;
+	}
+	data = obj->get("velX", type);
+	if (type == DOUBLE) {
+		vx = *(double*)data;
+	}
+	data = obj->get("velY", type);
+	if (type == DOUBLE) {
+		vy = *(double*)data;
+	}
+	data = obj->get("angle", type);
+	if (type == DOUBLE) {
+		a = *(double*)data;
+	}
+	pos = Vec2D(x, y);
+	vel = Vec2D(vx, vy);
+	angle = a;
 }

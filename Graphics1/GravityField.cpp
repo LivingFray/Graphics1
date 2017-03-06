@@ -3,6 +3,12 @@
 
 
 GravityField::GravityField() {
+	id = "gravfield";
+	pos = Vec2D(0, 0);
+	width = SMALLEST_THICKNESS;
+	height = SMALLEST_THICKNESS;
+	angle = 0;
+	strength = 0;
 }
 
 
@@ -153,4 +159,62 @@ void GravityField::setHeight(double height) {
 // Sets the strength of the gravity field
 void GravityField::setStrength(double strength) {
 	this->strength = strength;
+}
+
+
+// Returns a DataObject representing the storable object
+DataObject* GravityField::save() {
+	DataObject* field = new DataObject();
+	//Magically convert to pointer to avoid dereferencing
+	double* x = new double(pos.getX());
+	double* y = new double(pos.getY());
+	field->add("id", STRING, &id);
+	field->add("x", DOUBLE, x);
+	field->add("y", DOUBLE, y);
+	field->add("width", DOUBLE, &width);
+	field->add("height", DOUBLE, &height);
+	field->add("angle", DOUBLE, &angle);
+	field->add("strength", DOUBLE, &strength);
+	return field;
+}
+
+
+// Loads the storable object from the DataObject
+void GravityField::load(DataObject* obj) {
+	DATATYPE type;
+	void* data;
+	//Default values
+	double x = 0.0, y = 0.0;
+	double w = 0.0, h = 0.0;
+	double a = 0.0, s = 0.0;
+	//Load in values where possible
+	data = obj->get("x", type);
+	if (type == DOUBLE) {
+		x = *(double*)data;
+	}
+	data = obj->get("y", type);
+	if (type == DOUBLE) {
+		y = *(double*)data;
+	}
+	data = obj->get("width", type);
+	if (type == DOUBLE) {
+		w = *(double*)data;
+	}
+	data = obj->get("height", type);
+	if (type == DOUBLE) {
+		h = *(double*)data;
+	}
+	data = obj->get("angle", type);
+	if (type == DOUBLE) {
+		a = *(double*)data;
+	}
+	data = obj->get("strength", type);
+	if (type == DOUBLE) {
+		s = *(double*)data;
+	}
+	pos = Vec2D(x, y);
+	width = w>0 ? w : 0;
+	height = h>0 ? h : 0;
+	angle = a;
+	strength = s;
 }

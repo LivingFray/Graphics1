@@ -7,6 +7,7 @@
 #define PANELS_Y 6
 
 LevelRenderer::LevelRenderer() {
+	//Load background textures
 	planet = ImageLoader::getImage("Resources\\planet.png");
 	stars = ImageLoader::getImage("Resources\\stars.png");
 	backing = ImageLoader::getImage("Resources\\backing.png");
@@ -15,6 +16,11 @@ LevelRenderer::LevelRenderer() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	//Set default values for variables
+	spawn = Vec2D(0.0, 0.0);
+	goal = Vec2D(0.0, 0.0);
+	spawnAngle = 0;
+	goalAngle = 0;
 }
 
 
@@ -117,24 +123,19 @@ void LevelRenderer::draw(double ex) {
 			if (tY > 4 || tX > 6) {
 				u = 0.0;
 				v = 0.75;
-			}
-			else {
+			} else {
 				if (tY == 0) {
 					v = 0.25;
-				}
-				else if (tY < 4) {
+				} else if (tY < 4) {
 					v = 0.5;
-				}
-				else {
+				} else {
 					v = 0.75;
 				}
 				if (tX == 0) {
 					u = 0.25;
-				}
-				else if (tX < 6) {
+				} else if (tX < 6) {
 					u = 0.5;
-				}
-				else {
+				} else {
 					u = 0.75;
 				}
 			}
@@ -178,16 +179,143 @@ void LevelRenderer::draw(double ex) {
 
 // Saves the level to the given file
 void LevelRenderer::saveLevel(string filePath) {
-	printf("Saving test\n");
+	DataObject lvl = DataObject();
+	//General level information
+	lvl.add("name", STRING, &levelName);
+	lvl.add("grav", DOUBLE, &defaultGravity);
+	double spawnX = spawn.getX();
+	double spawnY = spawn.getY();
+	lvl.add("spawnX", DOUBLE, &spawnX);
+	lvl.add("spawnY", DOUBLE, &spawnY);
+	lvl.add("spawnAngle", DOUBLE, &spawnAngle);
+	double goalX = goal.getX();
+	double goalY = goal.getY();
+	lvl.add("goalX", DOUBLE, &goalX);
+	lvl.add("goalY", DOUBLE, &goalY);
+	lvl.add("goalAngle", DOUBLE, &goalAngle);
+	//For each type of object create a DO listing them
+	DataObject objs = DataObject();
+	int i = 0;
+	for (Entity* e : entities) {
+		objs.add(to_string(i), DATAOBJECT, e->save());
+		i++;
+	}
+	for (GravityField* g : gravFields) {
+		objs.add(to_string(i), DATAOBJECT, g->save());
+		i++;
+	}
+	for (Platform* p : platforms) {
+		objs.add(to_string(i), DATAOBJECT, p->save());
+		i++;
+	}
+	lvl.add("objects", DATAOBJECT, &objs);
+
+	//Save the level to a file
+	lvl.saveToFile(filePath);
 }
 
 
 // Loads a level from the given file
 void LevelRenderer::loadLevel(string filePath) {
+	//Load the level from file
+	DataObject lvl = DataObject();
+	lvl.loadFromFile(filePath);
+	//Get data, attempting to save any failures
+	DATATYPE type;
+	void* data;
+	data = lvl.get("name", type);
+	if (type == STRING) {
+		levelName = *(string*)data;
+	} else {
+		printf("Error loading level: No name found\n");
+		levelName = "Unknown Level";
+	}
+	data = lvl.get("grav", type);
+	if (type == DOUBLE) {
+		defaultGravity = *(double*)data;
+	} else {
+		printf("Error loading level: No default gravity found\n");
+		defaultGravity = 0;
+	}
+	data = lvl.get("spawnX", type);
+	if (type == DOUBLE) {
+		spawn.setX(*(double*)data);
+	} else {
+		printf("Error loading level: No spawn x coordinate found\n");
+		spawn.setX(0.0);
+	}
+	data = lvl.get("spawnY", type);
+	if (type == DOUBLE) {
+		spawn.setY(*(double*)data);
+	} else {
+		printf("Error loading level: No spawn y coordinate found\n");
+		spawn.setY(0.0);
+	}
+	data = lvl.get("spawnAngle", type);
+	if (type == DOUBLE) {
+		spawnAngle = (*(double*)data);
+	} else {
+		printf("Error loading level: No spawn angle found\n");
+		spawnAngle = (0.0);
+	}
+	data = lvl.get("goalX", type);
+	if (type == DOUBLE) {
+		goal.setX(*(double*)data);
+	} else {
+		printf("Error loading level: No goal x coordinate found\n");
+		goal.setX(0.0);
+	}
+	data = lvl.get("goalY", type);
+	if (type == DOUBLE) {
+		goal.setY(*(double*)data);
+	} else {
+		printf("Error loading level: No goal y coordinate found\n");
+		goal.setY(0.0);
+	}
+	data = lvl.get("goalAngle", type);
+	if (type == DOUBLE) {
+		goalAngle = (*(double*)data);
+	} else {
+		printf("Error loading level: No goal angle found\n");
+		goalAngle = (0.0);
+	}
+	DataObject* objs;
+	data = lvl.get("objects", type);
+	if (type == DATAOBJECT) {
+		objs = (DataObject*)data;
+	} else {
+		objs = new DataObject();
+	}
+	//Wipe any existing data
 	gravFields.clear();
 	platforms.clear();
 	entities.clear();
+	//Load data from DataObjects
+	int i = 0;
+	data = objs->get(to_string(i), type);
+	while (type == DATAOBJECT) {
+		DataObject* item = (DataObject*)data;
+		data = item->get("id", type);
+		//ID found, parse object
+		if (type == STRING) {
+			string id = *(string*)data;
+			//Go through all valid ids
+			if (id == "gravfield") {
+				GravityField* f = new GravityField();
+				f->load(item);
+				gravFields.push_back(f);
+			} else if (id == "platform") {
+				Platform* p = new Platform();
+				p->load(item);
+				platforms.push_back(p);
+			}
+		}
+		//Get next item
+		i++;
+		data = objs->get(to_string(i), type);
+	}
 	//TEMP TESTING
+	/*
 	GravityField* t = new GravityField();
 	t->setHeight(450);
 	t->setWidth(250);
@@ -207,6 +335,7 @@ void LevelRenderer::loadLevel(string filePath) {
 	p->setHeight(200);
 	p->setAngle(0);
 	platforms.push_back(p);
+	*/
 }
 
 
@@ -215,6 +344,11 @@ void LevelRenderer::addPlatform(Platform* platform) {
 	platforms.push_back(platform);
 }
 
+
+// Adds a platform to the level
+void LevelRenderer::addGravityField(GravityField* field) {
+	gravFields.push_back(field);
+}
 
 // Gets the camera position ex seconds after last update
 Vec2D LevelRenderer::getCameraAt(double ex) {
