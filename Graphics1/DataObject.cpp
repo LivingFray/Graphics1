@@ -9,7 +9,14 @@ DataObject::DataObject() {
 
 DataObject::~DataObject() {
 	for (auto const& d : dataList) {
-		delete d.second;
+		if (d.second) {
+			if (d.second->type == DATAOBJECT) {
+				delete (DataObject*)d.second->data;
+			} else {
+				delete d.second->data;
+			}
+			delete d.second;
+		}
 	}
 }
 
