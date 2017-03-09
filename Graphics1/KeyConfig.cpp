@@ -2,12 +2,11 @@
 
 #define bindControl(n,k)	do{												\
 								keyBindings[(n)] = (k);						\
-								void* stored = bindings->get((n), datatype);\
-								if (datatype == INT) {						\
-									keyBindings[(n)] = *(int*)stored;		\
+								int st = bindings.getInt((n), exists);		\
+								if (exists) {								\
+									keyBindings[(n)] = st;					\
 								}else{										\
-									int v = (k);							\
-									bindings->add((n),INT,&v);				\
+									bindings.add((n), (k));					\
 								}											\
 							} while(0)
 
@@ -16,9 +15,9 @@ GLFWwindow* KeyConfig::win;
 
 // Loads default keybindings then sets custom bindings where available
 void KeyConfig::loadBindings() {
-	DataObject* bindings = new DataObject();
-	bindings->loadFromFile("keybindings.do");
-	DATATYPE datatype;
+	DataObject bindings = DataObject();
+	bindings.loadFromFile("keybindings.do");
+	bool exists;
 	//By the power of macros, check if each key is bound and rebind if possible
 	bindControl("moveLeft", GLFW_KEY_LEFT);
 	bindControl("moveRight", GLFW_KEY_RIGHT);
@@ -31,19 +30,16 @@ void KeyConfig::loadBindings() {
 	bindControl("editorClockwise", GLFW_KEY_RIGHT_SHIFT);
 	bindControl("editorMenu", GLFW_KEY_ENTER);
 	//Save the keybindings (some newer default bindings may have been missing)
-	bindings->saveToFile("keybindings.do");
-	delete bindings;
+	bindings.saveToFile("keybindings.do");
 }
 
 void KeyConfig::saveBindings() {
-	DataObject* bindings = new DataObject();
+	DataObject bindings = DataObject();
 
 	for (auto const& key : keyBindings) {
-		int v = key.second;
-		bindings->add(key.first, INT, &v);
+		bindings.add(key.first, key.second);
 	}
-	bindings->saveToFile("keybindings.do");
-	delete bindings;
+	bindings.saveToFile("keybindings.do");
 }
 
 bool KeyConfig::isDown(string key) {

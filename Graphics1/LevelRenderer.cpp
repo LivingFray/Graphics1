@@ -181,34 +181,30 @@ void LevelRenderer::draw(double ex) {
 void LevelRenderer::saveLevel(string filePath) {
 	DataObject lvl = DataObject();
 	//General level information
-	lvl.add("name", STRING, &levelName);
-	lvl.add("grav", DOUBLE, &defaultGravity);
-	double spawnX = spawn.getX();
-	double spawnY = spawn.getY();
-	lvl.add("spawnX", DOUBLE, &spawnX);
-	lvl.add("spawnY", DOUBLE, &spawnY);
-	lvl.add("spawnAngle", DOUBLE, &spawnAngle);
-	double goalX = goal.getX();
-	double goalY = goal.getY();
-	lvl.add("goalX", DOUBLE, &goalX);
-	lvl.add("goalY", DOUBLE, &goalY);
-	lvl.add("goalAngle", DOUBLE, &goalAngle);
+	lvl.add("name", levelName);
+	lvl.add("grav", defaultGravity);
+	lvl.add("spawnX", spawn.getX());
+	lvl.add("spawnY", spawn.getY());
+	lvl.add("spawnAngle", spawnAngle);
+	lvl.add("goalX", goal.getX());
+	lvl.add("goalY", goal.getY());
+	lvl.add("goalAngle", goalAngle);
 	//For each type of object create a DO listing them
 	DataObject objs = DataObject();
 	int i = 0;
 	for (Entity* e : entities) {
-		objs.add(to_string(i), DATAOBJECT, e->save());
+		objs.add(to_string(i), e->save());
 		i++;
 	}
 	for (GravityField* g : gravFields) {
-		objs.add(to_string(i), DATAOBJECT, g->save());
+		objs.add(to_string(i), g->save());
 		i++;
 	}
 	for (Platform* p : platforms) {
-		objs.add(to_string(i), DATAOBJECT, p->save());
+		objs.add(to_string(i), p->save());
 		i++;
 	}
-	lvl.add("objects", DATAOBJECT, &objs);
+	lvl.add("objects", objs);
 
 	//Save the level to a file
 	lvl.saveToFile(filePath);
@@ -221,84 +217,71 @@ void LevelRenderer::loadLevel(string filePath) {
 	DataObject lvl = DataObject();
 	lvl.loadFromFile(filePath);
 	//Get data, attempting to save any failures
-	DATATYPE type;
-	void* data;
-	data = lvl.get("name", type);
-	if (type == STRING) {
-		levelName = *(string*)data;
-	} else {
+	bool exists;
+	levelName = lvl.getString("name", exists);
+	if (!exists) {
 		printf("Error loading level: No name found\n");
 		levelName = "Unknown Level";
 	}
-	data = lvl.get("grav", type);
-	if (type == DOUBLE) {
-		defaultGravity = *(double*)data;
-	} else {
+	defaultGravity = lvl.getDouble("grav", exists);
+	if (!exists) {
 		printf("Error loading level: No default gravity found\n");
 		defaultGravity = 0;
 	}
-	data = lvl.get("spawnX", type);
-	if (type == DOUBLE) {
-		spawn.setX(*(double*)data);
-	} else {
+	spawn.setX(lvl.getDouble("spawnX", exists));
+	if (!exists){
 		printf("Error loading level: No spawn x coordinate found\n");
 		spawn.setX(0.0);
 	}
-	data = lvl.get("spawnY", type);
-	if (type == DOUBLE) {
-		spawn.setY(*(double*)data);
-	} else {
+	spawn.setY(lvl.getDouble("spawnY", exists));
+	if (!exists){
 		printf("Error loading level: No spawn y coordinate found\n");
 		spawn.setY(0.0);
 	}
-	data = lvl.get("spawnAngle", type);
-	if (type == DOUBLE) {
-		spawnAngle = (*(double*)data);
-	} else {
+	spawnAngle = lvl.getDouble("spawnAngle", exists);
+	if (!exists) {
 		printf("Error loading level: No spawn angle found\n");
 		spawnAngle = (0.0);
 	}
-	data = lvl.get("goalX", type);
-	if (type == DOUBLE) {
-		goal.setX(*(double*)data);
-	} else {
+	goal.setX(lvl.getDouble("goalX", exists));
+	if (!exists) {
 		printf("Error loading level: No goal x coordinate found\n");
 		goal.setX(0.0);
 	}
-	data = lvl.get("goalY", type);
-	if (type == DOUBLE) {
-		goal.setY(*(double*)data);
-	} else {
+	goal.setY(lvl.getDouble("goalY", exists));
+	if (!exists) {
 		printf("Error loading level: No goal y coordinate found\n");
 		goal.setY(0.0);
 	}
-	data = lvl.get("goalAngle", type);
-	if (type == DOUBLE) {
-		goalAngle = (*(double*)data);
-	} else {
+	goalAngle = lvl.getDouble("goalAngle", exists);
+	if (!exists) {
 		printf("Error loading level: No goal angle found\n");
 		goalAngle = (0.0);
 	}
-	DataObject* objs;
-	data = lvl.get("objects", type);
-	if (type == DATAOBJECT) {
-		objs = (DataObject*)data;
-	} else {
-		objs = new DataObject();
+	DataObject objs = lvl.getDataObject("objects", exists);
+	if (!exists) {
+		objs = DataObject();
 	}
 	//Wipe any existing data
+	for (GravityField* f : gravFields) {
+		delete f;
+	}
 	gravFields.clear();
+	for (Platform* p : platforms) {
+		delete p;
+	}
 	platforms.clear();
+	for (Entity* e : entities) {
+		delete e;
+	}
 	entities.clear();
 	//Load data from DataObjects
 	int i = 0;
-	data = objs->get(to_string(i), type);
-	while (type == DATAOBJECT) {
-		DataObject* item = (DataObject*)data;
-		data = item->get("id", type);
+	DataObject item = objs.getDataObject(to_string(i), exists);
+	while (exists) {
+		string id = item.getString("id", exists);
 		//ID found, parse object
-		if (type == STRING) {
-			string id = *(string*)data;
+		if (exists) {
 			//Go through all valid ids
 			if (id == "gravfield") {
 				GravityField* f = new GravityField();
@@ -312,30 +295,8 @@ void LevelRenderer::loadLevel(string filePath) {
 		}
 		//Get next item
 		i++;
-		data = objs->get(to_string(i), type);
+		item = objs.getDataObject(to_string(i), exists);
 	}
-	//TEMP TESTING
-	/*
-	GravityField* t = new GravityField();
-	t->setHeight(450);
-	t->setWidth(250);
-	t->setStrength(2);
-	t->setPos(Vec2D(400, 100));
-	t->setAngle(45);
-	gravFields.push_back(t);
-	Platform* p = new Platform();
-	p->setPos(Vec2D(400, -100));
-	p->setWidth(800);
-	p->setHeight(200);
-	p->setAngle(0);
-	platforms.push_back(p);
-	p = new Platform();
-	p->setPos(Vec2D(400, -350));
-	p->setWidth(1000);
-	p->setHeight(200);
-	p->setAngle(0);
-	platforms.push_back(p);
-	*/
 }
 
 

@@ -48,9 +48,9 @@ public:
 	// Returns if the selectable is selected
 	virtual bool isInBoundingBox(double x, double y);
 	// Returns a DataObject representing the storable object
-	virtual DataObject* save();
+	virtual DataObject save();
 	// Loads the storable object from the DataObject
-	virtual void load(DataObject* obj);
+	virtual void load(DataObject obj);
 protected:
 	Vec2D pos;
 	double width;

@@ -163,58 +163,44 @@ void GravityField::setStrength(double strength) {
 
 
 // Returns a DataObject representing the storable object
-DataObject* GravityField::save() {
-	DataObject* field = new DataObject();
+DataObject GravityField::save() {
+	DataObject field = DataObject();
 	//Magically convert to pointer to avoid dereferencing
-	double* x = new double(pos.getX());
-	double* y = new double(pos.getY());
-	field->add("id", STRING, &id);
-	field->add("x", DOUBLE, x);
-	field->add("y", DOUBLE, y);
-	field->add("width", DOUBLE, &width);
-	field->add("height", DOUBLE, &height);
-	field->add("angle", DOUBLE, &angle);
-	field->add("strength", DOUBLE, &strength);
+	field.add("id", id);
+	field.add("x", pos.getX());
+	field.add("y", pos.getY());
+	field.add("width", width);
+	field.add("height", height);
+	field.add("angle", angle);
+	field.add("strength", strength);
 	return field;
 }
 
 
 // Loads the storable object from the DataObject
-void GravityField::load(DataObject* obj) {
-	DATATYPE type;
-	void* data;
+void GravityField::load(DataObject obj) {
 	//Default values
-	double x = 0.0, y = 0.0;
-	double w = 0.0, h = 0.0;
-	double a = 0.0, s = 0.0;
+	double x, y, w, h, a, s;
 	//Load in values where possible
-	data = obj->get("x", type);
-	if (type == DOUBLE) {
-		x = *(double*)data;
+	x = obj.getDouble("x");
+	y = obj.getDouble("y");
+	w = obj.getDouble("width");
+	h = obj.getDouble("height");
+	a = obj.getDouble("angle");
+	s = obj.getDouble("strength");
+	//Move angle in range
+	if (a<0) {
+		a *= -1;
+		a -= (floor(a) / 360) * 360;
+		a = 360 - a;
 	}
-	data = obj->get("y", type);
-	if (type == DOUBLE) {
-		y = *(double*)data;
+	if (a > 360) {
+		a -= (floor(a) / 360) * 360;
 	}
-	data = obj->get("width", type);
-	if (type == DOUBLE) {
-		w = *(double*)data;
-	}
-	data = obj->get("height", type);
-	if (type == DOUBLE) {
-		h = *(double*)data;
-	}
-	data = obj->get("angle", type);
-	if (type == DOUBLE) {
-		a = *(double*)data;
-	}
-	data = obj->get("strength", type);
-	if (type == DOUBLE) {
-		s = *(double*)data;
-	}
+	//Assign values
 	pos = Vec2D(x, y);
-	width = w>0 ? w : 0;
-	height = h>0 ? h : 0;
+	width = w>SMALLEST_THICKNESS ? w : SMALLEST_THICKNESS;
+	height = h>SMALLEST_THICKNESS ? h : SMALLEST_THICKNESS;
 	angle = a;
 	strength = s;
 }

@@ -6,9 +6,9 @@ public:
 	Storable();
 	~Storable();
 	// Returns a DataObject representing the storable object
-	virtual DataObject* save();
+	virtual DataObject save();
 	// Loads the storable object from the DataObject
-	virtual void load(DataObject* obj);
+	virtual void load(DataObject obj);
 protected:
 	string id;
 };

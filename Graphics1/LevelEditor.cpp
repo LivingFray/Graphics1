@@ -110,6 +110,12 @@ LevelEditor::~LevelEditor() {
 void LevelEditor::update() {
 	//Move camera (tick only)
 	updateCamera(TICKRATE);
+	//temp
+	if (glfwGetKey(gameWindow, GLFW_KEY_SPACE)!=GLFW_RELEASE) {
+		for (int i = 0; i < 50; i++) {
+			loadLevel("Untitled.do");
+		}
+	}
 }
 
 // Draws the level

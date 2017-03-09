@@ -108,8 +108,8 @@ public:
 	// Returns if the selectable can be rotated
 	virtual bool canRotate();
 	// Returns a DataObject representing the storable object
-	virtual DataObject* save();
+	virtual DataObject save();
 	// Loads the storable object from the DataObject
-	virtual void load(DataObject* obj);
+	virtual void load(DataObject obj);
 };
 

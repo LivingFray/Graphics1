@@ -44,9 +44,9 @@ public:
 	// Sets the strength of the gravity field
 	virtual void setStrength(double strength);
 	// Returns a DataObject representing the storable object
-	virtual DataObject* save();
+	virtual DataObject save();
 	// Loads the storable object from the DataObject
-	virtual void load(DataObject* obj);
+	virtual void load(DataObject obj);
 protected:
 	Vec2D pos;
 	double width;

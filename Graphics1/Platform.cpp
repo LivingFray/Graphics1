@@ -181,51 +181,40 @@ bool Platform::isInBoundingBox(double x, double y) {
 
 
 // Returns a DataObject representing the storable object
-DataObject* Platform::save() {
-	DataObject* platform = new DataObject();
-	double* x = new double(pos.getX());
-	double* y = new double(pos.getY());
-	platform->add("id", STRING, &id);
-	platform->add("x", DOUBLE, x);
-	platform->add("y", DOUBLE, y);
-	platform->add("width", DOUBLE, &width);
-	platform->add("height", DOUBLE, &height);
-	platform->add("angle", DOUBLE, &angle);
+DataObject Platform::save() {
+	DataObject platform = DataObject();
+	platform.add("id", id);
+	platform.add("x", pos.getX());
+	platform.add("y", pos.getY());
+	platform.add("width", width);
+	platform.add("height", height);
+	platform.add("angle", angle);
 	return platform;
 }
 
 
 // Loads the storable object from the DataObject
-void Platform::load(DataObject* obj) {
-	DATATYPE type;
-	void* data;
+void Platform::load(DataObject obj) {
 	//Default values
-	double x = 0.0, y = 0.0;
-	double w = 0.0, h = 0.0;
-	double a = 0.0;
+	double x, y, w, h, a;
 	//Load in values where possible
-	data = obj->get("x", type);
-	if (type == DOUBLE) {
-		x = *(double*)data;
+	x = obj.getDouble("x");
+	y = obj.getDouble("y");
+	w = obj.getDouble("width");
+	h = obj.getDouble("height");
+	a = obj.getDouble("angle");
+	//Move angle in range
+	if (a<0) {
+		a *= -1;
+		a -= (floor(a)/360) * 360;
+		a = 360 - a;
 	}
-	data = obj->get("y", type);
-	if (type == DOUBLE) {
-		y = *(double*)data;
+	if (a > 360) {
+		a -= (floor(a) / 360) * 360;
 	}
-	data = obj->get("width", type);
-	if (type == DOUBLE) {
-		w = *(double*)data;
-	}
-	data = obj->get("height", type);
-	if (type == DOUBLE) {
-		h = *(double*)data;
-	}
-	data = obj->get("angle", type);
-	if (type == DOUBLE) {
-		a = *(double*)data;
-	}
+	//Assign values
 	pos = Vec2D(x, y);
-	width = w>0 ? w : 0;
-	height = h>0 ? h : 0;
+	width = w>SMALLEST_THICKNESS ? w : SMALLEST_THICKNESS;
+	height = h>SMALLEST_THICKNESS ? h : SMALLEST_THICKNESS;
 	angle = a;
 }

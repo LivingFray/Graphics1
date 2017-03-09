@@ -363,51 +363,38 @@ bool Entity::canRotate() {
 
 
 // Returns a DataObject representing the storable object
-DataObject* Entity::save() {
-	DataObject* entity = new DataObject();
-	double* x = new double(pos.getX());
-	double* y = new double(pos.getY());
-	double* vx = new double(vel.getX());
-	double* vy = new double(vel.getY());
-	entity->add("id", STRING, &id);
-	entity->add("x", DOUBLE, x);
-	entity->add("y", DOUBLE, y);
-	entity->add("angle", DOUBLE, &angle);
-	entity->add("velX", DOUBLE, vx);
-	entity->add("velY", DOUBLE, vy);
+DataObject Entity::save() {
+	DataObject entity = DataObject();
+	entity.add("id", id);
+	entity.add("x", pos.getX());
+	entity.add("y", pos.getY());
+	entity.add("angle", angle);
+	entity.add("velX", vel.getX());
+	entity.add("velY", vel.getY());
 	return entity;
 }
 
 
 // Loads the storable object from the DataObject
-void Entity::load(DataObject* obj) {
-	DATATYPE type;
-	void* data;
+void Entity::load(DataObject obj) {
 	//Default values
-	double x = 0.0, y = 0.0;
-	double vx = 0, vy = 0.0;
-	double a = 0.0;
+	double x, y, vx, vy, a;
 	//Load in values where possible
-	data = obj->get("x", type);
-	if (type == DOUBLE) {
-		x = *(double*)data;
+	x = obj.getDouble("x");
+	y = obj.getDouble("y");
+	a = obj.getDouble("angle");
+	vx = obj.getDouble("velX");
+	vy = obj.getDouble("velY");
+	//Move angle in range
+	if (a<0) {
+		a *= -1;
+		a -= (floor(a) / 360) * 360;
+		a = 360 - a;
 	}
-	data = obj->get("y", type);
-	if (type == DOUBLE) {
-		y = *(double*)data;
+	if (a > 360) {
+		a -= (floor(a) / 360) * 360;
 	}
-	data = obj->get("velX", type);
-	if (type == DOUBLE) {
-		vx = *(double*)data;
-	}
-	data = obj->get("velY", type);
-	if (type == DOUBLE) {
-		vy = *(double*)data;
-	}
-	data = obj->get("angle", type);
-	if (type == DOUBLE) {
-		a = *(double*)data;
-	}
+	//Assign values
 	pos = Vec2D(x, y);
 	vel = Vec2D(vx, vy);
 	angle = a;

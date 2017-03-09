@@ -9,14 +9,14 @@ LevelSelect::LevelSelect() {
 	//Find all the levels we can
 	//TODO: Stringent tests on validity of level
 	vector<string> paths;
-	DATATYPE t;
+	bool exists;
 	for (auto& d : directory_iterator("Levels")) {
 		DataObject* lvl = new DataObject();
 		lvl->loadFromFile(d.path().string());
-		void* dat = lvl->get("name", t);
-		if (t == STRING) {
+		string lName = lvl->getString("name", exists);
+		if (exists) {
 			//TODO: TMP, REMOVE OUTPUT
-			std::cout << d << " " << *((string*)dat) << std::endl;
+			std::cout << d << " " << lName << std::endl;
 			levels.push_back(lvl);
 			paths.push_back(d.path().string());
 		}
@@ -28,7 +28,7 @@ LevelSelect::LevelSelect() {
 		l->setY(sHeight - (1 + (i / 2)) * 50);
 		l->setWidth(sWidth / 4);
 		l->setHeight(50);
-		l->setLabel(*(string*)levels[i]->get("name", t));
+		l->setLabel(levels[i]->getString("name"));
 		l->setPath(paths[i]);
 		buttons.push_back(l);
 	}
@@ -38,6 +38,7 @@ LevelSelect::LevelSelect() {
 
 
 LevelSelect::~LevelSelect() {
+	//TODO: Delete buttons
 }
 
 
