@@ -98,7 +98,14 @@ LevelEditor::LevelEditor() {
 		b->setCallback(i.create);
 		buttons.push_back(b);
 	}
+	fileLocation = TextBox();
+	fileLocation.setX(100);
+	fileLocation.setY(200);
+	fileLocation.setWidth(600);
+	fileLocation.setHeight(50);
+	fileLocation.setText("tmp");
 	//Test
+	//TODO: Start with choosing a level
 	loadLevel("notalevel");
 }
 
@@ -113,7 +120,7 @@ void LevelEditor::update() {
 	//Move camera (tick only)
 	updateCamera(TICKRATE);
 	//temp
-	if (glfwGetKey(gameWindow, GLFW_KEY_SPACE)!=GLFW_RELEASE) {
+	if (glfwGetKey(gameWindow, GLFW_KEY_SPACE) != GLFW_RELEASE) {
 		for (int i = 0; i < 50; i++) {
 			loadLevel("Untitled.do");
 		}
@@ -243,7 +250,11 @@ void LevelEditor::draw(double ex) {
 		loadButton.setY(y);
 		loadButton.draw();
 		//File location
-
+		fileLocation.setWidth(sWidth * 0.5);
+		fileLocation.setX(sWidth * 0.5);
+		fileLocation.setY(y * 2);
+		fileLocation.setHeight(fontSmall.h * 1.5);
+		fileLocation.draw();
 		//Level name
 
 		//Default gravity
@@ -360,165 +371,168 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 			int index = (int)x / ((int)(sHeight * 0.05));
 			if (action == GLFW_RELEASE && index < EDITOR_BAR_BUTTONS) {
 				current = index;
+				return;
 			}
-		} else {
-			//Convert coords to world coords
-			Vec2D world = getWorldCoordinates(Vec2D(x, y));
-			Vec2D pos;
-			if (selected) {
-				pos = selected->getPos();
+		}
+		if (action == GLFW_PRESS && y >= sHeight * 0.95) {
+			return;
+		}
+		//Convert coords to world coords
+		Vec2D world = getWorldCoordinates(Vec2D(x, y));
+		Vec2D pos;
+		if (selected) {
+			pos = selected->getPos();
+		}
+		switch (current) {
+		case 0: //Select
+			if (action == GLFW_PRESS) {
+				select(world);
 			}
-			switch (current) {
-			case 0: //Select
+		case 1: //Move
+		{
+			//If the current object cannot be moved or doesn't exist
+			if (!selected || !selected->canMove()) {
 				if (action == GLFW_PRESS) {
 					select(world);
 				}
-			case 1: //Move
-			{
-				//If the current object cannot be moved or doesn't exist
-				if (!selected || !selected->canMove()) {
-					if (action == GLFW_PRESS) {
-						select(world);
-					}
-					break;
+				break;
+			}
+			//Stop moving the object
+			if (action == GLFW_RELEASE) {
+				moving = false;
+				break;
+			}
+			//For each direction check if mouse is grabbing
+			//Possible vertical match
+			if (world.getX() >= pos.getX() - SELECT_RADIUS && world.getX() <= pos.getX() + SELECT_RADIUS) {
+				if (world.getY() >= pos.getY() + MOVE_SIZE - SELECT_RADIUS && world.getY() <= pos.getY() + MOVE_SIZE + SELECT_RADIUS) {
+					moveDir = Vec2D(0, 1);
+					moving = true;
+				} else if (world.getY() >= pos.getY() - MOVE_SIZE - SELECT_RADIUS && world.getY() <= pos.getY() - MOVE_SIZE + SELECT_RADIUS) {
+					moveDir = Vec2D(0, -1);
+					moving = true;
 				}
-				//Stop moving the object
-				if (action == GLFW_RELEASE) {
-					moving = false;
-					break;
+			}
+			//Possible horizontal match
+			else if (world.getY() >= pos.getY() - SELECT_RADIUS && world.getY() <= pos.getY() + SELECT_RADIUS) {
+				if (world.getX() >= pos.getX() + MOVE_SIZE - SELECT_RADIUS && world.getX() <= pos.getX() + MOVE_SIZE + SELECT_RADIUS) {
+					moveDir = Vec2D(1, 0);
+					moving = true;
+				} else if (world.getX() >= pos.getX() - MOVE_SIZE - SELECT_RADIUS && world.getX() <= pos.getX() - MOVE_SIZE + SELECT_RADIUS) {
+					moveDir = Vec2D(-1, 0);
+					moving = true;
 				}
-				//For each direction check if mouse is grabbing
-				//Possible vertical match
-				if (world.getX() >= pos.getX() - SELECT_RADIUS && world.getX() <= pos.getX() + SELECT_RADIUS) {
-					if (world.getY() >= pos.getY() + MOVE_SIZE - SELECT_RADIUS && world.getY() <= pos.getY() + MOVE_SIZE + SELECT_RADIUS) {
-						moveDir = Vec2D(0, 1);
-						moving = true;
-					} else if (world.getY() >= pos.getY() - MOVE_SIZE - SELECT_RADIUS && world.getY() <= pos.getY() - MOVE_SIZE + SELECT_RADIUS) {
-						moveDir = Vec2D(0, -1);
-						moving = true;
-					}
-				}
-				//Possible horizontal match
-				else if (world.getY() >= pos.getY() - SELECT_RADIUS && world.getY() <= pos.getY() + SELECT_RADIUS) {
-					if (world.getX() >= pos.getX() + MOVE_SIZE - SELECT_RADIUS && world.getX() <= pos.getX() + MOVE_SIZE + SELECT_RADIUS) {
-						moveDir = Vec2D(1, 0);
-						moving = true;
-					} else if (world.getX() >= pos.getX() - MOVE_SIZE - SELECT_RADIUS && world.getX() <= pos.getX() - MOVE_SIZE + SELECT_RADIUS) {
-						moveDir = Vec2D(-1, 0);
-						moving = true;
-					}
-				}
-				if (!moving) {
+			}
+			if (!moving) {
+				select(world);
+			}
+			break;
+		}
+		case 2: //Resize
+		{
+			//If the current object cannot be resized or doesn't exist
+			if (!selected || !selected->canMove()) {
+				if (action == GLFW_PRESS) {
 					select(world);
 				}
 				break;
 			}
-			case 2: //Resize
-			{
-				//If the current object cannot be resized or doesn't exist
-				if (!selected || !selected->canMove()) {
-					if (action == GLFW_PRESS) {
-						select(world);
-					}
-					break;
-				}
-				//Stop resizing the object
-				if (action == GLFW_RELEASE) {
-					resizing = 0;
-					break;
-				}
-				//Determine vectors handles lie upon
-				Vec2D width = Vec2D(cos(selected->getAngle() * DEG_TO_RAD), sin(selected->getAngle() * DEG_TO_RAD));
-				Vec2D height = Vec2D(-width.getY(), width.getX());
-				width.multiplyBy(selected->getWidth() * 0.5);
-				height.multiplyBy(selected->getHeight() * 0.5);
-				//Check each handle to see if it is being clicked on
-				Vec2D handle = pos.add(width);
-				if (world.getX() >= handle.getX() - SELECT_RADIUS && world.getX() <= handle.getX() + SELECT_RADIUS
-					&& world.getY() >= handle.getY() - SELECT_RADIUS && world.getY() <= handle.getY() + SELECT_RADIUS) {
-					scaleDir = width;
-					resizing = 1;
-					break;
-				}
-				handle = pos.subtract(width);
-				if (world.getX() >= handle.getX() - SELECT_RADIUS && world.getX() <= handle.getX() + SELECT_RADIUS
-					&& world.getY() >= handle.getY() - SELECT_RADIUS && world.getY() <= handle.getY() + SELECT_RADIUS) {
-					scaleDir = width.multiply(-1);
-					resizing = 2;
-					break;
-				}
-				handle = pos.add(height);
-				if (world.getX() >= handle.getX() - SELECT_RADIUS && world.getX() <= handle.getX() + SELECT_RADIUS
-					&& world.getY() >= handle.getY() - SELECT_RADIUS && world.getY() <= handle.getY() + SELECT_RADIUS) {
-					scaleDir = height;
-					resizing = 3;
-					break;
-				}
-				handle = pos.subtract(height);
-				if (world.getX() >= handle.getX() - SELECT_RADIUS && world.getX() <= handle.getX() + SELECT_RADIUS
-					&& world.getY() >= handle.getY() - SELECT_RADIUS && world.getY() <= handle.getY() + SELECT_RADIUS) {
-					scaleDir = height.multiply(-1);
-					resizing = 4;
-					break;
-				}
-				if (!resizing) {
-					select(world);
-				}
+			//Stop resizing the object
+			if (action == GLFW_RELEASE) {
+				resizing = 0;
 				break;
 			}
-			case 3: //Rotate
-			{
-				//If the current object can't be rotated or doesn't exist
-				if (!selected || !selected->canRotate()) {
-					break;
-				}
-				//Stop rotating the object
-				if (action == GLFW_RELEASE) {
-					rotating = false;
-					break;
-				}
-				double d = world.subtract(pos).magnitudeSquare();
-				double min = MOVE_SIZE - SELECT_RADIUS;
-				double max = MOVE_SIZE + SELECT_RADIUS;
-				if (d >= min * min && d <= max * max) {
-					rotating = true;
-					Vec2D dif = world.subtract(pos);
-					rotateFrom = atan2(dif.getY(), dif.getX());
+			//Determine vectors handles lie upon
+			Vec2D width = Vec2D(cos(selected->getAngle() * DEG_TO_RAD), sin(selected->getAngle() * DEG_TO_RAD));
+			Vec2D height = Vec2D(-width.getY(), width.getX());
+			width.multiplyBy(selected->getWidth() * 0.5);
+			height.multiplyBy(selected->getHeight() * 0.5);
+			//Check each handle to see if it is being clicked on
+			Vec2D handle = pos.add(width);
+			if (world.getX() >= handle.getX() - SELECT_RADIUS && world.getX() <= handle.getX() + SELECT_RADIUS
+				&& world.getY() >= handle.getY() - SELECT_RADIUS && world.getY() <= handle.getY() + SELECT_RADIUS) {
+				scaleDir = width;
+				resizing = 1;
+				break;
+			}
+			handle = pos.subtract(width);
+			if (world.getX() >= handle.getX() - SELECT_RADIUS && world.getX() <= handle.getX() + SELECT_RADIUS
+				&& world.getY() >= handle.getY() - SELECT_RADIUS && world.getY() <= handle.getY() + SELECT_RADIUS) {
+				scaleDir = width.multiply(-1);
+				resizing = 2;
+				break;
+			}
+			handle = pos.add(height);
+			if (world.getX() >= handle.getX() - SELECT_RADIUS && world.getX() <= handle.getX() + SELECT_RADIUS
+				&& world.getY() >= handle.getY() - SELECT_RADIUS && world.getY() <= handle.getY() + SELECT_RADIUS) {
+				scaleDir = height;
+				resizing = 3;
+				break;
+			}
+			handle = pos.subtract(height);
+			if (world.getX() >= handle.getX() - SELECT_RADIUS && world.getX() <= handle.getX() + SELECT_RADIUS
+				&& world.getY() >= handle.getY() - SELECT_RADIUS && world.getY() <= handle.getY() + SELECT_RADIUS) {
+				scaleDir = height.multiply(-1);
+				resizing = 4;
+				break;
+			}
+			if (!resizing) {
+				select(world);
+			}
+			break;
+		}
+		case 3: //Rotate
+		{
+			//If the current object can't be rotated or doesn't exist
+			if (!selected || !selected->canRotate()) {
+				break;
+			}
+			//Stop rotating the object
+			if (action == GLFW_RELEASE) {
+				rotating = false;
+				break;
+			}
+			double d = world.subtract(pos).magnitudeSquare();
+			double min = MOVE_SIZE - SELECT_RADIUS;
+			double max = MOVE_SIZE + SELECT_RADIUS;
+			if (d >= min * min && d <= max * max) {
+				rotating = true;
+				Vec2D dif = world.subtract(pos);
+				rotateFrom = atan2(dif.getY(), dif.getX());
+			} else {
+				select(world);
+			}
+			break;
+		}
+		case 4: //Delete
+		{
+			//Deselect current object in case it is removed
+			if (selected) {
+				selected = NULL;
+			}
+			//Prevent accidently clicking on something
+			if (action != GLFW_RELEASE) {
+				break;
+			}
+			auto gravIt = gravFields.begin();
+			while (gravIt != gravFields.end()) {
+				if ((*gravIt)->isInBoundingBox(world.getX(), world.getY()) && (*gravIt)->canDelete()) {
+					delete *gravIt;
+					gravIt = gravFields.erase(gravIt);
 				} else {
-					select(world);
-				}
-				break;
-			}
-			case 4: //Delete
-			{
-				//Deselect current object in case it is removed
-				if (selected) {
-					selected = NULL;
-				}
-				//Prevent accidently clicking on something
-				if (action != GLFW_RELEASE) {
-					break;
-				}
-				auto gravIt = gravFields.begin();
-				while (gravIt != gravFields.end()) {
-					if ((*gravIt)->isInBoundingBox(world.getX(), world.getY()) && (*gravIt)->canDelete()) {
-						delete *gravIt;
-						gravIt = gravFields.erase(gravIt);
-					} else {
-						gravIt++;
-					}
-				}
-				auto platIt = platforms.begin();
-				while (platIt != platforms.end()) {
-					if ((*platIt)->isInBoundingBox(world.getX(), world.getY()) && (*platIt)->canDelete()) {
-						delete *platIt;
-						platIt = platforms.erase(platIt);
-					} else {
-						platIt++;
-					}
+					gravIt++;
 				}
 			}
+			auto platIt = platforms.begin();
+			while (platIt != platforms.end()) {
+				if ((*platIt)->isInBoundingBox(world.getX(), world.getY()) && (*platIt)->canDelete()) {
+					delete *platIt;
+					platIt = platforms.erase(platIt);
+				} else {
+					platIt++;
+				}
 			}
+		}
 		}
 	}
 }
@@ -622,7 +636,7 @@ void LevelEditor::saveLevel(string filePath) {
 	auto platIt = platforms.begin();
 	while (platIt != platforms.end()) {
 		string id = (*platIt)->getId();
-		if (id=="spawn" || id=="goal") {
+		if (id == "spawn" || id == "goal") {
 			delete *platIt;
 			platIt = platforms.erase(platIt);
 		} else {

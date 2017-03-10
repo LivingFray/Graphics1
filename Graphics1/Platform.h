@@ -51,9 +51,23 @@ public:
 	virtual DataObject save();
 	// Loads the storable object from the DataObject
 	virtual void load(DataObject obj);
+	// Sets the texture of the platform
+	virtual void setTexture(string tex);
+	// Sets the scale of the texture in the x axis
+	virtual void setTexScaleX(double x);
+	// Sets the scale of the texture in the y axis
+	virtual void setTexScaleY(double y);
+	// Sets the scale of the texture in the x axis
+	virtual double getTexScaleX();
+	// Sets the scale of the texture in the y axis
+	virtual double getTexScaleY();
 protected:
 	Vec2D pos;
 	double width;
 	double height;
 	double angle;
+	GLuint texture;
+	string textureString;
+	double texX;
+	double texY;
 };

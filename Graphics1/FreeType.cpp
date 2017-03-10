@@ -2,6 +2,8 @@
 	A quick and simple opengl font library that uses GNU freetype2, written
 	and distributed as part of a tutorial for nehe.gamedev.net.
 	Sven Olsen, 2003
+
+	...with added getLength method by Michael Maskell, 2017
 */
 
 
@@ -19,8 +21,21 @@ namespace freetype {
 		return rval;
 	}
 
+	///Get the length of a string displayed with a font
+	int getLength(const font_data &font, const char *fmt) {
+		//Doesn't handle new lines, but I don't plan on needing them
+		int i = 0;
+		int len = 0;
+		while (fmt[i] != '\0') {
+			len += font.sizes[fmt[i]];
+			i++;
+		}
+		return len;
+	}
+
+
 	///Create a display list coresponding to the give character.
-	void make_dlist(FT_Face face, char ch, GLuint list_base, GLuint * tex_base) {
+	int make_dlist(FT_Face face, char ch, GLuint list_base, GLuint * tex_base) {
 
 		//The first thing we do is get FreeType to render our character
 		//into a bitmap.  This actually requires a couple of FreeType commands:
@@ -131,6 +146,7 @@ namespace freetype {
 
 		//Finnish the display list
 		glEndList();
+		return face->glyph->advance.x >> 6;
 	}
 
 
@@ -170,7 +186,7 @@ namespace freetype {
 
 		//This is where we actually create each of the fonts display lists.
 		for (unsigned char i = 0; i < 128; i++)
-			make_dlist(face, i, list_base, textures);
+			sizes[i] = make_dlist(face, i, list_base, textures);
 
 		//We don't need the face information now that the display
 		//lists have been created, so we free the assosiated resources.

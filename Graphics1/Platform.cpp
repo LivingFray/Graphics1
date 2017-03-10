@@ -9,6 +9,10 @@ Platform::Platform() {
 	height = 0.0;
 	angle = 0.0;
 	id = "platform";
+	textureString = "error";
+	texture = ImageLoader::getImage(textureString);
+	texX = 1;
+	texY = 1;
 }
 
 
@@ -100,15 +104,21 @@ void Platform::onCollide(Collider* other) {
 // Draws the platform ex seconds after last update
 void Platform::draw(double ex) {
 	glPushMatrix();
-	glColor3ub(0, 255, 0);
 	glTranslated(pos.getX(), pos.getY(), 0.0);
 	glRotated(angle, 0.0, 0.0, 1.0);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, texture);
 	glBegin(GL_QUADS);
+	glTexCoord2d(0.0, 0.0);
 	glVertex2d(-width / 2, -height / 2);
+	glTexCoord2d(0.0, texY);
 	glVertex2d(-width / 2, height / 2);
+	glTexCoord2d(texX, texY);
 	glVertex2d(width / 2, height / 2);
+	glTexCoord2d(texX, 0.0);
 	glVertex2d(width / 2, -height / 2);
 	glEnd();
+	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 }
 
@@ -189,6 +199,9 @@ DataObject Platform::save() {
 	platform.add("width", width);
 	platform.add("height", height);
 	platform.add("angle", angle);
+	platform.add("texture", textureString);
+	platform.add("texScaleX", texX);
+	platform.add("texScaleY", texY);
 	return platform;
 }
 
@@ -196,13 +209,17 @@ DataObject Platform::save() {
 // Loads the storable object from the DataObject
 void Platform::load(DataObject obj) {
 	//Default values
-	double x, y, w, h, a;
+	double x, y, w, h, a, u, v;
+	string t;
 	//Load in values where possible
 	x = obj.getDouble("x");
 	y = obj.getDouble("y");
 	w = obj.getDouble("width");
 	h = obj.getDouble("height");
 	a = obj.getDouble("angle");
+	t = obj.getString("texture");
+	u = obj.getDouble("texScaleX");
+	v = obj.getDouble("texScaleY");
 	//Move angle in range
 	if (a<0) {
 		a *= -1;
@@ -217,4 +234,34 @@ void Platform::load(DataObject obj) {
 	width = w>SMALLEST_THICKNESS ? w : SMALLEST_THICKNESS;
 	height = h>SMALLEST_THICKNESS ? h : SMALLEST_THICKNESS;
 	angle = a;
+}
+
+
+// Sets the texture of the platform
+void Platform::setTexture(string tex) {
+	texture = ImageLoader::getImage(tex);
+	textureString = tex;
+}
+
+// Sets the scale of the texture in the x axis
+void Platform::setTexScaleX(double x) {
+	texX = x;
+}
+
+
+// Sets the scale of the texture in the y axis
+void Platform::setTexScaleY(double y) {
+	texY = y;
+}
+
+
+// Sets the scale of the texture in the x axis
+double Platform::getTexScaleX() {
+	return texY;
+}
+
+
+// Sets the scale of the texture in the y axis
+double Platform::getTexScaleY() {
+	return texY;
 }

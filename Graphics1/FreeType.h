@@ -45,7 +45,7 @@ struct font_data {
 	float h;			///< Holds the height of the font.
 	GLuint * textures;	///< Holds the texture id's 
 	GLuint list_base;	///< Holds the first display list id
-
+	int sizes[128];		///< Holds the size of each character
 	//The init function will create a font of
 	//of the height h from the file fname.
 	void init(const char * fname, unsigned int h);
@@ -58,6 +58,8 @@ struct font_data {
 //out text at window coordinates x,y, using the font ft_font.
 //The current modelview matrix will also be applied to the text. 
 void print(const font_data &ft_font, float x, float y, const char *fmt, ...) ;
+
+int getLength(const font_data &ft_font, const char *fmt);
 
 }
 

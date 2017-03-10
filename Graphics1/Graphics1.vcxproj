@@ -161,6 +161,7 @@
     <ClCompile Include="Selectable.cpp" />
     <ClCompile Include="SpawnPoint.cpp" />
     <ClCompile Include="Storable.cpp" />
+    <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="Vec2D.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -188,6 +189,7 @@
     <ClInclude Include="Selectable.h" />
     <ClInclude Include="SpawnPoint.h" />
     <ClInclude Include="Storable.h" />
+    <ClInclude Include="TextBox.h" />
     <ClInclude Include="Vec2D.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

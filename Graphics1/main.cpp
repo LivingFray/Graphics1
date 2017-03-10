@@ -20,6 +20,7 @@ TODO: Level loading
 TODO: Every stupid thing on the mark sheet
 TODO: Settings
 TODO: Ensure all states can be exited
+TODO: Level win screen
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;
@@ -53,8 +54,8 @@ void init() {
 	//Initialise the texture loader
 	ImageLoader::makeMissingTexture();
 	//Create the font
-	fontLarge.init("arial.ttf", FONT_SIZE_LARGE);
-	fontSmall.init("arial.ttf", FONT_SIZE_SMALL);
+	fontLarge.init(FONT_NAME, FONT_SIZE_LARGE);
+	fontSmall.init(FONT_NAME, FONT_SIZE_SMALL);
 	//Enable alpha channel for OpenGL
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -92,6 +93,11 @@ void resize(GLFWwindow* window, int width, int height) {
 	glOrtho(0.0, width, 0.0, height, -1.0, 1.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	//Monkey around with the fonts
+	fontLarge.clean();
+	fontLarge.init(FONT_NAME, height / 25);
+	fontSmall.clean();
+	fontSmall.init(FONT_NAME, height / 50);
 }
 //-----------------------Window creation and game loop-----------------------//
 int main() {
@@ -113,13 +119,13 @@ int main() {
 	glfwSwapInterval(1);
 	//Handle window events
 	glfwSetWindowSizeCallback(gameWindow, resize);
+	//Initialise the game
+	init();
 	//Call resize to initialise display
 	resize(gameWindow, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	glfwSetKeyCallback(gameWindow, keyHandler);
 	glfwSetMouseButtonCallback(gameWindow, mouseHandler);
 	glfwSetCursorPosCallback(gameWindow, mouseMoveHandler);
-	//Initialise the game
-	init();
 	//Game loop, calls update every TICKRATE ms and renders whenever it can
 	//I didn't invent this type of main loop, I found it online a while ago
 	//I did, however, implement it

@@ -115,8 +115,9 @@ void Button::draw() {
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 	glColor3ub(255, 255, 255);
+	float centre = freetype::getLength(fontLarge, label.c_str()) * 0.5f;
 	//Oh the wonders of fonts and their heights not including the entire letter
-	freetype::print(fontLarge, (float)x - sX + BUTTON_PADDING, (float)y - fontLarge.h * 0.375f, label.c_str());
+	freetype::print(fontLarge, (float)x - centre, (float)y - fontLarge.h * 0.375f, label.c_str());
 }
 
 void Button::draw(double ex) {

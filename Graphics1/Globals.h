@@ -30,6 +30,8 @@
 #define FONT_SIZE_LARGE 24
 //The default smaller font size used
 #define FONT_SIZE_SMALL 12
+//The name of the font being used
+#define FONT_NAME "arial.ttf"
 //Useful angles
 #define PI 3.14159265359
 #define TAU 6.28318530718

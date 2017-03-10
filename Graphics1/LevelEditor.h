@@ -2,6 +2,7 @@
 #include "LevelRenderer.h"
 #include "BaseState.h"
 #include "GradButton.h"
+#include "TextBox.h"
 //The number of buttons in the editor bar
 #define EDITOR_BAR_BUTTONS 5
 class LevelEditor:
@@ -60,5 +61,6 @@ protected:
 	Button saveButton;
 	Button loadButton;
 	string fileLoc;
+	TextBox fileLocation;
 };
 
