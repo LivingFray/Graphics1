@@ -1,6 +1,8 @@
 #include "LevelEditor.h"
 #include "MainMenu.h"
 #include "GradButton.h"
+#include "SpawnPoint.h"
+#include "Goal.h"
 #define EDITOR_MOVE_SPEED 50
 #define EDITOR_ROTATE_SPEED 30
 #define MOVE_SIZE 50
@@ -499,7 +501,8 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 				}
 				auto gravIt = gravFields.begin();
 				while (gravIt != gravFields.end()) {
-					if ((*gravIt)->isInBoundingBox(world.getX(), world.getY())) {
+					if ((*gravIt)->isInBoundingBox(world.getX(), world.getY()) && (*gravIt)->canDelete()) {
+						delete *gravIt;
 						gravIt = gravFields.erase(gravIt);
 					} else {
 						gravIt++;
@@ -507,7 +510,8 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 				}
 				auto platIt = platforms.begin();
 				while (platIt != platforms.end()) {
-					if ((*platIt)->isInBoundingBox(world.getX(), world.getY())) {
+					if ((*platIt)->isInBoundingBox(world.getX(), world.getY()) && (*platIt)->canDelete()) {
+						delete *platIt;
 						platIt = platforms.erase(platIt);
 					} else {
 						platIt++;
@@ -614,8 +618,29 @@ string LevelEditor::getFileLocation() {
 // Saves the level to the given file
 void LevelEditor::saveLevel(string filePath) {
 	//TODO: Checks for valid file location/name etc
+	//Remove spawn and goal objects
+	auto platIt = platforms.begin();
+	while (platIt != platforms.end()) {
+		string id = (*platIt)->getId();
+		if (id=="spawn" || id=="goal") {
+			delete *platIt;
+			platIt = platforms.erase(platIt);
+		} else {
+			platIt++;
+		}
+	}
 	LevelRenderer::saveLevel(filePath);
 	inSaveMenu = false;
+	//Re-add spawn+goal objects
+	SpawnPoint* spawnObj = new SpawnPoint();
+	spawnObj->setPos(spawn);
+	spawnObj->setAngle(spawnAngle);
+	platforms.push_back(spawnObj);
+	Goal* goalObj = new Goal();
+	goalObj->setPos(goal);
+	goalObj->setAngle(goalAngle);
+	platforms.push_back(goalObj);
+
 }
 
 
@@ -624,6 +649,14 @@ void LevelEditor::loadLevel(string filePath) {
 	//TODO: Checks for valid path
 	LevelRenderer::loadLevel(filePath);
 	inSaveMenu = false;
+	SpawnPoint* spawnObj = new SpawnPoint();
+	spawnObj->setPos(spawn);
+	spawnObj->setAngle(spawnAngle);
+	platforms.push_back(spawnObj);
+	Goal* goalObj = new Goal();
+	goalObj->setPos(goal);
+	goalObj->setAngle(goalAngle);
+	platforms.push_back(goalObj);
 }
 
 

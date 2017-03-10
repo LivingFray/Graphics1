@@ -169,6 +169,32 @@ void LevelRenderer::draw(double ex) {
 	for (Platform* p : platforms) {
 		p->draw(ex);
 	}
+	//Draw the spawn and goal
+	//TODO: The textures
+	//Spawn
+	glPushMatrix();
+	glColor3ub(150, 150, 120);
+	glTranslated(spawn.getX(), spawn.getY(), 0.0);
+	glRotated(spawnAngle, 0.0, 0.0, 1.0);
+	glBegin(GL_QUADS);
+	glVertex2d(-PLAYER_WIDTH * SPAWN_SCALE * 0.5, -PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+	glVertex2d(-PLAYER_WIDTH * SPAWN_SCALE * 0.5, PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+	glVertex2d(PLAYER_WIDTH * SPAWN_SCALE * 0.5, PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+	glVertex2d(PLAYER_WIDTH * SPAWN_SCALE * 0.5, -PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+	glEnd();
+	glPopMatrix();
+	//Goal
+	glPushMatrix();
+	glColor3ub(150, 150, 50);
+	glTranslated(goal.getX(), goal.getY(), 0.0);
+	glRotated(goalAngle, 0.0, 0.0, 1.0);
+	glBegin(GL_QUADS);
+	glVertex2d(-PLAYER_WIDTH * SPAWN_SCALE * 0.5, -PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+	glVertex2d(-PLAYER_WIDTH * SPAWN_SCALE * 0.5, PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+	glVertex2d(PLAYER_WIDTH * SPAWN_SCALE * 0.5, PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+	glVertex2d(PLAYER_WIDTH * SPAWN_SCALE * 0.5, -PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+	glEnd();
+	glPopMatrix();
 	//Draw the entities
 	for (Entity* e : entities) {
 		e->draw(ex);
@@ -339,4 +365,52 @@ Vec2D LevelRenderer::getWorldCoordinates(Vec2D screen) {
 	//Offset from the world origin
 	world.addTo(getCameraAt(0));
 	return world;
+}
+
+
+// Sets the position of the spawn point
+void LevelRenderer::setSpawn(Vec2D pos) {
+	spawn = pos;
+}
+
+
+// Gets the position of the spawn point
+Vec2D LevelRenderer::getSpawn() {
+	return spawn;
+}
+
+
+// Sets the position of the goal
+void LevelRenderer::setGoal(Vec2D pos) {
+	goal = pos;
+}
+
+
+// Gets the position of the goal
+Vec2D LevelRenderer::getGoal() {
+	return goal;
+}
+
+
+// Sets the angle of the spawn point
+void LevelRenderer::setSpawnAngle(double a) {
+	spawnAngle = a;
+}
+
+
+// Gets the angle of the spawn point
+double LevelRenderer::getSpawnAngle() {
+	return spawnAngle;
+}
+
+
+// Sets the angle of the goal
+void LevelRenderer::setGoalAngle(double a) {
+	goalAngle = a;
+}
+
+
+// Gets the angle of the goal
+double LevelRenderer::getGoalAngle() {
+	return goalAngle;
 }

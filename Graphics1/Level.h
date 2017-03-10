@@ -13,7 +13,9 @@ using namespace std;
 class Entity;
 class Player;
 
-class Level: public BaseState, LevelRenderer {
+class Level: 
+	public BaseState, 
+	public LevelRenderer {
 public:
 	Level();
 	~Level();

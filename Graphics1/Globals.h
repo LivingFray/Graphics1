@@ -33,6 +33,12 @@
 //Useful angles
 #define PI 3.14159265359
 #define TAU 6.28318530718
+//The width of the player
+#define PLAYER_WIDTH 50
+//The height of the player
+#define PLAYER_HEIGHT 100
+//How much larger the spawn needs to be to hold the player
+#define SPAWN_SCALE 1.1
 extern GLFWwindow* gameWindow;
 extern int sWidth;
 extern int sHeight;

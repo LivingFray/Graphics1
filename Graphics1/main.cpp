@@ -11,8 +11,6 @@ TODO: Cleanup code (auto generated classes, import orders, etc)
 TODO: Start and end points
 TODO: UI
 TODO: Level editor
-TODO: --Save level
-TODO: --Load level
 TODO: --Enter exact value
 TODO: --Snapping
 TODO: --Better spawn menu
@@ -20,7 +18,6 @@ TODO: AI
 TODO: Multiple levels
 TODO: Level loading
 TODO: Every stupid thing on the mark sheet
-TODO: Make Gravfield a class
 TODO: Settings
 TODO: Ensure all states can be exited
 */

@@ -46,6 +46,12 @@ bool Selectable::canRotate() {
 }
 
 
+// Returns if the selectable can be deleted
+bool Selectable::canDelete() {
+	return true;
+}
+
+
 // Returns if the selectable is selected
 bool Selectable::isInBoundingBox(double x, double y) {
 	return false;

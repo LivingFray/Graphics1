@@ -16,6 +16,8 @@ public:
 	virtual bool canResize();
 	// Returns if the selectable can be rotated
 	virtual bool canRotate();
+	// Returns if the selectable can be deleted
+	virtual bool canDelete();
 	// Returns if the selectable is selected
 	virtual bool isInBoundingBox(double x, double y);
 	// Returns the centre of the selectable

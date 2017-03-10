@@ -10,6 +10,7 @@
 #define PLAYER_JUMP 80
 
 Player::Player() {
+	id = "player";
 }
 
 

@@ -27,6 +27,22 @@ public:
 	virtual double getCameraAngleAt(double ex);
 	// Gets the world coordinates from the screen coordinates
 	virtual Vec2D getWorldCoordinates(Vec2D screen);
+	// Sets the position of the spawn point
+	virtual void setSpawn(Vec2D pos);
+	// Gets the position of the spawn point
+	virtual Vec2D getSpawn();
+	// Sets the position of the goal
+	virtual void setGoal(Vec2D pos);
+	// Gets the position of the goal
+	virtual Vec2D getGoal();
+	// Sets the angle of the spawn point
+	virtual void setSpawnAngle(double a);
+	// Gets the angle of the spawn point
+	virtual double getSpawnAngle();
+	// Sets the angle of the goal
+	virtual void setGoalAngle(double a);
+	// Gets the angle of the goal
+	virtual double getGoalAngle();
 protected:
 	vector<Entity*> entities;
 	vector<Platform*> platforms;

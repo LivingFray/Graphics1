@@ -81,13 +81,14 @@ void Level::update() {
 
 // Loads a level from the given file
 void Level::loadLevel(string filePath) {
-	//Make player first entity
+	LevelRenderer::loadLevel(filePath);
+	//Add the player to the gaem
 	player = new Player();
 	player->setLevel(this);
 	entities.push_back(player);
-	LevelRenderer::loadLevel(filePath);
-	//TODO: Set player position
-	player->setX(100);
+	//TODO: Spawn animation
+	player->setPos(spawn);
+	player->setAngle(spawnAngle);
 }
 
 // Draws the level
