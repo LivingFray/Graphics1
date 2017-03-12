@@ -16,11 +16,14 @@ public:
 	int getHeight();
 	void textEvent(unsigned int key);
 	void draw();
+	void mouseDown(int x, int y);
+	void keyDown(int key, int scan, int action, int mods);
 protected:
 	string text;
 	int x;
 	int y;
 	int width;
 	int height;
+	bool selected;
 };
 

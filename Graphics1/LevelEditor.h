@@ -18,6 +18,7 @@ public:
 	void keyEvent(GLFWwindow* window, int key, int scan, int action, int mods);
 	void mouseEvent(GLFWwindow* window, int button, int action, int mods);
 	void mouseMoveEvent(GLFWwindow* window, double x, double y);
+	void textEvent(GLFWwindow*, unsigned int ch);
 	// Sets whether the item menu is visible
 	void setInItemMenu(bool inMenu);
 	// Gets the current position of the camera
@@ -32,6 +33,10 @@ public:
 	void saveLevel(string filePath);
 	// Loads a level from the given file
 	void loadLevel(string filePath);
+	// Adds a platform to the level
+	void addPlatform(Platform* platform);
+	// Adds a gravity field to the level
+	void addGravityField(GravityField* field);
 protected:
 	bool inItemMenu;
 	bool inSaveMenu;

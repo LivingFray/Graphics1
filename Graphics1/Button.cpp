@@ -92,6 +92,7 @@ void Button::draw() {
 	float sY = height * 0.5f;
 	glfwGetCursorPos(gameWindow, &mx, &my);
 	my = sHeight - my;
+	//Display a different texture if mouse is over button
 	if (mx >= x - sX && mx <= x + sX && my >= y - sY && my <= y + sY) {
 		glBindTexture(GL_TEXTURE_2D, imgSelected);
 	} else {

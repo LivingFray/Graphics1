@@ -103,6 +103,7 @@ void Platform::onCollide(Collider* other) {
 
 // Draws the platform ex seconds after last update
 void Platform::draw(double ex) {
+	glColor3ub(255, 255, 255);
 	glPushMatrix();
 	glTranslated(pos.getX(), pos.getY(), 0.0);
 	glRotated(angle, 0.0, 0.0, 1.0);

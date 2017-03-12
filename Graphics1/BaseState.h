@@ -14,5 +14,7 @@ public:
 	virtual void mouseEvent(GLFWwindow* window, int button, int action, int mods);
 	// Called when a mousemove event is fired
 	virtual void mouseMoveEvent(GLFWwindow* window, double x, double y);
+	// Called when a mousemove event is fire
+	virtual void textEvent(GLFWwindow* window, unsigned int ch);
 };
 

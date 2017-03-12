@@ -2,12 +2,17 @@
 #include "Globals.h"
 #include "Player.h"
 
+#define SPAWN_ANIM_BEGIN 1.0
+//The duration of the spawning animation
+#define SPAWN_ANIM_END 2.0
+
 //The cosine of the angle between collision and vector and ground needed to count as standing on it
 #define COS_GROUND_ANGLE_MIN -1
 #define COS_GROUND_ANGLE_MAX -0.707106
 
 Level::Level() {
-
+	spawnBeam = ImageLoader::getImage("Resources\\spawnBeam.png");
+	levelTime = 0;
 }
 
 
@@ -18,8 +23,15 @@ Level::~Level() {
 
 // Updates the level
 void Level::update() {
+	//Add player if finished spawning
+	if (!player && levelTime >= SPAWN_ANIM_BEGIN) {
+		player = new Player();
+		player->setLevel(this);
+		entities.push_back(player);
+		player->setPos(spawn);
+		player->setAngle(spawnAngle);
+	}
 	//TODO: Update world
-	//TODO: If entity is still only check against moving platforms
 	//Only set onGround to false for entities that moved / floor moved
 	//Update the entities
 	for (Entity* e : entities) {
@@ -76,25 +88,46 @@ void Level::update() {
 		}
 		e->setOnGround(onGround);
 	}
+	levelTime += TICKRATE;
 }
 
 
 // Loads a level from the given file
 void Level::loadLevel(string filePath) {
 	LevelRenderer::loadLevel(filePath);
-	//Add the player to the gaem
-	player = new Player();
-	player->setLevel(this);
-	entities.push_back(player);
-	//TODO: Spawn animation
-	player->setPos(spawn);
-	player->setAngle(spawnAngle);
+	levelTime = 0;
 }
 
 // Draws the level
 void Level::draw(double ex) {
 	LevelRenderer::draw(ex);
+	//Spawn animation
+	if (levelTime <= SPAWN_ANIM_END) {
+		if (levelTime >= SPAWN_ANIM_BEGIN) {
+			glColor4d(1.0, 1.0, 1.0, 1.25 * (1.0 - pow(2.25 * (levelTime - SPAWN_ANIM_BEGIN) / (SPAWN_ANIM_END - SPAWN_ANIM_BEGIN), 0.5)) - 0.25);
+		} else {
+			glColor4d(1.0, 1.0, 1.0, 1.0);
+		}
+		glPushMatrix();
+		glTranslated(spawn.getX(), spawn.getY(), 0.0);
+		glRotated(spawnAngle, 0.0, 0.0, 1.0);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, spawnBeam);
+		glBegin(GL_QUADS);
+		glTexCoord2d(0.0, 0.0);
+		glVertex2d(-PLAYER_WIDTH * SPAWN_SCALE * 0.5, -PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+		glTexCoord2d(0.0, 1.0);
+		glVertex2d(-PLAYER_WIDTH * SPAWN_SCALE * 0.5, PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+		glTexCoord2d(1.0, 1.0);
+		glVertex2d(PLAYER_WIDTH * SPAWN_SCALE * 0.5, PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+		glTexCoord2d(1.0, 0.0);
+		glVertex2d(PLAYER_WIDTH * SPAWN_SCALE * 0.5, -PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+		glEnd();
+		glDisable(GL_TEXTURE_2D);
+		glPopMatrix();
+	}
 	//Insert any UI stuff here
+	levelTime += ex;
 }
 
 
@@ -186,17 +219,23 @@ void Level::project(Collider* c, Vec2D vec, double* min, double* max) {
 
 // Gets the player entity
 Player* Level::getPlayer() {
-	return (Player*)entities.at(0);
+	return player;
 }
 
 
 // Gets the camera position ex seconds after last update
 Vec2D Level::getCameraAt(double ex) {
+	if (!player) {
+		return spawn;
+	}
 	return player->getPos().add(player->getVel().multiply(ex));
 }
 
 
 // Gets the angle of the camera ex seconds after last update
 double Level::getCameraAngleAt(double ex) {
+	if (!player) {
+		return spawnAngle;
+	}
 	return player->getVisAngle();
 }

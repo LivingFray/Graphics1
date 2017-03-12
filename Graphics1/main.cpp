@@ -45,6 +45,10 @@ void mouseHandler(GLFWwindow* window, int button, int action, int mods) {
 void mouseMoveHandler(GLFWwindow* window, double x, double y) {
 	state->mouseMoveEvent(window, x, y);
 }
+///Handles text input
+void textHandler(GLFWwindow* window, unsigned int ch) {
+	state->textEvent(window, ch);
+}
 ///Starts the game and loads anything that needs loading
 void init() {
 	//Load the key bindings
@@ -126,6 +130,7 @@ int main() {
 	glfwSetKeyCallback(gameWindow, keyHandler);
 	glfwSetMouseButtonCallback(gameWindow, mouseHandler);
 	glfwSetCursorPosCallback(gameWindow, mouseMoveHandler);
+	glfwSetCharCallback(gameWindow, textHandler);
 	//Game loop, calls update every TICKRATE ms and renders whenever it can
 	//I didn't invent this type of main loop, I found it online a while ago
 	//I did, however, implement it

@@ -36,6 +36,8 @@ public:
 protected:
 	double defaultGravity = 2; //Fallback for outside the fields
 	Player* player;
+	GLuint spawnBeam;
+	double levelTime;
 	// Calculates if two colliders are intersecting and provides the vector to move one in if so
 	bool intersects(Collider* a, Collider* b, Vec2D* res);
 	// Projects an object onto a vector

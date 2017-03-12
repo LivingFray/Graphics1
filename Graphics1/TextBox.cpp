@@ -66,7 +66,9 @@ int TextBox::getHeight() {
 
 
 void TextBox::textEvent(unsigned int key) {
-	text = text + (char)key;
+	if (selected) {
+		text = text + (char)key;
+	}
 }
 
 
@@ -79,5 +81,28 @@ void TextBox::draw() {
 	glVertex2i(x - width / 2, y + height / 2);
 	glEnd();
 	glColor3ub(0, 0, 0);
-	freetype::print(fontSmall, x - width / 2 + 10, y - fontSmall.h * 0.325, text.c_str());
+	string d = text;
+	if (selected) {
+		d = d + "|";
+	}
+	freetype::print(fontSmall, x - width / 2 + 10, y - fontSmall.h * 0.325, d.c_str());
+}
+
+
+// Called when the left mouse button is clicked
+void TextBox::mouseDown(int x, int y) {
+	float w = width*0.5f;
+	float h = height*0.5f;
+	selected = x >= this->x - w && x <= this->x + w && y >= this->y - h && y <= this->y + h;
+}
+
+
+void TextBox::keyDown(int key, int scan, int action, int mods) {
+	if (selected && (action == GLFW_REPEAT || action == GLFW_PRESS)) {
+		if (key == GLFW_KEY_BACKSPACE && text.length()>0) {
+			text.erase(text.end() - 1);
+		} else if (key == GLFW_KEY_ENTER || key == GLFW_KEY_ESCAPE) {
+			selected = false;
+		}
+	}
 }

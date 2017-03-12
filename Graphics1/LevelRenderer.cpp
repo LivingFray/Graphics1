@@ -11,6 +11,7 @@ LevelRenderer::LevelRenderer() {
 	planet = ImageLoader::getImage("Resources\\planet.png");
 	stars = ImageLoader::getImage("Resources\\stars.png");
 	backing = ImageLoader::getImage("Resources\\backing.png");
+	spawnBack = ImageLoader::getImage("Resources\\spawnBack.png");
 	glBindTexture(GL_TEXTURE_2D, backing);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -172,29 +173,39 @@ void LevelRenderer::draw(double ex) {
 	//Draw the spawn and goal
 	//TODO: The textures
 	//Spawn
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, spawnBack);
 	glPushMatrix();
-	glColor3ub(150, 150, 120);
+	glColor3ub(255, 255, 255);
 	glTranslated(spawn.getX(), spawn.getY(), 0.0);
 	glRotated(spawnAngle, 0.0, 0.0, 1.0);
 	glBegin(GL_QUADS);
+	glTexCoord2d(0.0, 0.0);
 	glVertex2d(-PLAYER_WIDTH * SPAWN_SCALE * 0.5, -PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+	glTexCoord2d(0.0, 1.0);
 	glVertex2d(-PLAYER_WIDTH * SPAWN_SCALE * 0.5, PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+	glTexCoord2d(1.0, 1.0);
 	glVertex2d(PLAYER_WIDTH * SPAWN_SCALE * 0.5, PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+	glTexCoord2d(1.0, 0.0);
 	glVertex2d(PLAYER_WIDTH * SPAWN_SCALE * 0.5, -PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
 	glEnd();
 	glPopMatrix();
 	//Goal
 	glPushMatrix();
-	glColor3ub(150, 150, 50);
 	glTranslated(goal.getX(), goal.getY(), 0.0);
 	glRotated(goalAngle, 0.0, 0.0, 1.0);
 	glBegin(GL_QUADS);
+	glTexCoord2d(0.0, 0.0);
 	glVertex2d(-PLAYER_WIDTH * SPAWN_SCALE * 0.5, -PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+	glTexCoord2d(0.0, 1.0);
 	glVertex2d(-PLAYER_WIDTH * SPAWN_SCALE * 0.5, PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+	glTexCoord2d(1.0, 1.0);
 	glVertex2d(PLAYER_WIDTH * SPAWN_SCALE * 0.5, PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+	glTexCoord2d(1.0, 0.0);
 	glVertex2d(PLAYER_WIDTH * SPAWN_SCALE * 0.5, -PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
 	glEnd();
 	glPopMatrix();
+	glDisable(GL_TEXTURE_2D);
 	//Draw the entities
 	for (Entity* e : entities) {
 		e->draw(ex);
@@ -325,17 +336,6 @@ void LevelRenderer::loadLevel(string filePath) {
 	}
 }
 
-
-// Adds a platform to the level
-void LevelRenderer::addPlatform(Platform* platform) {
-	platforms.push_back(platform);
-}
-
-
-// Adds a platform to the level
-void LevelRenderer::addGravityField(GravityField* field) {
-	gravFields.push_back(field);
-}
 
 // Gets the camera position ex seconds after last update
 Vec2D LevelRenderer::getCameraAt(double ex) {

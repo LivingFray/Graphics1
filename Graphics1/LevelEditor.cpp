@@ -103,7 +103,7 @@ LevelEditor::LevelEditor() {
 	fileLocation.setY(200);
 	fileLocation.setWidth(600);
 	fileLocation.setHeight(50);
-	fileLocation.setText("tmp");
+	fileLocation.setText("");
 	//Test
 	//TODO: Start with choosing a level
 	loadLevel("notalevel");
@@ -119,12 +119,6 @@ LevelEditor::~LevelEditor() {
 void LevelEditor::update() {
 	//Move camera (tick only)
 	updateCamera(TICKRATE);
-	//temp
-	if (glfwGetKey(gameWindow, GLFW_KEY_SPACE) != GLFW_RELEASE) {
-		for (int i = 0; i < 50; i++) {
-			loadLevel("Untitled.do");
-		}
-	}
 }
 
 // Draws the level
@@ -323,6 +317,9 @@ void LevelEditor::keyEvent(GLFWwindow * window, int key, int scan, int action, i
 			selected = NULL;
 		}
 	}
+	if (inSaveMenu) {
+		fileLocation.keyDown(key, scan, action, mods);
+	}
 	if (key == KeyConfig::keyBindings["editorMenu"] && action == GLFW_RELEASE && !inSaveMenu) {
 		inItemMenu = !inItemMenu;
 		//Fix cursor
@@ -364,6 +361,7 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 		if (action == GLFW_RELEASE) {
 			loadButton.mouseDown((int)x, (int)y);
 			saveButton.mouseDown((int)x, (int)y);
+			fileLocation.mouseDown(x, y);
 		}
 	} else {
 		//If in editor bar
@@ -514,6 +512,7 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 			if (action != GLFW_RELEASE) {
 				break;
 			}
+			//Iterate through and remove those that are being clicked on
 			auto gravIt = gravFields.begin();
 			while (gravIt != gravFields.end()) {
 				if ((*gravIt)->isInBoundingBox(world.getX(), world.getY()) && (*gravIt)->canDelete()) {
@@ -532,6 +531,7 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 					platIt++;
 				}
 			}
+			break;
 		}
 		}
 	}
@@ -598,6 +598,12 @@ void LevelEditor::mouseMoveEvent(GLFWwindow* window, double x, double y) {
 	}
 }
 
+void LevelEditor::textEvent(GLFWwindow *, unsigned int ch) {
+	if (inSaveMenu) {
+		fileLocation.textEvent(ch);
+	}
+}
+
 
 // Sets whether the item menu is visible
 void LevelEditor::setInItemMenu(bool inMenu) {
@@ -625,7 +631,7 @@ double LevelEditor::getCameraAngleAt(double ex) {
 
 // Gets the file location to save the level to
 string LevelEditor::getFileLocation() {
-	return fileLoc;
+	return fileLocation.getText();
 }
 
 
@@ -750,4 +756,16 @@ void LevelEditor::select(Vec2D world) {
 			return;
 		}
 	}
+}
+
+
+// Adds a platform to the level
+void LevelEditor::addPlatform(Platform* platform) {
+	platforms.push_back(platform);
+}
+
+
+// Adds a platform to the level
+void LevelEditor::addGravityField(GravityField* field) {
+	gravFields.push_back(field);
 }
