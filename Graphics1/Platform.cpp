@@ -82,7 +82,7 @@ Vec2D* Platform::getVertices(int* numVertices) {
 	Vec2D* r = new Vec2D[4];
 	//Get vector in 1 direction at angle
 	//Transpose it to get other vector
-	Vec2D w = Vec2D(cos(angle), sin(angle));
+	Vec2D w = Vec2D(cos(DEG_TO_RAD * angle), sin(DEG_TO_RAD * angle));
 	Vec2D h = Vec2D(-w.getY(), w.getX());
 	//Scale to represent size of bounding box
 	w.multiplyBy(width * 0.5);

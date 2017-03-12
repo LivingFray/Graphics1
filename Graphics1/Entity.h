@@ -22,6 +22,8 @@ protected:
 	double height;
 	bool onGround;
 	double maxSpeed;
+	bool flip = false;
+	GLuint idle;
 public:
 	// Gets the x-coordinate of the entity
 	double getX();

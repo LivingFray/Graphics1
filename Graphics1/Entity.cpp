@@ -17,6 +17,7 @@ Entity::Entity() {
 	angle = 0.0;
 	visAngle = 0.0;
 	id = "entity";
+	idle = ImageLoader::getImage("error");
 }
 
 
@@ -106,18 +107,26 @@ void Entity::update() {
 // Draws the entity
 void Entity::draw(double ex) {
 	visAngle = updatedVisAngle(ex);
-	//TODO: Images and stuff
+	//TODO: Animation
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, idle);
+	int f = flip ? -1.0 : 1.0;
 	glPushMatrix();
-	glColor3ub(255, 0, 0);
+	glColor3ub(255, 255, 255);
 	glTranslated(pos.getX() + vel.getX()*ex, pos.getY() + vel.getY()*ex, 0.0);
 	glRotated(visAngle, 0.0, 0.0, 1.0);
 	glBegin(GL_QUADS);
-	glVertex2d(-5, -5);
-	glVertex2d(-5, +5);
-	glVertex2d(+5, +5);
-	glVertex2d(+5, -5);
+	glTexCoord2d(0.0, 0.0);
+	glVertex2d(0.5 * -width, 0.5 * -height);
+	glTexCoord2d(0.0, 1.0);
+	glVertex2d(0.5 * -width, 0.5 * height);
+	glTexCoord2d(f, 1.0);
+	glVertex2d(0.5 * width, 0.5 * height);
+	glTexCoord2d(f, 0.0);
+	glVertex2d(0.5 * width, 0.5 * -height);
 	glEnd();
 	glPopMatrix();
+	glDisable(GL_TEXTURE_2D);
 }
 
 // Adds the given value to the horizontal velocity
@@ -195,6 +204,7 @@ void Entity::setAngle(double angle) {
 	this->angle = angle;
 }
 
+
 // Gets the normal vectors needed to check collision
 Vec2D* Entity::getNormals(int* numNormals) {
 	*numNormals = 2;
@@ -206,13 +216,14 @@ Vec2D* Entity::getNormals(int* numNormals) {
 	return r;
 }
 
+
 // Gets the vertices of the bounding box
 Vec2D* Entity::getVertices(int* numVertices) {
 	*numVertices = 4;
 	Vec2D* r = new Vec2D[4];
 	//Get vector in 1 direction at angle
 	//Transpose it to get other vector
-	Vec2D w = Vec2D(cos(angle), sin(angle));
+	Vec2D w = Vec2D(cos(DEG_TO_RAD * angle), sin(DEG_TO_RAD * angle));
 	Vec2D h = Vec2D(-w.getY(), w.getX());
 	//Scale to represent size of bounding box
 	w.multiplyBy(width * 0.5);
@@ -224,6 +235,7 @@ Vec2D* Entity::getVertices(int* numVertices) {
 	r[3] = pos.add(w).subtract(h);
 	return r;
 }
+
 
 // Called when a collision occurs
 void Entity::onCollide(Collider* other) {
@@ -386,7 +398,7 @@ void Entity::load(DataObject obj) {
 	vx = obj.getDouble("velX");
 	vy = obj.getDouble("velY");
 	//Move angle in range
-	if (a<0) {
+	if (a < 0) {
 		a *= -1;
 		a -= (floor(a) / 360) * 360;
 		a = 360 - a;

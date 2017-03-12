@@ -11,6 +11,10 @@
 
 Player::Player() {
 	id = "player";
+	width = PLAYER_WIDTH;
+	height = PLAYER_HEIGHT;
+	flip = false;
+	idle = ImageLoader::getImage("Resources\\playerIdle.png");
 }
 
 
@@ -27,16 +31,22 @@ void Player::update() {
 	double dX = 0.0;
 	if (KeyConfig::isDown("moveLeft")) {
 		dX -= PLAYER_ACCELERATION;
+		flip = true;
 	}
 	if (KeyConfig::isDown("moveRight")) {
 		dX += PLAYER_ACCELERATION;
+		flip = false;
 	}
 	//Slow down if not trying to move
 	if (abs(dX) <= FLOAT_ZERO) {
-		if (vX > PLAYER_FRICTION) {
-			dX -= PLAYER_FRICTION;
-		} else if (vX < -PLAYER_FRICTION) {
-			dX += PLAYER_FRICTION;
+		double fr = PLAYER_FRICTION;
+		if (onGround) {
+			fr = PLAYER_FRICTION * 5;
+		}
+		if (vX > fr) {
+			dX -= fr;
+		} else if (vX < -fr) {
+			dX += fr;
 		} else {
 			dX = -vX;
 		}
