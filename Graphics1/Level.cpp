@@ -30,6 +30,7 @@ void Level::update() {
 		entities.push_back(player);
 		player->setPos(spawn);
 		player->setAngle(spawnAngle);
+		player->setVisAngle(spawnAngle);
 	}
 	//TODO: Update world
 	//Only set onGround to false for entities that moved / floor moved
@@ -228,6 +229,7 @@ Vec2D Level::getCameraAt(double ex) {
 	if (!player) {
 		return spawn;
 	}
+	//Extrapolate the position
 	return player->getPos().add(player->getVel().multiply(ex));
 }
 
@@ -237,5 +239,6 @@ double Level::getCameraAngleAt(double ex) {
 	if (!player) {
 		return spawnAngle;
 	}
-	return player->getVisAngle();
+	//Get the angle of the player after it has updated
+	return player->updatedVisAngle(ex);
 }

@@ -16,7 +16,6 @@ TODO: --Snapping
 TODO: --Better spawn menu
 TODO: AI
 TODO: Multiple levels
-TODO: Level loading
 TODO: Every stupid thing on the mark sheet
 TODO: Settings
 TODO: Ensure all states can be exited

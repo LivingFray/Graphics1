@@ -81,9 +81,7 @@ void Entity::update() {
 		vel.addTo(g);
 	}
 	//Rotation
-	if (abs(g.getX()) < FLOAT_ZERO && abs(g.getY()) < FLOAT_ZERO) {
-		angle = 0; //Floating in no gravity
-	} else {
+	if (abs(g.getX()) > FLOAT_ZERO || abs(g.getY()) > FLOAT_ZERO) {
 		angle = atan2(g.getY(), g.getX()) * RAD_TO_DEG + 90;
 	}
 	//Max speed checks

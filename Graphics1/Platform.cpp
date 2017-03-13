@@ -9,7 +9,7 @@ Platform::Platform() {
 	height = 0.0;
 	angle = 0.0;
 	id = "platform";
-	textureString = "error";
+	textureString = "error.png";
 	texture = ImageLoader::getImage(textureString);
 	texX = 1;
 	texY = 1;
