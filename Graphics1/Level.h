@@ -7,7 +7,7 @@
 #include "Player.h"
 #include "BaseState.h"
 #include "LevelRenderer.h"
-#include "Button.h"
+#include "GradButton.h"
 
 using namespace std;
 
@@ -20,8 +20,8 @@ class Level:
 public:
 	Level();
 	~Level();
-	// Called when a mouse event is fired
 	void mouseEvent(GLFWwindow * window, int button, int action, int mods);
+	void keyEvent(GLFWwindow* window, int key, int scan, int action, int mods);
 	// Updates the level
 	void update();
 	// Loads a level from the given file
@@ -40,6 +40,8 @@ public:
 	void nextLevel();
 	// Loads the current level from the beginning
 	void restartLevel();
+	// Sets whether the game is paused or not
+	void setPause(bool p);
 protected:
 	double defaultGravity = 2; //Fallback for outside the fields
 	Player* player;
@@ -50,9 +52,13 @@ protected:
 	// Projects an object onto a vector
 	void project(Collider* c, Vec2D vec, double* min, double* max);
 	bool reachedGoal;
+	bool paused;
 	int score;
 	Button buttonMenu;
 	Button buttonRetry;
 	Button buttonNext;
+	GradButton gradMenu;
+	GradButton gradRetry;
+	GradButton gradResume;
 };
 

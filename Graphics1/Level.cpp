@@ -21,6 +21,7 @@ Level::Level() {
 	spawnBeam = ImageLoader::getImage("Resources\\spawnBeam.png");
 	levelTime = 0;
 	reachedGoal = false;
+	paused = false;
 	score = 0;
 	nextLevelPath = "";
 	buttonMenu = Button();
@@ -43,18 +44,40 @@ Level::Level() {
 		l->restartLevel();
 	};
 	buttonRetry.setCallback(callRetry);
+	gradMenu = GradButton();
+	gradMenu.setLabel("Main Menu");
+	gradMenu.setCallback(callMenu);
+	gradResume = GradButton();
+	gradResume.setLabel("Resume");
+	auto callResume = [](BaseState* s) {
+		Level* l = (Level*)s;
+		l->setPause(false);
+	};
+	gradResume.setCallback(callResume);
+	gradRetry = GradButton();
+	gradRetry.setLabel("Restart Level");
+	gradRetry.setCallback(callRetry);
 }
 
 
 Level::~Level() {
 	//TODO: Free level data
+	for (Entity* e : entities) {
+		delete e;
+	}
+	for (Platform* p : platforms) {
+		delete p;
+	}
+	for (GravityField* f : gravFields) {
+		delete f;
+	}
 }
 
 
 // Updates the level
 void Level::update() {
-	//Don't update once at the goal
-	if (reachedGoal) {
+	//Don't update in menus
+	if (reachedGoal || paused) {
 		return;
 	}
 	//Add player if finished spawning
@@ -139,13 +162,14 @@ void Level::loadLevel(string filePath) {
 	LevelRenderer::loadLevel(filePath);
 	levelTime = 0;
 	reachedGoal = false;
+	paused = false;
 	score = 0;
 	player = NULL;
 }
 
 // Draws the level
 void Level::draw(double ex) {
-	if (reachedGoal) {
+	if (reachedGoal || paused) {
 		//Don't extrapolate if the game is paused
 		ex = 0;
 	}
@@ -185,7 +209,7 @@ void Level::draw(double ex) {
 	//Level complete screen
 	if (reachedGoal) {
 		//Background
-		glColor4ub(0, 0, 255, 127);
+		glColor4ub(0, 127, 255, 63);
 		glBegin(GL_QUADS);
 		glVertex2d(sWidth * 0.125, sHeight * 0.375);
 		glVertex2d(sWidth * 0.875, sHeight * 0.375);
@@ -195,9 +219,9 @@ void Level::draw(double ex) {
 		//Title
 		glColor3ub(255, 255, 255);
 		printCentre(fontLarge, sWidth * 0.5, sHeight * 0.625 - fontLarge.h * 1.5, "Level Complete");
+		//Score
 		string scoreLabel = "Score: ";
 		scoreLabel += to_string(score);
-		//Score
 		printCentre(fontLarge, sWidth * 0.5, sHeight * 0.625 - fontLarge.h * 3, scoreLabel.c_str());
 		//Buttons
 		int y = (int)(sHeight * 0.375) + fontLarge.h;
@@ -218,7 +242,33 @@ void Level::draw(double ex) {
 		buttonNext.setWidth(w);
 		buttonNext.setHeight(h);
 		buttonNext.draw();
-
+	}
+	if (paused) {
+		//Darken the screen to show the game is paused
+		glColor4ub(0, 0, 0, 200);
+		glBegin(GL_QUADS);
+		glVertex2i(0, 0);
+		glVertex2i(sWidth, 0);
+		glVertex2i(sWidth, sHeight);
+		glVertex2i(0, sHeight);
+		glEnd();
+		//Draw the buttons
+		int y = fontLarge.h * 2.1;
+		int w = sWidth / 2;
+		int h = fontLarge.h * 2;
+		int top = sHeight / 2 + y + h / 2;
+		gradResume.setY(top);
+		gradRetry.setY(top - y);
+		gradMenu.setY(top - 2 * y);
+		gradResume.setHeight(h);
+		gradRetry.setHeight(h);
+		gradMenu.setHeight(h);
+		gradResume.setWidth(w - 2 * y);
+		gradRetry.setWidth(w - y);
+		gradMenu.setWidth(w);
+		gradResume.draw(0);
+		gradRetry.draw(0);
+		gradMenu.draw(0);
 	}
 	levelTime += ex;
 }
@@ -364,14 +414,34 @@ void Level::restartLevel() {
 }
 
 
-// Called when a mouse event is fired
+// Sets whether the game is paused or not
+void Level::setPause(bool p) {
+	paused = p;
+}
+
+
 void Level::mouseEvent(GLFWwindow* window, int button, int action, int mods) {
-	double x, y;
-	glfwGetCursorPos(window, &x, &y);
-	y = sHeight - y;
-	if (action == GLFW_RELEASE && reachedGoal) {
-		buttonMenu.mouseDown(x, y);
-		buttonNext.mouseDown(x, y);
-		buttonRetry.mouseDown(x, y);
+	double dx, dy;
+	glfwGetCursorPos(window, &dx, &dy);
+	int x, y;
+	x = (int)dx;
+	y = sHeight - (int)dy;
+	if (action == GLFW_RELEASE) {
+		if (reachedGoal) {
+			buttonMenu.mouseDown(x, y);
+			buttonNext.mouseDown(x, y);
+			buttonRetry.mouseDown(x, y);
+		} else if (paused) {
+			gradMenu.mouseDown(x, y);
+			gradResume.mouseDown(x, y);
+			gradRetry.mouseDown(x, y);
+		}
+	}
+}
+
+
+void Level::keyEvent(GLFWwindow* window, int key, int scan, int action, int mods) {
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE && !reachedGoal) {
+		paused = !paused;
 	}
 }
