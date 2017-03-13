@@ -51,3 +51,9 @@ extern BaseState* state;
 extern BaseState* newState;
 extern GLFWcursor* cursorNormal;
 extern GLFWcursor* cursorPan;
+
+//Macro function to print centred text
+#define printCentre(font,x,y,text)	do {													\
+									int l = freetype::getLength((font), (text));			\
+									freetype::print((font), (x) - l * 0.5f, (y), (text));	\
+								} while(0)

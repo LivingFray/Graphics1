@@ -65,7 +65,6 @@ protected:
 	void select(Vec2D world);
 	Button saveButton;
 	Button loadButton;
-	string fileLoc;
 	TextBox fileLocation;
 };
 

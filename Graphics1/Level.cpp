@@ -1,10 +1,17 @@
 #include "Level.h"
 #include "Globals.h"
 #include "Player.h"
+#include "MainMenu.h"
 
+//How long before the spawn beam begins to fade
 #define SPAWN_ANIM_BEGIN 1.0
-//The duration of the spawning animation
+//The time after which the spawn animation is complete
 #define SPAWN_ANIM_END 2.0
+
+//The maximum distance between the player and goal to count as in
+#define GOAL_DISTANCE_SQR 25.0
+//The maximum angle between the player anf goal to count as in
+#define GOAL_ANGLE_DIF 5
 
 //The cosine of the angle between collision and vector and ground needed to count as standing on it
 #define COS_GROUND_ANGLE_MIN -1
@@ -13,6 +20,29 @@
 Level::Level() {
 	spawnBeam = ImageLoader::getImage("Resources\\spawnBeam.png");
 	levelTime = 0;
+	reachedGoal = false;
+	score = 0;
+	nextLevelPath = "";
+	buttonMenu = Button();
+	buttonMenu.setLabel("Menu");
+	auto callMenu = [](BaseState* s) {
+		newState = new MainMenu();
+	};
+	buttonMenu.setCallback(callMenu);
+	buttonNext = Button();
+	buttonNext.setLabel("Next Level");
+	auto callNext = [](BaseState* s) {
+		Level* l = (Level*)s;
+		l->nextLevel();
+	};
+	buttonNext.setCallback(callNext);
+	buttonRetry = Button();
+	buttonRetry.setLabel("Retry");
+	auto callRetry = [](BaseState* s) {
+		Level* l = (Level*)s;
+		l->restartLevel();
+	};
+	buttonRetry.setCallback(callRetry);
 }
 
 
@@ -23,6 +53,10 @@ Level::~Level() {
 
 // Updates the level
 void Level::update() {
+	//Don't update once at the goal
+	if (reachedGoal) {
+		return;
+	}
 	//Add player if finished spawning
 	if (!player && levelTime >= SPAWN_ANIM_BEGIN) {
 		player = new Player();
@@ -89,6 +123,13 @@ void Level::update() {
 		}
 		e->setOnGround(onGround);
 	}
+	//Bespoke collision detection for goal (other checks need to be met)
+	if (player && abs(player->getAngle() - goalAngle) < GOAL_ANGLE_DIF) {
+		//TODO: Buttons and things to enable exit
+		if (player->getPos().subtract(goal).magnitudeSquare() < GOAL_DISTANCE_SQR) {
+			reachedGoal = true;
+		}
+	}
 	levelTime += TICKRATE;
 }
 
@@ -97,10 +138,17 @@ void Level::update() {
 void Level::loadLevel(string filePath) {
 	LevelRenderer::loadLevel(filePath);
 	levelTime = 0;
+	reachedGoal = false;
+	score = 0;
+	player = NULL;
 }
 
 // Draws the level
 void Level::draw(double ex) {
+	if (reachedGoal) {
+		//Don't extrapolate if the game is paused
+		ex = 0;
+	}
 	LevelRenderer::draw(ex);
 	//Spawn animation
 	if (levelTime <= SPAWN_ANIM_END) {
@@ -128,6 +176,50 @@ void Level::draw(double ex) {
 		glPopMatrix();
 	}
 	//Insert any UI stuff here
+	//Reset viewport
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0.0, sWidth, 0.0, sHeight, -1.0, 1.0);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	//Level complete screen
+	if (reachedGoal) {
+		//Background
+		glColor4ub(0, 0, 255, 127);
+		glBegin(GL_QUADS);
+		glVertex2d(sWidth * 0.125, sHeight * 0.375);
+		glVertex2d(sWidth * 0.875, sHeight * 0.375);
+		glVertex2d(sWidth * 0.875, sHeight * 0.625);
+		glVertex2d(sWidth * 0.125, sHeight * 0.625);
+		glEnd();
+		//Title
+		glColor3ub(255, 255, 255);
+		printCentre(fontLarge, sWidth * 0.5, sHeight * 0.625 - fontLarge.h * 1.5, "Level Complete");
+		string scoreLabel = "Score: ";
+		scoreLabel += to_string(score);
+		//Score
+		printCentre(fontLarge, sWidth * 0.5, sHeight * 0.625 - fontLarge.h * 3, scoreLabel.c_str());
+		//Buttons
+		int y = (int)(sHeight * 0.375) + fontLarge.h;
+		int w = (int)(sWidth * 0.25f);
+		int h = fontLarge.h * 2;
+		buttonRetry.setX((int)(sWidth * 0.25));
+		buttonRetry.setY(y);
+		buttonRetry.setWidth(w);
+		buttonRetry.setHeight(h);
+		buttonRetry.draw();
+		buttonMenu.setX((int)(sWidth * 0.5));
+		buttonMenu.setY(y);
+		buttonMenu.setWidth(w);
+		buttonMenu.setHeight(h);
+		buttonMenu.draw();
+		buttonNext.setX((int)(sWidth * 0.75));
+		buttonNext.setY(y);
+		buttonNext.setWidth(w);
+		buttonNext.setHeight(h);
+		buttonNext.draw();
+
+	}
 	levelTime += ex;
 }
 
@@ -241,4 +333,45 @@ double Level::getCameraAngleAt(double ex) {
 	}
 	//Get the angle of the player after it has updated
 	return player->updatedVisAngle(ex);
+}
+
+
+// Loads the next level, provided it can be found
+void Level::nextLevel() {
+	//Check the level can actually be read
+	DataObject check = DataObject();
+	check.loadFromFile(nextLevelPath);
+	bool valid;
+	check.getString("name", valid);
+	if (!valid) {
+		return;
+	}
+	loadLevel(nextLevelPath);
+}
+
+
+// Loads the current level from the beginning
+void Level::restartLevel() {
+	//Check the level can actually be read
+	DataObject check = DataObject();
+	check.loadFromFile(levelPath);
+	bool valid;
+	check.getString("name", valid);
+	if (!valid) {
+		return;
+	}
+	loadLevel(levelPath);
+}
+
+
+// Called when a mouse event is fired
+void Level::mouseEvent(GLFWwindow* window, int button, int action, int mods) {
+	double x, y;
+	glfwGetCursorPos(window, &x, &y);
+	y = sHeight - y;
+	if (action == GLFW_RELEASE && reachedGoal) {
+		buttonMenu.mouseDown(x, y);
+		buttonNext.mouseDown(x, y);
+		buttonRetry.mouseDown(x, y);
+	}
 }

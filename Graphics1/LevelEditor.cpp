@@ -24,7 +24,6 @@ LevelEditor::LevelEditor() {
 	moveDir = Vec2D(0, 0);
 	resizing = 0;
 	levelName = "Untitled";
-	fileLoc = "Untitled.do";
 	defaultGravity = 0;
 	scaleDir = Vec2D(0, 0);
 	saveButton = Button();

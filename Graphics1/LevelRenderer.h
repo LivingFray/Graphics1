@@ -48,6 +48,8 @@ protected:
 	GLuint backing;
 	GLuint spawnBack;
 	string levelName;
+	string nextLevelPath;
+	string levelPath;
 	double defaultGravity;
 	Vec2D spawn;
 	double spawnAngle;

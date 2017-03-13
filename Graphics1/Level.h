@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "BaseState.h"
 #include "LevelRenderer.h"
+#include "Button.h"
 
 using namespace std;
 
@@ -19,6 +20,8 @@ class Level:
 public:
 	Level();
 	~Level();
+	// Called when a mouse event is fired
+	void mouseEvent(GLFWwindow * window, int button, int action, int mods);
 	// Updates the level
 	void update();
 	// Loads a level from the given file
@@ -33,6 +36,10 @@ public:
 	Vec2D getCameraAt(double ex);
 	// Gets the angle of the camera ex seconds after last update
 	double getCameraAngleAt(double ex);
+	// Loads the next level, provided it can be found
+	void nextLevel();
+	// Loads the current level from the beginning
+	void restartLevel();
 protected:
 	double defaultGravity = 2; //Fallback for outside the fields
 	Player* player;
@@ -42,5 +49,10 @@ protected:
 	bool intersects(Collider* a, Collider* b, Vec2D* res);
 	// Projects an object onto a vector
 	void project(Collider* c, Vec2D vec, double* min, double* max);
+	bool reachedGoal;
+	int score;
+	Button buttonMenu;
+	Button buttonRetry;
+	Button buttonNext;
 };
 

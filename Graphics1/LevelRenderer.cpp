@@ -219,6 +219,7 @@ void LevelRenderer::saveLevel(string filePath) {
 	DataObject lvl = DataObject();
 	//General level information
 	lvl.add("name", levelName);
+	lvl.add("nextLevel", nextLevelPath);
 	lvl.add("grav", defaultGravity);
 	lvl.add("spawnX", spawn.getX());
 	lvl.add("spawnY", spawn.getY());
@@ -259,6 +260,11 @@ void LevelRenderer::loadLevel(string filePath) {
 	if (!exists) {
 		printf("Error loading level: No name found\n");
 		levelName = "Unknown Level";
+	}
+	nextLevelPath = lvl.getString("nextLevel", exists);
+	if (!exists) {
+		printf("Error loading next level: No name found\n");
+		nextLevelPath = "";
 	}
 	defaultGravity = lvl.getDouble("grav", exists);
 	if (!exists) {
@@ -334,6 +340,7 @@ void LevelRenderer::loadLevel(string filePath) {
 		i++;
 		item = objs.getDataObject(to_string(i), exists);
 	}
+	levelPath = filePath;
 }
 
 
