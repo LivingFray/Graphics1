@@ -21,11 +21,11 @@
 //Small value to compare floating points to zero with
 #define FLOAT_ZERO 1e-5
 //How many units in world size the smallest side of the screen sees
-#define WORLD_SIZE 800
+#define WORLD_SIZE 10.00
 //How many degrees an entity can turn per second (visually) to match gravity
 #define ENTITY_ROTATE_SPEED 180
 //How thin an object is allowed to be (smaller = more likely for collision to fail)
-#define SMALLEST_THICKNESS 10
+#define SMALLEST_THICKNESS 0.10
 //The default font size used
 #define FONT_SIZE_LARGE 24
 //The default smaller font size used
@@ -36,13 +36,30 @@
 #define PI 3.14159265359
 #define TAU 6.28318530718
 //The width of the player
-#define PLAYER_WIDTH 50
+#define PLAYER_WIDTH 0.45
 //The height of the player
-#define PLAYER_HEIGHT 100
-//How much larger the spawn needs to be to hold the player
-#define SPAWN_SCALE 1.1
+#define PLAYER_HEIGHT 1.70
+//How large the spawn and goal are
+#define SPAWN_WIDTH 1.00
+#define SPAWN_HEIGHT 2.00
 //How many points are given for picking up an item
 #define ITEM_SCORE_VALUE 100
+//Default speed cap for an entity
+#define DEFAULT_MAXSPEED 1.00
+//The width of an entity if none is provided
+#define DEFAULT_ENTITY_WIDTH 0.10
+//The height of an entity if none is provided
+#define DEFAULT_ENTITY_HEIGHT 0.10
+//The maximum distance between the player and goal to count as in
+#define GOAL_DISTANCE_SQR 0.01
+//The maximum angle between the player anf goal to count as in
+#define GOAL_ANGLE_DIF 5
+//How much the player slows down in the horizontal axis when not moving
+#define PLAYER_FRICTION 0.05
+//How fast the player accelerates when pressing a direction key
+#define PLAYER_ACCELERATION 0.30
+//How fast the player jumps
+#define PLAYER_JUMP 6.0
 extern GLFWwindow* gameWindow;
 extern int sWidth;
 extern int sHeight;

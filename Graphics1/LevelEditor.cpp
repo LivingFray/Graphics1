@@ -4,12 +4,12 @@
 #include "SpawnPoint.h"
 #include "Goal.h"
 #include "PointGiver.h"
-#define EDITOR_MOVE_SPEED 50
+#define EDITOR_MOVE_SPEED 1.00
 #define EDITOR_ROTATE_SPEED 30
-#define MOVE_SIZE 50
-#define SELECT_RADIUS 5
-#define POS_SNAP 5
-#define ANG_SNAP 5
+#define MOVE_SIZE 0.5
+#define SELECT_RADIUS 0.20
+#define POS_SNAP 0.05
+#define ANG_SNAP 0.05
 #define ROTATE_SEGMENTS 36
 
 LevelEditor::LevelEditor() {
@@ -68,8 +68,8 @@ LevelEditor::LevelEditor() {
 		LevelEditor* l = (LevelEditor*)s;
 		Platform* pl = new Platform();
 		pl->setPos(l->getCameraPos());
-		pl->setWidth(50);
-		pl->setHeight(50);
+		pl->setWidth(1.00);
+		pl->setHeight(1.00);
 		pl->setAngle(l->getCameraAngleAt(0));
 		l->addPlatform(pl);
 		l->setInItemMenu(false);
@@ -81,10 +81,10 @@ LevelEditor::LevelEditor() {
 		LevelEditor* l = (LevelEditor*)s;
 		GravityField* f = new GravityField();
 		f->setPos(l->getCameraPos());
-		f->setWidth(50);
-		f->setHeight(50);
+		f->setWidth(10.00);
+		f->setHeight(10.00);
 		f->setAngle(l->getCameraAngleAt(0));
-		f->setStrength(1);
+		f->setStrength(10.00);
 		l->addGravityField(f);
 		l->setInItemMenu(false);
 	};
@@ -195,7 +195,6 @@ void LevelEditor::draw(double ex) {
 			glPushMatrix();
 			glTranslated(pos.getX(), pos.getY(), 0.0);
 			glColor3ub(0, 127, 0);
-			glLineWidth(SELECT_RADIUS);
 			glCallList(rotateCall);
 			glPopMatrix();
 			break;
@@ -441,7 +440,7 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 		case 2: //Resize
 		{
 			//If the current object cannot be resized or doesn't exist
-			if (!selected || !selected->canMove()) {
+			if (!selected || !selected->canResize()) {
 				if (action == GLFW_PRESS) {
 					select(world);
 				}
@@ -495,6 +494,9 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 		{
 			//If the current object can't be rotated or doesn't exist
 			if (!selected || !selected->canRotate()) {
+				if (action == GLFW_PRESS) {
+					select(world);
+				}
 				break;
 			}
 			//Stop rotating the object
@@ -643,7 +645,7 @@ double LevelEditor::getCameraAngleAt(double ex) {
 
 // Gets the file location to save the level to
 string LevelEditor::getFileLocation() {
-	return fileLocation.getText();
+	return "Levels\\"+fileLocation.getText();
 }
 
 

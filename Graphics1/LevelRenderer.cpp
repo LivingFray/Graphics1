@@ -23,6 +23,7 @@ LevelRenderer::LevelRenderer() {
 	goal = Vec2D(0.0, 0.0);
 	spawnAngle = 0;
 	goalAngle = 0;
+	defaultGravity = 0;
 }
 
 
@@ -40,7 +41,7 @@ void LevelRenderer::draw(double ex) {
 	If screen is larger then box is scaled to fit
 	If resolution is wrong (most likely the case) the smallest dimension is box size
 	*/
-	float resize = WORLD_SIZE / (float)(sWidth < sHeight ? sWidth : sHeight);
+	float resize = (float)WORLD_SIZE / (float)(sWidth < sHeight ? sWidth : sHeight);
 	//Move the camera
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -182,13 +183,13 @@ void LevelRenderer::draw(double ex) {
 	glRotated(spawnAngle, 0.0, 0.0, 1.0);
 	glBegin(GL_QUADS);
 	glTexCoord2d(0.0, 0.0);
-	glVertex2d(-PLAYER_WIDTH * SPAWN_SCALE * 0.5, -PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+	glVertex2d(-SPAWN_WIDTH * 0.5, -SPAWN_HEIGHT * 0.5);
 	glTexCoord2d(0.0, 1.0);
-	glVertex2d(-PLAYER_WIDTH * SPAWN_SCALE * 0.5, PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+	glVertex2d(-SPAWN_WIDTH * 0.5, SPAWN_HEIGHT * 0.5);
 	glTexCoord2d(1.0, 1.0);
-	glVertex2d(PLAYER_WIDTH * SPAWN_SCALE * 0.5, PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+	glVertex2d(SPAWN_WIDTH * 0.5, SPAWN_HEIGHT * 0.5);
 	glTexCoord2d(1.0, 0.0);
-	glVertex2d(PLAYER_WIDTH * SPAWN_SCALE * 0.5, -PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+	glVertex2d(SPAWN_WIDTH * 0.5, -SPAWN_HEIGHT * 0.5);
 	glEnd();
 	glPopMatrix();
 	//Goal
@@ -197,13 +198,13 @@ void LevelRenderer::draw(double ex) {
 	glRotated(goalAngle, 0.0, 0.0, 1.0);
 	glBegin(GL_QUADS);
 	glTexCoord2d(0.0, 0.0);
-	glVertex2d(-PLAYER_WIDTH * SPAWN_SCALE * 0.5, -PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+	glVertex2d(-SPAWN_WIDTH * 0.5, -SPAWN_HEIGHT * 0.5);
 	glTexCoord2d(0.0, 1.0);
-	glVertex2d(-PLAYER_WIDTH * SPAWN_SCALE * 0.5, PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+	glVertex2d(-SPAWN_WIDTH * 0.5, SPAWN_HEIGHT * 0.5);
 	glTexCoord2d(1.0, 1.0);
-	glVertex2d(PLAYER_WIDTH * SPAWN_SCALE * 0.5, PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+	glVertex2d(SPAWN_WIDTH * 0.5, SPAWN_HEIGHT * 0.5);
 	glTexCoord2d(1.0, 0.0);
-	glVertex2d(PLAYER_WIDTH * SPAWN_SCALE * 0.5, -PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+	glVertex2d(SPAWN_WIDTH * 0.5, -SPAWN_HEIGHT * 0.5);
 	glEnd();
 	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);

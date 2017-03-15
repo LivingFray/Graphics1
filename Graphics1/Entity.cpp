@@ -3,10 +3,6 @@
 #include "Globals.h"
 #include <math.h>
 
-#define DEFAULT_MAXSPEED 100.0
-#define DEFAULT_ENTITY_WIDTH 10.0
-#define DEFAULT_ENTITY_HEIGHT 10.0
-
 Entity::Entity() {
 	pos = Vec2D(0.0, 0.0);
 	vel = Vec2D(0.0, 0.0);
@@ -79,7 +75,7 @@ void Entity::update() {
 	Level* level = (Level*)state;
 	level->getGravityAtPos(pos, &g);
 	if (!onGround) {
-		vel.addTo(g);
+		vel.addTo(g.multiply(TICKRATE));
 	}
 	//Rotation
 	if (abs(g.getX()) > FLOAT_ZERO || abs(g.getY()) > FLOAT_ZERO) {

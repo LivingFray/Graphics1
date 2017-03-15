@@ -5,6 +5,7 @@
 /*
 Task list intergration:
 TODO: Implement acceleration to entities to improve prediction
+TODO: Fix entities sliding on slopes
 TODO: Broad collision detection
 TODO: Graphics/Animations
 TODO: Cleanup code (auto generated classes, import orders, etc)
@@ -19,7 +20,8 @@ TODO: Multiple levels
 TODO: Every stupid thing on the mark sheet
 TODO: Settings
 TODO: Ensure all states can be exited
-TODO: Level win screen
+TODO: Display score/time when in game
+TODO: Make image sizes independent of hitbox
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;

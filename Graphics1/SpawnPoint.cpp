@@ -6,8 +6,8 @@ SpawnPoint::SpawnPoint() {
 	id = "spawn";
 	pos = Vec2D(0.0, 0.0);
 	//Make the spawn large enough to hold the player
-	width = PLAYER_WIDTH * SPAWN_SCALE;
-	height = PLAYER_HEIGHT * SPAWN_SCALE;
+	width = SPAWN_WIDTH;
+	height = SPAWN_HEIGHT;
 	angle = 0.0;
 }
 

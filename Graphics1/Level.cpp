@@ -8,11 +8,6 @@
 //The time after which the spawn animation is complete
 #define SPAWN_ANIM_END 2.0
 
-//The maximum distance between the player and goal to count as in
-#define GOAL_DISTANCE_SQR 25.0
-//The maximum angle between the player anf goal to count as in
-#define GOAL_ANGLE_DIF 5
-
 //The cosine of the angle between collision and vector and ground needed to count as standing on it
 #define COS_GROUND_ANGLE_MIN -1
 #define COS_GROUND_ANGLE_MAX -0.707106
@@ -201,13 +196,13 @@ void Level::draw(double ex) {
 		glBindTexture(GL_TEXTURE_2D, spawnBeam);
 		glBegin(GL_QUADS);
 		glTexCoord2d(0.0, 0.0);
-		glVertex2d(-PLAYER_WIDTH * SPAWN_SCALE * 0.5, -PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+		glVertex2d(-SPAWN_WIDTH * 0.5, -SPAWN_HEIGHT * 0.5);
 		glTexCoord2d(0.0, 1.0);
-		glVertex2d(-PLAYER_WIDTH * SPAWN_SCALE * 0.5, PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+		glVertex2d(-SPAWN_WIDTH * 0.5, SPAWN_HEIGHT * 0.5);
 		glTexCoord2d(1.0, 1.0);
-		glVertex2d(PLAYER_WIDTH * SPAWN_SCALE * 0.5, PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+		glVertex2d(SPAWN_WIDTH * 0.5, SPAWN_HEIGHT * 0.5);
 		glTexCoord2d(1.0, 0.0);
-		glVertex2d(PLAYER_WIDTH * SPAWN_SCALE * 0.5, -PLAYER_HEIGHT * SPAWN_SCALE * 0.5);
+		glVertex2d(SPAWN_WIDTH * 0.5, -SPAWN_HEIGHT * 0.5);
 		glEnd();
 		glDisable(GL_TEXTURE_2D);
 		glPopMatrix();
