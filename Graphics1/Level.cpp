@@ -83,7 +83,6 @@ void Level::update() {
 	//Add player if finished spawning
 	if (!player && levelTime >= SPAWN_ANIM_BEGIN) {
 		player = new Player();
-		player->setLevel(this);
 		entities.push_back(player);
 		player->setPos(spawn);
 		player->setAngle(spawnAngle);
@@ -99,6 +98,15 @@ void Level::update() {
 		if (moving) {
 			onGround = false;
 		}
+		Vec2D res;
+		for (Entity* e2 : entities) {
+			//Entities don't collide with each other
+			if (intersects(e, e2, &res)) {
+				e->onCollide(e2);
+				//Some entities can be destroyed on collision
+				e2->onCollide(e);
+			}
+		}
 		//TODO: Skip entities that haven't moved
 		//TODO: Handle moving platforms once implemented
 		//Perform collision detection + resolution
@@ -106,7 +114,6 @@ void Level::update() {
 			//TODO: Broad check here
 
 			//Use SAT to check for collisions
-			Vec2D res;
 			if (intersects(e, p, &res) && res.magnitudeSquare() > FLOAT_ZERO) {
 				//Move outside of collision
 				e->addPosX(res.getX());
@@ -153,6 +160,12 @@ void Level::update() {
 			reachedGoal = true;
 		}
 	}
+	//Safely handle anything that was removed this update
+	for (Entity* e : toRemoveE) {
+		removeEntity(e);
+	}
+	toRemoveE.clear();
+	//Level timer
 	levelTime += TICKRATE;
 }
 
@@ -224,9 +237,9 @@ void Level::draw(double ex) {
 		scoreLabel += to_string(score);
 		printCentre(fontLarge, sWidth * 0.5, sHeight * 0.625 - fontLarge.h * 3, scoreLabel.c_str());
 		//Buttons
-		int y = (int)(sHeight * 0.375) + fontLarge.h;
+		int y = (int)(sHeight * 0.375) + (int)fontLarge.h;
 		int w = (int)(sWidth * 0.25f);
-		int h = fontLarge.h * 2;
+		int h = (int)fontLarge.h * 2;
 		buttonRetry.setX((int)(sWidth * 0.25));
 		buttonRetry.setY(y);
 		buttonRetry.setWidth(w);
@@ -253,9 +266,9 @@ void Level::draw(double ex) {
 		glVertex2i(0, sHeight);
 		glEnd();
 		//Draw the buttons
-		int y = fontLarge.h * 2.1;
+		int y = (int)(fontLarge.h * 2.1);
 		int w = sWidth / 2;
-		int h = fontLarge.h * 2;
+		int h = (int)fontLarge.h * 2;
 		int top = sHeight / 2 + y + h / 2;
 		gradResume.setY(top);
 		gradRetry.setY(top - y);
@@ -444,4 +457,28 @@ void Level::keyEvent(GLFWwindow* window, int key, int scan, int action, int mods
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE && !reachedGoal) {
 		paused = !paused;
 	}
+}
+
+
+// Gets the current score
+int Level::getScore() {
+	return score;
+}
+
+
+// Sets the current score
+void Level::setScore(int score) {
+	this->score = score;
+}
+
+
+// Adds to the current score
+void Level::addScore(int score) {
+	this->score += score;
+}
+
+
+// Safely remove an entity during an update call
+void Level::safeDelete(Entity* e) {
+	toRemoveE.push_back(e);
 }

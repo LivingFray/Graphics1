@@ -5,7 +5,7 @@
 #include "Storable.h"
 
 class Platform:
-	public Collider, public Selectable, public Storable {
+	public Collider, public Selectable {
 public:
 	Platform();
 	~Platform();

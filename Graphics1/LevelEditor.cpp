@@ -3,6 +3,7 @@
 #include "GradButton.h"
 #include "SpawnPoint.h"
 #include "Goal.h"
+#include "PointGiver.h"
 #define EDITOR_MOVE_SPEED 50
 #define EDITOR_ROTATE_SPEED 30
 #define MOVE_SIZE 50
@@ -60,6 +61,7 @@ LevelEditor::LevelEditor() {
 	//Create elements of spawn menu
 	MenuItem item;
 	//Reset item
+	//TODO: Better adding method, macro?
 	item = MenuItem();
 	item.name = "TEST Platform";
 	item.create = [](BaseState* s) {
@@ -87,10 +89,21 @@ LevelEditor::LevelEditor() {
 		l->setInItemMenu(false);
 	};
 	menuItems.push_back(item);
+	item = MenuItem();
+	item.name = "TEST Points";
+	item.create = [](BaseState* s) {
+		LevelEditor* l = (LevelEditor*)s;
+		PointGiver* p = new PointGiver();
+		p->setPos(l->getCameraPos());
+		p->setAngle(l->getCameraAngleAt(0));
+		l->addEntity(p);
+		l->setInItemMenu(false);
+	};
+	menuItems.push_back(item);
 	//Create buttons for menu
 	for (MenuItem i : menuItems) {
 		GradButton* b = new GradButton();
-		int h = sHeight / 12;
+		int h = (int)fontLarge.h * 2;
 		b->setY(0);
 		b->setHeight((int)(h * 0.9));
 		b->setLabel(i.name);
@@ -243,10 +256,10 @@ void LevelEditor::draw(double ex) {
 		loadButton.setY(y);
 		loadButton.draw();
 		//File location
-		fileLocation.setWidth(sWidth * 0.5);
-		fileLocation.setX(sWidth * 0.5);
+		fileLocation.setWidth(sWidth / 2);
+		fileLocation.setX(sWidth / 2);
 		fileLocation.setY(y * 2);
-		fileLocation.setHeight(fontSmall.h * 1.5);
+		fileLocation.setHeight((int)(fontSmall.h * 1.5));
 		fileLocation.draw();
 		//Level name
 
@@ -360,7 +373,7 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 		if (action == GLFW_RELEASE) {
 			loadButton.mouseDown((int)x, (int)y);
 			saveButton.mouseDown((int)x, (int)y);
-			fileLocation.mouseDown(x, y);
+			fileLocation.mouseDown((int)x, (int)y);
 		}
 	} else {
 		//If in editor bar
@@ -743,6 +756,12 @@ void LevelEditor::select(Vec2D world) {
 	//By breaking after finding a match different types of object have different priorities
 	selected = NULL;
 	//TODO: Entities
+	for (Entity* e : entities) {
+		if (e->isInBoundingBox(world.getX(), world.getY())) {
+			selected = e;
+			return;
+		}
+	}
 	for (Platform* p : platforms) {
 		if (p->isInBoundingBox(world.getX(), world.getY())) {
 			selected = p;

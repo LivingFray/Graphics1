@@ -233,13 +233,15 @@ void DataObject::saveObject(std::string filePath) {
 			file.write(buffer, 2);
 			//Write the actual characters of the string
 			bufferSize = strLen;
-			buffer = new char[bufferSize];
-			//Clear the array to prevent any junk being written
-			std::fill(buffer, (char*)buffer + bufferSize - 1, '\0');
-			//Put the string into the buffer then save the buffer
-			cpy((char*)buffer, s->data(), strLen);
-			file.write(buffer, bufferSize);
-			delete[] buffer;
+			if (bufferSize > 0) {
+				buffer = new char[bufferSize];
+				//Clear the array to prevent any junk being written
+				std::fill(buffer, (char*)buffer + bufferSize - 1, '\0');
+				//Put the string into the buffer then save the buffer
+				cpy((char*)buffer, s->data(), strLen);
+				file.write(buffer, bufferSize);
+				delete[] buffer;
+			}
 		} else if (d.second->type == DATAOBJECT) {
 			//A bit hacky, but recursively save the object
 			DataObject* subObj = (DataObject*)d.second->data;

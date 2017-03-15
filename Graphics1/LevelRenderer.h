@@ -55,5 +55,10 @@ protected:
 	double spawnAngle;
 	Vec2D goal;
 	double goalAngle;
+public:
+	// Adds an entity to the level
+	void addEntity(Entity* entity);
+	// Removes the entity from the level if it exists
+	void removeEntity(Entity* entity);
 };
 

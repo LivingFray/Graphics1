@@ -25,6 +25,7 @@ Player::~Player() {
 void Player::update() {
 	//Get direction of gravity
 	Vec2D g;
+	Level* level = (Level*)state;
 	level->getGravityAtPos(pos, &g);
 	//The velocity in the frame of the current gravity
 	double vX = getVelRelX(angle);

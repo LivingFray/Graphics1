@@ -1,14 +1,13 @@
 #pragma once
 #include "Vec2D.h"
 #include "Collider.h"
-#include "Storable.h"
+#include "Selectable.h"
 
 using namespace std;
 
-class Level;
-
 class Entity:
-	public Collider, public Storable {
+	public Collider,
+	public Selectable {
 public:
 	Entity();
 	~Entity();
@@ -17,7 +16,6 @@ protected:
 	Vec2D vel;
 	double angle;
 	double visAngle;
-	Level* level;
 	double width;
 	double height;
 	bool onGround;
@@ -61,10 +59,6 @@ public:
 	double getVelRelX(double theta);
 	// Gets the vertical (relative to the rotation) velocity
 	double getVelRelY(double theta);
-	// Sets the level in which the entity exists
-	void setLevel(Level* level);
-	// Gets the level in which the entity exists
-	Level* getLevel();
 	// Gets the angle of the entity
 	double getAngle();
 	// Sets the angle of the entity
@@ -100,15 +94,17 @@ public:
 	// Gets the current velocity of the entity
 	Vec2D getVel();
 	// Called when the selectable is moved
-	virtual void onMove(double dX, double dY);
+	virtual bool onMove(double dX, double dY);
 	// Called when the selectable is rotated
-	virtual void onRotate(double dAngle);
+	virtual bool onRotate(double dAngle);
 	// Returns if the selectable can be moved
 	virtual bool canMove();
 	// Returns if the selectable can be rotated
 	virtual bool canResize();
 	// Returns if the selectable can be rotated
 	virtual bool canRotate();
+	// Returns if the selectable is selected
+	virtual bool isInBoundingBox(double x, double y);
 	// Returns a DataObject representing the storable object
 	virtual DataObject save();
 	// Loads the storable object from the DataObject

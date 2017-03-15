@@ -42,6 +42,12 @@ public:
 	void restartLevel();
 	// Sets whether the game is paused or not
 	void setPause(bool p);
+	// Gets the current score
+	int getScore();
+	// Sets the current score
+	void setScore(int score);
+	// Adds to the current score
+	void addScore(int score);
 protected:
 	double defaultGravity = 2; //Fallback for outside the fields
 	Player* player;
@@ -60,5 +66,9 @@ protected:
 	GradButton gradMenu;
 	GradButton gradRetry;
 	GradButton gradResume;
+	vector<Entity*> toRemoveE;
+public:
+	// Safely remove an entity during an update call
+	void safeDelete(Entity* e);
 };
 

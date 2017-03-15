@@ -81,7 +81,7 @@ void MainMenu::draw(double ex) {
 	int i = 0;
 	int n = buttons.size();
 	for (Button* b : buttons) {
-		int h = fontLarge.h * 2;
+		int h = (int)fontLarge.h * 2;
 		b->setWidth((int)(sWidth * 0.5 + h * i));
 		b->setY(h * (n - i));
 		b->setHeight((int)(h*0.9));

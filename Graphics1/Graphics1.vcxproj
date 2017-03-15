@@ -158,6 +158,7 @@
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PointGiver.cpp" />
     <ClCompile Include="Selectable.cpp" />
     <ClCompile Include="SpawnPoint.cpp" />
     <ClCompile Include="Storable.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PointGiver.h" />
     <ClInclude Include="Selectable.h" />
     <ClInclude Include="SpawnPoint.h" />
     <ClInclude Include="Storable.h" />

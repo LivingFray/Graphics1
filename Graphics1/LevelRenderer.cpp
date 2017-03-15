@@ -1,5 +1,6 @@
 #include "LevelRenderer.h"
 #include "Globals.h"
+#include "PointGiver.h"
 
 #define NUM_PANELS 8
 #define PARALLAX 0.5
@@ -171,7 +172,7 @@ void LevelRenderer::draw(double ex) {
 		p->draw(ex);
 	}
 	//Draw the spawn and goal
-	//TODO: The textures
+	//TODO: The textures (different spawn/goal, doors)
 	//Spawn
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, spawnBack);
@@ -334,6 +335,10 @@ void LevelRenderer::loadLevel(string filePath) {
 				Platform* p = new Platform();
 				p->load(item);
 				platforms.push_back(p);
+			} else if (id == "points") {
+				PointGiver* p = new PointGiver();
+				p->load(item);
+				entities.push_back(p);
 			}
 		}
 		//Get next item
@@ -420,4 +425,25 @@ void LevelRenderer::setGoalAngle(double a) {
 // Gets the angle of the goal
 double LevelRenderer::getGoalAngle() {
 	return goalAngle;
+}
+
+
+// Adds an entity to the level
+void LevelRenderer::addEntity(Entity* entity) {
+	entities.push_back(entity);
+}
+
+
+// Removes the entity from the level if it exists
+void LevelRenderer::removeEntity(Entity* entity) {
+	auto ptr = entities.begin();
+	while (ptr != entities.end()) {
+		if (*ptr == entity) {
+			ptr = entities.erase(ptr);
+		} else {
+			ptr++;
+		}
+	}
+	//Remove it either way
+	delete entity;
 }

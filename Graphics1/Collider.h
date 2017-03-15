@@ -1,6 +1,8 @@
 #pragma once
 #include "Vec2D.h"
-class Collider {
+#include "Storable.h"
+class Collider: 
+	public Storable {
 public:
 	Collider();
 	~Collider();

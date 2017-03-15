@@ -41,6 +41,8 @@
 #define PLAYER_HEIGHT 100
 //How much larger the spawn needs to be to hold the player
 #define SPAWN_SCALE 1.1
+//How many points are given for picking up an item
+#define ITEM_SCORE_VALUE 100
 extern GLFWwindow* gameWindow;
 extern int sWidth;
 extern int sHeight;
@@ -53,7 +55,7 @@ extern GLFWcursor* cursorNormal;
 extern GLFWcursor* cursorPan;
 
 //Macro function to print centred text
-#define printCentre(font,x,y,text)	do {													\
-									int l = freetype::getLength((font), (text));			\
-									freetype::print((font), (x) - l * 0.5f, (y), (text));	\
+#define printCentre(font,x,y,text)	do {																\
+									int l = freetype::getLength((font), (text));						\
+									freetype::print((font), (float)(x) - l * 0.5f, (float)(y), (text));	\
 								} while(0)

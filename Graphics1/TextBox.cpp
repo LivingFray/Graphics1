@@ -81,11 +81,11 @@ void TextBox::draw() {
 	glVertex2i(x - width / 2, y + height / 2);
 	glEnd();
 	glColor3ub(0, 0, 0);
-	string d = text;
+	string d = " " + text;
 	if (selected) {
 		d = d + "|";
 	}
-	freetype::print(fontSmall, x - width / 2 + 10, y - fontSmall.h * 0.325, d.c_str());
+	freetype::print(fontSmall, x - width / 2.0f, y - fontSmall.h * 0.325f, d.c_str());
 }
 
 

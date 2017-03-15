@@ -27,7 +27,7 @@ LevelSelect::LevelSelect() {
 		l->setX((i % 2 == 0 ? 1 : 3)*sWidth / 4);
 		l->setY(sHeight - (1 + (i / 2)) * 50);
 		l->setWidth(sWidth / 4);
-		l->setHeight(fontLarge.h * 2);
+		l->setHeight((int)fontLarge.h * 2);
 		l->setLabel(levels[i]->getString("name"));
 		l->setPath(paths[i]);
 		buttons.push_back(l);
@@ -84,8 +84,8 @@ void LevelSelect::draw(double ex) {
 		b->setX((c % 2 == 0 ? 1 : 3)*sWidth / 4);
 		c++;
 		b->setWidth(sWidth / 2 - 50);
-		b->setHeight(fontLarge.h * 2);
-		b->setY(sHeight - ((c + 1) / 2) * (fontLarge.h * 2.1));
+		b->setHeight((int)fontLarge.h * 2);
+		b->setY(sHeight - ((c + 1) / 2) * (int)(fontLarge.h * 2.1));
 		b->draw();
 	}
 }

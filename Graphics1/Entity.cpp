@@ -76,6 +76,7 @@ void Entity::setVelY(double y) {
 // Updates the entity
 void Entity::update() {
 	Vec2D g;
+	Level* level = (Level*)state;
 	level->getGravityAtPos(pos, &g);
 	if (!onGround) {
 		vel.addTo(g);
@@ -108,7 +109,7 @@ void Entity::draw(double ex) {
 	//TODO: Animation
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, idle);
-	int f = flip ? -1.0 : 1.0;
+	double f = flip ? -1.0 : 1.0;
 	glPushMatrix();
 	glColor3ub(255, 255, 255);
 	glTranslated(pos.getX() + vel.getX()*ex, pos.getY() + vel.getY()*ex, 0.0);
@@ -176,18 +177,6 @@ double Entity::getVelRelY(double theta) {
 	double cTheta = cos(-DEG_TO_RAD * theta);
 	double sTheta = sin(-DEG_TO_RAD * theta);
 	return vel.getY() * cTheta + vel.getX() * sTheta;
-}
-
-
-// Sets the level in which the entity exists
-void Entity::setLevel(Level* level) {
-	this->level = level;
-}
-
-
-// Gets the level in which the entity exists
-Level* Entity::getLevel() {
-	return level;
 }
 
 
@@ -337,13 +326,14 @@ Vec2D Entity::getVel() {
 
 
 // Called when the selectable is moved
-void Entity::onMove(double dX, double dY) {
+bool Entity::onMove(double dX, double dY) {
 	pos.addTo(Vec2D(dX, dY));
+	return true;
 }
 
 
 // Called when the selectable is rotated
-void Entity::onRotate(double dAngle) {
+bool Entity::onRotate(double dAngle) {
 	angle += dAngle;
 	if (angle > 360) {
 		angle -= 360;
@@ -351,6 +341,7 @@ void Entity::onRotate(double dAngle) {
 	if (angle < 0) {
 		angle += 360;
 	}
+	return true;
 }
 
 
@@ -369,6 +360,21 @@ bool Entity::canResize() {
 // Returns if the selectable can be rotated
 bool Entity::canRotate() {
 	return true;
+}
+
+
+// Returns if the selectable is selected
+bool Entity::isInBoundingBox(double x, double y) {
+	//Translate point to be relative to the BB's centre
+	Vec2D p = Vec2D(x, y).subtract(pos);
+	//Rotate the point back to be AA with the BB (-angle)
+	double cTheta = cos(-DEG_TO_RAD * angle);
+	double sTheta = sin(-DEG_TO_RAD * angle);
+	double xPrime = p.getX() * cTheta - p.getY() * sTheta;
+	double yPrime = p.getY() * cTheta + p.getX() * sTheta;
+	//Calculate field strength at point
+	return xPrime >= -width / 2 && xPrime <= width / 2
+		&& yPrime >= -height / 2 && yPrime <= height / 2;
 }
 
 
