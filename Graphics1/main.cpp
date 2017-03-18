@@ -9,7 +9,6 @@ TODO: Fix entities sliding on slopes
 TODO: Broad collision detection
 TODO: Graphics/Animations
 TODO: Cleanup code (auto generated classes, import orders, etc)
-TODO: Start and end points
 TODO: UI
 TODO: Level editor
 TODO: --Enter exact value

@@ -38,8 +38,8 @@ public:
 	// Adds a gravity field to the level
 	void addGravityField(GravityField* field);
 protected:
-	bool inItemMenu;
-	bool inSaveMenu;
+	enum class Menu {NONE, ITEM, SAVE};
+	Menu currentMenu;
 	struct MenuItem {
 		string name;
 		void(*create)(BaseState* l);
@@ -66,5 +66,6 @@ protected:
 	Button saveButton;
 	Button loadButton;
 	TextBox fileLocation;
+	TextBox levelBox;
 };
 

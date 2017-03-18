@@ -14,6 +14,7 @@ Player::Player() {
 Player::~Player() {
 }
 
+
 // Updates the player
 void Player::update() {
 	//Get direction of gravity

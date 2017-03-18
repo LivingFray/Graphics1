@@ -14,7 +14,7 @@
 
 LevelEditor::LevelEditor() {
 	//Initialise variables
-	inItemMenu = false;
+	currentMenu = Menu::NONE;
 	camPos = Vec2D(0.0, 0.0);
 	camAngle = 0.0;
 	current = 0;
@@ -116,6 +116,12 @@ LevelEditor::LevelEditor() {
 	fileLocation.setWidth(600);
 	fileLocation.setHeight(50);
 	fileLocation.setText("");
+	levelBox = TextBox();
+	levelBox.setX(100);
+	levelBox.setY(300);
+	levelBox.setWidth(600);
+	levelBox.setHeight(50);
+	levelBox.setText("");
 	//Test
 	//TODO: Start with choosing a level
 	loadLevel("notalevel");
@@ -132,6 +138,7 @@ void LevelEditor::update() {
 	//Move camera (tick only)
 	updateCamera(TICKRATE);
 }
+
 
 // Draws the level
 void LevelEditor::draw(double ex) {
@@ -207,7 +214,7 @@ void LevelEditor::draw(double ex) {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	//Draw menu if open
-	if (inItemMenu) {
+	if (currentMenu == Menu::ITEM) {
 		glColor4ub(0, 0, 0, 127);
 		glBegin(GL_QUADS);
 		glVertex2i(0, 0);
@@ -229,7 +236,7 @@ void LevelEditor::draw(double ex) {
 			b->draw(ex);
 			i++;
 		}
-	} else if (inSaveMenu) {
+	} else if (currentMenu == Menu::SAVE) {
 		glColor4ub(0, 0, 0, 127);
 		glBegin(GL_QUADS);
 		glVertex2i(0, 0);
@@ -315,24 +322,26 @@ void LevelEditor::draw(double ex) {
 	//Draw edit menu (fine tune properties)
 }
 
+
 void LevelEditor::keyEvent(GLFWwindow * window, int key, int scan, int action, int mods) {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
-		if (inItemMenu) {
+		if (currentMenu != Menu::NONE) {
 			//TODO: Any necessary things
-			inItemMenu = false;
-		} else if (inSaveMenu) {
-			//TODO: Save information entered
-			inSaveMenu = false;
+			currentMenu = Menu::NONE;
 		} else {
-			inSaveMenu = true;
+			currentMenu = Menu::SAVE;
 			selected = NULL;
 		}
 	}
-	if (inSaveMenu) {
+	if (currentMenu == Menu::SAVE) {
 		fileLocation.keyDown(key, scan, action, mods);
 	}
-	if (key == KeyConfig::keyBindings["editorMenu"] && action == GLFW_RELEASE && !inSaveMenu) {
-		inItemMenu = !inItemMenu;
+	if (key == KeyConfig::keyBindings["editorMenu"] && action == GLFW_RELEASE && currentMenu != Menu::SAVE) {
+		if (currentMenu == Menu::NONE) {
+			currentMenu = Menu::ITEM;
+		} else {
+			currentMenu = Menu::NONE;
+		}
 		//Fix cursor
 		if (panning) {
 			glfwSetCursor(window, cursorNormal);
@@ -342,13 +351,14 @@ void LevelEditor::keyEvent(GLFWwindow * window, int key, int scan, int action, i
 	}
 }
 
+
 // Called when a mouse event is fired
 void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mods) {
 	double x, y;
 	glfwGetCursorPos(window, &x, &y);
 	y = sHeight - y;
 	//Drag editor
-	if (!inItemMenu && !inSaveMenu && button == GLFW_MOUSE_BUTTON_RIGHT) {
+	if (currentMenu == Menu::NONE && button == GLFW_MOUSE_BUTTON_RIGHT) {
 		panning = action == GLFW_PRESS;
 		if (panning) {
 			panFrom = Vec2D(x, y);
@@ -362,13 +372,13 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 		return;
 	}
 	//Handle clicks in menu
-	if (inItemMenu) {
+	if (currentMenu == Menu::ITEM) {
 		if (action == GLFW_RELEASE) {
 			for (GradButton* b : buttons) {
 				b->mouseDown((int)x, (int)y);
 			}
 		}
-	} else if (inSaveMenu) {
+	} else if (currentMenu == Menu::SAVE) {
 		if (action == GLFW_RELEASE) {
 			loadButton.mouseDown((int)x, (int)y);
 			saveButton.mouseDown((int)x, (int)y);
@@ -612,8 +622,9 @@ void LevelEditor::mouseMoveEvent(GLFWwindow* window, double x, double y) {
 	}
 }
 
+
 void LevelEditor::textEvent(GLFWwindow *, unsigned int ch) {
-	if (inSaveMenu) {
+	if (currentMenu == Menu::SAVE) {
 		fileLocation.textEvent(ch);
 	}
 }
@@ -621,7 +632,7 @@ void LevelEditor::textEvent(GLFWwindow *, unsigned int ch) {
 
 // Sets whether the item menu is visible
 void LevelEditor::setInItemMenu(bool inMenu) {
-	inItemMenu = inMenu;
+	currentMenu = inMenu ? Menu::ITEM : Menu::NONE;
 }
 
 
@@ -664,7 +675,8 @@ void LevelEditor::saveLevel(string filePath) {
 		}
 	}
 	LevelRenderer::saveLevel(filePath);
-	inSaveMenu = false;
+	//Close menu
+	currentMenu = Menu::NONE;
 	//Re-add spawn+goal objects
 	SpawnPoint* spawnObj = new SpawnPoint();
 	spawnObj->setPos(spawn);
@@ -682,7 +694,8 @@ void LevelEditor::saveLevel(string filePath) {
 void LevelEditor::loadLevel(string filePath) {
 	//TODO: Checks for valid path
 	LevelRenderer::loadLevel(filePath);
-	inSaveMenu = false;
+	//Close menu
+	currentMenu = Menu::NONE;
 	SpawnPoint* spawnObj = new SpawnPoint();
 	spawnObj->setPos(spawn);
 	spawnObj->setAngle(spawnAngle);
@@ -723,6 +736,7 @@ void LevelEditor::updateCamera(double time) {
 		camAngle -= time * EDITOR_ROTATE_SPEED;
 		rot = true;
 	}
+	//Rotate movement to match camera angle
 	double h = sqrt(dX * dX + dY * dY);
 	double ang = atan2(dY, dX);
 	if (ang < 0) {
