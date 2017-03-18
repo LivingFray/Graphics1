@@ -70,4 +70,6 @@ protected:
 	string textureString;
 	double texX;
 	double texY;
+	double texXSize;
+	double texYSize;
 };

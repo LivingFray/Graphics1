@@ -11,8 +11,13 @@ Platform::Platform() {
 	id = "platform";
 	textureString = "error.png";
 	texture = ImageLoader::getImage(textureString);
+	//Store both versions to minimise rounding errors
+	//The number of times the texture repeats in each axis
 	texX = 1;
 	texY = 1;
+	//The exact size of 1 texture tile
+	texXSize = 1;
+	texYSize = 1;
 }
 
 
@@ -34,12 +39,14 @@ void Platform::setPos(Vec2D pos) {
 // Sets the width of the platform
 void Platform::setWidth(double width) {
 	this->width = width;
+	texX = width / texXSize;
 }
 
 
 // Sets the height of the platform
 void Platform::setHeight(double height) {
 	this->height = height;
+	texY = height / texYSize;
 }
 
 
@@ -139,8 +146,8 @@ bool Platform::onResize(double dX, double dY) {
 	if (height + dY <= SMALLEST_THICKNESS) {
 		return false;
 	}
-	width += dX;
-	height += dY;
+	setWidth(width + dX);
+	setHeight(height + dY);
 	return true;
 }
 
@@ -247,12 +254,14 @@ void Platform::setTexture(string tex) {
 // Sets the scale of the texture in the x axis
 void Platform::setTexScaleX(double x) {
 	texX = x;
+	texXSize = width / x;
 }
 
 
 // Sets the scale of the texture in the y axis
 void Platform::setTexScaleY(double y) {
 	texY = y;
+	texYSize = height / y;
 }
 
 
