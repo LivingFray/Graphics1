@@ -51,7 +51,7 @@
 //The height of an entity if none is provided
 #define DEFAULT_ENTITY_HEIGHT 0.10
 //The maximum distance between the player and goal to count as in
-#define GOAL_DISTANCE_SQR 0.01
+#define GOAL_DISTANCE_SQR 0.04
 //The maximum angle between the player anf goal to count as in
 #define GOAL_ANGLE_DIF 5
 //How much the player slows down in the horizontal axis when not moving

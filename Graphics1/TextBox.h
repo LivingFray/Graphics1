@@ -18,12 +18,23 @@ public:
 	void draw();
 	void mouseDown(int x, int y);
 	void keyDown(int key, int scan, int action, int mods);
-protected:
+private:
 	string text;
 	int x;
 	int y;
 	int width;
 	int height;
 	bool selected;
+	bool numeric;
+	string oldText;
+	// Validates the input and resets it if it fails
+	void validate();
+public:
+	// Sets whether the text box only accepts numerical values
+	void setNumeric(bool n);
+	// Gets whether the textbox only accepts numerical values
+	bool getNumeric();
+	// Gets whether the textbox is selected
+	bool getSelected();
 };
 

@@ -37,7 +37,7 @@ public:
 	void addPlatform(Platform* platform);
 	// Adds a gravity field to the level
 	void addGravityField(GravityField* field);
-protected:
+private:
 	enum class Menu {NONE, ITEM, SAVE};
 	Menu currentMenu;
 	struct MenuItem {
@@ -65,7 +65,9 @@ protected:
 	void select(Vec2D world);
 	Button saveButton;
 	Button loadButton;
-	TextBox fileLocation;
+	TextBox fileBox;
 	TextBox levelBox;
+	TextBox gravBox;
+	void drawTextBox(string label, TextBox &box, int y);
 };
 

@@ -110,21 +110,15 @@ LevelEditor::LevelEditor() {
 		b->setCallback(i.create);
 		buttons.push_back(b);
 	}
-	fileLocation = TextBox();
-	fileLocation.setX(100);
-	fileLocation.setY(200);
-	fileLocation.setWidth(600);
-	fileLocation.setHeight(50);
-	fileLocation.setText("");
+	fileBox = TextBox();
+	fileBox.setText("");
 	levelBox = TextBox();
-	levelBox.setX(100);
-	levelBox.setY(300);
-	levelBox.setWidth(600);
-	levelBox.setHeight(50);
 	levelBox.setText("");
-	//Test
+	gravBox = TextBox();
+	gravBox.setText("");
+	gravBox.setNumeric(true);
 	//TODO: Start with choosing a level
-	loadLevel("notalevel");
+	loadLevel("");
 }
 
 
@@ -261,15 +255,16 @@ void LevelEditor::draw(double ex) {
 		loadButton.setX((int)(sWidth * 0.5 + w * 0.75));
 		loadButton.setY(y);
 		loadButton.draw();
-		//File location
-		fileLocation.setWidth(sWidth / 2);
-		fileLocation.setX(sWidth / 2);
-		fileLocation.setY(y * 2);
-		fileLocation.setHeight((int)(fontSmall.h * 1.5));
-		fileLocation.draw();
 		//Level name
-
+		y = sHeight - (int)fontLarge.h * 4;
+		drawTextBox("Level name", levelBox, y);
+		//File location
+		y -= (int)fontSmall.h * 4;
+		drawTextBox("File location", fileBox, y);
 		//Default gravity
+		y -= (int)fontSmall.h * 4;
+		drawTextBox("Default gravity", gravBox, y);
+
 	} else {
 		int bSize = (int)(sHeight * 0.05);
 		//Draw editor bar
@@ -334,7 +329,9 @@ void LevelEditor::keyEvent(GLFWwindow * window, int key, int scan, int action, i
 		}
 	}
 	if (currentMenu == Menu::SAVE) {
-		fileLocation.keyDown(key, scan, action, mods);
+		fileBox.keyDown(key, scan, action, mods);
+		levelBox.keyDown(key, scan, action, mods);
+		gravBox.keyDown(key, scan, action, mods);
 	}
 	if (key == KeyConfig::keyBindings["editorMenu"] && action == GLFW_RELEASE && currentMenu != Menu::SAVE) {
 		if (currentMenu == Menu::NONE) {
@@ -382,7 +379,9 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 		if (action == GLFW_RELEASE) {
 			loadButton.mouseDown((int)x, (int)y);
 			saveButton.mouseDown((int)x, (int)y);
-			fileLocation.mouseDown((int)x, (int)y);
+			fileBox.mouseDown((int)x, (int)y);
+			levelBox.mouseDown((int)x, (int)y);
+			gravBox.mouseDown((int)x, (int)y);
 		}
 	} else {
 		//If in editor bar
@@ -625,7 +624,9 @@ void LevelEditor::mouseMoveEvent(GLFWwindow* window, double x, double y) {
 
 void LevelEditor::textEvent(GLFWwindow *, unsigned int ch) {
 	if (currentMenu == Menu::SAVE) {
-		fileLocation.textEvent(ch);
+		fileBox.textEvent(ch);
+		levelBox.textEvent(ch);
+		gravBox.textEvent(ch);
 	}
 }
 
@@ -656,7 +657,7 @@ double LevelEditor::getCameraAngleAt(double ex) {
 
 // Gets the file location to save the level to
 string LevelEditor::getFileLocation() {
-	return "Levels\\"+fileLocation.getText();
+	return "Levels\\" + fileBox.getText();
 }
 
 
@@ -674,6 +675,9 @@ void LevelEditor::saveLevel(string filePath) {
 			platIt++;
 		}
 	}
+	//Update settings
+	levelName = levelBox.getText();
+	defaultGravity = atof(gravBox.getText().c_str());
 	LevelRenderer::saveLevel(filePath);
 	//Close menu
 	currentMenu = Menu::NONE;
@@ -790,6 +794,19 @@ void LevelEditor::select(Vec2D world) {
 			return;
 		}
 	}
+}
+
+
+// Draws a TexBox with a corresponding label
+void LevelEditor::drawTextBox(string label, TextBox &box, int y) {
+	int textWidth = freetype::getLength(fontSmall, (label+" ").c_str());
+	glColor3ub(0, 0, 0);
+	freetype::print(fontSmall, sWidth * 0.1f, y - fontSmall.h * 0.325f, label.c_str());
+	box.setWidth((4 * sWidth) / 5 - textWidth);
+	box.setHeight((int)(fontSmall.h * 1.5f));
+	box.setX((sWidth + textWidth) / 2);
+	box.setY(y);
+	box.draw();
 }
 
 

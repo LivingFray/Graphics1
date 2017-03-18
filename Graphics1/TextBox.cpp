@@ -1,13 +1,16 @@
 #include "TextBox.h"
-
+#include <stdlib.h>
 
 
 TextBox::TextBox() {
 	text = "";
+	oldText = "";
 	x = 0;
 	y = 0;
 	width = 100;
 	height = 10;
+	selected = false;
+	numeric = false;
 }
 
 
@@ -21,6 +24,9 @@ void TextBox::setText(string text) {
 
 
 string TextBox::getText() {
+	if (numeric && text == "") {
+		return "0";
+	}
 	return text;
 }
 
@@ -94,6 +100,9 @@ void TextBox::mouseDown(int x, int y) {
 	float w = width*0.5f;
 	float h = height*0.5f;
 	selected = x >= this->x - w && x <= this->x + w && y >= this->y - h && y <= this->y + h;
+	if (!selected) {
+		validate();
+	}
 }
 
 
@@ -103,6 +112,38 @@ void TextBox::keyDown(int key, int scan, int action, int mods) {
 			text.erase(text.end() - 1);
 		} else if (key == GLFW_KEY_ENTER || key == GLFW_KEY_ESCAPE) {
 			selected = false;
+			validate();
 		}
 	}
+}
+
+
+// Validates the input and resets it if it fails
+void TextBox::validate() {
+	if (numeric) {
+		char* end;
+		strtod(text.c_str(), &end);
+		//If it cannot be converted
+		if (*end) {
+			text = oldText;
+		}
+	}
+	oldText = text;
+}
+
+// Sets whether the text box only accepts numerical values
+void TextBox::setNumeric(bool n) {
+	numeric = n;
+}
+
+
+// Gets whether the textbox only accepts numerical values
+bool TextBox::getNumeric() {
+	return numeric;
+}
+
+
+// Gets whether the textbox is selected
+bool TextBox::getSelected() {
+	return selected;
 }
