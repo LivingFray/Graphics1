@@ -5,6 +5,7 @@
 /*
 Task list intergration:
 TODO: Refactor out rectangles
+TODO: Debug mode
 TODO: Fix size of handles
 TODO: Fix entities sliding on slopes
 TODO: Broad collision detection

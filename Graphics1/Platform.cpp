@@ -9,7 +9,7 @@ Platform::Platform() {
 	height = 0.0;
 	angle = 0.0;
 	id = "platform";
-	textureString = "error.png";
+	textureString = "";
 	texture = ImageLoader::getImage(textureString);
 	//Store both versions to minimise rounding errors
 	//The number of times the texture repeats in each axis
@@ -274,4 +274,38 @@ double Platform::getTexScaleX() {
 // Sets the scale of the texture in the y axis
 double Platform::getTexScaleY() {
 	return texY;
+}
+
+
+// Sets the options for this selectable
+void Platform::setOptions(OptionMenu* menu) {
+	//Return pair not list
+	std::map<string, string> values = menu->getValues();
+	string v;
+	v = values["X Position"];
+	pos.setX(atof(v.c_str()));
+	v = values["Y Position"];
+	pos.setY(atof(v.c_str()));
+	v = values["Width"];
+	width = atof(v.c_str());
+	v = values["Height"];
+	height = atof(v.c_str());
+	v = values["Angle"];
+	angle = atof(v.c_str());
+	v = values["Texture"];
+	textureString = v;
+	texture = ImageLoader::getImage(textureString);
+	v = values["Texture Scale X"];
+	setTexScaleX(atof(v.c_str()));
+	v = values["Texture Scale Y"];
+	setTexScaleY(atof(v.c_str()));
+}
+
+
+// Creates an option menu using the current values as defaults
+void Platform::createOptions() {
+	Selectable::createOptions();
+	options.addOption("Texture", false, textureString);
+	options.addOption("Texture Scale X", true, to_string(texX));
+	options.addOption("Texture Scale Y", true, to_string(texY));
 }

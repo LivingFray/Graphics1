@@ -1,5 +1,6 @@
 #pragma once
 #include "Vec2D.h"
+#include "OptionMenu.h"
 class Selectable {
 public:
 	Selectable();
@@ -30,5 +31,13 @@ public:
 	virtual double getWidth();
 	// Gets the height of the selectable
 	virtual double getHeight();
+	// Creates an option menu using the current values as defaults
+	virtual void createOptions();
+	// Gets the options screen for this selectable
+	virtual OptionMenu* getOptions();
+	// Sets the options for this selectable
+	virtual void setOptions(OptionMenu* menu);
+protected:
+	OptionMenu options;
 };
 

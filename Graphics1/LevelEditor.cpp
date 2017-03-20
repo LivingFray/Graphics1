@@ -57,7 +57,8 @@ LevelEditor::LevelEditor() {
 	barButtons[1] = ImageLoader::getImage("Resources\\moveButton.png");
 	barButtons[2] = ImageLoader::getImage("Resources\\resizeButton.png");
 	barButtons[3] = ImageLoader::getImage("Resources\\rotateButton.png");
-	barButtons[4] = ImageLoader::getImage("Resources\\deleteButton.png");
+	barButtons[4] = ImageLoader::getImage("Resources\\optionsButton.png");
+	barButtons[5] = ImageLoader::getImage("Resources\\deleteButton.png");
 	//Create elements of spawn menu
 	MenuItem item;
 	//Reset item
@@ -72,7 +73,7 @@ LevelEditor::LevelEditor() {
 		pl->setHeight(1.00);
 		pl->setAngle(l->getCameraAngleAt(0));
 		l->addPlatform(pl);
-		l->setInItemMenu(false);
+		l->setMenu(0);
 	};
 	menuItems.push_back(item);
 	item = MenuItem();
@@ -86,7 +87,7 @@ LevelEditor::LevelEditor() {
 		f->setAngle(l->getCameraAngleAt(0));
 		f->setStrength(10.00);
 		l->addGravityField(f);
-		l->setInItemMenu(false);
+		l->setMenu(0);
 	};
 	menuItems.push_back(item);
 	item = MenuItem();
@@ -97,7 +98,7 @@ LevelEditor::LevelEditor() {
 		p->setPos(l->getCameraPos());
 		p->setAngle(l->getCameraAngleAt(0));
 		l->addEntity(p);
-		l->setInItemMenu(false);
+		l->setMenu(0);
 	};
 	menuItems.push_back(item);
 	//Create buttons for menu
@@ -126,6 +127,13 @@ LevelEditor::LevelEditor() {
 		state = new MainMenu();
 	};
 	exitButton.setCallback(exitCall);
+	returnButton = GradButton();
+	returnButton.setLabel("Return to level");
+	auto returnCall = [](BaseState* s) {
+		LevelEditor* l = (LevelEditor*)s;
+		l->setMenu((int)Menu::NONE);
+	};
+	returnButton.setCallback(returnCall);
 	//TODO: Start with choosing a level
 	loadLevel("");
 }
@@ -133,6 +141,10 @@ LevelEditor::LevelEditor() {
 
 LevelEditor::~LevelEditor() {
 	glDeleteLists(rotateCall, 1);
+	//Clear up any lingering options menus
+	if (optMenu) {
+		delete optMenu;
+	}
 }
 
 
@@ -149,7 +161,7 @@ void LevelEditor::draw(double ex) {
 	updateCamera(ex);
 	//Draw the level thus far 
 	LevelRenderer::draw(ex);
-	//Draw movement arrows/ resize arrows
+	//Draw movement arrows/resize arrows
 	if (selected) {
 		//Draw point showing centre of object
 		Vec2D pos = selected->getPos();
@@ -251,7 +263,7 @@ void LevelEditor::draw(double ex) {
 		freetype::print(fontLarge, 10, sHeight - fontLarge.h * 1.325f, "Settings");
 		int w = (int)(sWidth * 0.25);
 		int h = (int)(sHeight * 0.1);
-		int y = (int)(sHeight * 0.2);
+		int y = (int)(sHeight * 0.3);
 		//Save button
 		saveButton.setWidth(w);
 		saveButton.setHeight(h);
@@ -277,9 +289,30 @@ void LevelEditor::draw(double ex) {
 		drawTextBox("Next level", nextBox, y);
 		//Exit button
 		exitButton.setY((int)(fontLarge.h * 2));
-		exitButton.setHeight((int)(fontLarge.h * 2));
+		exitButton.setHeight((int)(fontLarge.h * 1.9));
 		exitButton.setWidth(w * 2);
 		exitButton.draw(0);
+		//Return button
+		returnButton.setY((int)(fontLarge.h * 4));
+		returnButton.setWidth((w - fontLarge.h) * 2);
+		returnButton.setHeight((int)(fontLarge.h * 1.9));
+		returnButton.draw(0);
+	} else if (currentMenu == Menu::OPTIONS) {
+		//Draw options menu for object
+		glColor4ub(0, 0, 0, 127);
+		glBegin(GL_QUADS);
+		glVertex2i(0, 0);
+		glVertex2i(0, sHeight);
+		glVertex2i(sWidth, sHeight);
+		glVertex2i(sWidth, 0);
+		glEnd();
+		glColor3ub(255, 255, 255);
+		freetype::print(fontLarge, 10, sHeight - fontLarge.h * 1.325f, "Object options");
+		optMenu->draw();
+		returnButton.setY((int)(fontLarge.h * 2));
+		returnButton.setHeight((int)(fontLarge.h * 2));
+		returnButton.setWidth(sWidth / 2);
+		returnButton.draw(0);
 	} else {
 		int bSize = (int)(sHeight * 0.05);
 		//Draw editor bar
@@ -329,7 +362,6 @@ void LevelEditor::draw(double ex) {
 		glColor3ub(255, 255, 255);
 		freetype::print(fontSmall, 10, fontSmall.h * 2.625f, "Position: (%.2f, %.2f)\nAngle: %.2f", camPos.getX(), camPos.getY(), camAngle);
 	}
-	//Draw edit menu (fine tune properties)
 }
 
 
@@ -341,6 +373,11 @@ void LevelEditor::keyEvent(GLFWwindow * window, int key, int scan, int action, i
 		} else {
 			currentMenu = Menu::SAVE;
 			selected = NULL;
+			//Fix cursor
+			if (panning) {
+				glfwSetCursor(window, cursorNormal);
+				panning = false;
+			}
 		}
 	}
 	if (currentMenu == Menu::SAVE) {
@@ -348,19 +385,24 @@ void LevelEditor::keyEvent(GLFWwindow * window, int key, int scan, int action, i
 		levelBox.keyDown(key, scan, action, mods);
 		nextBox.keyDown(key, scan, action, mods);
 		gravBox.keyDown(key, scan, action, mods);
+	} else if (currentMenu == Menu::OPTIONS) {
+		optMenu->keyEvent(key, scan, action, mods);
+		//Save changes
+		if (key == GLFW_KEY_ENTER) {
+			selected->setOptions(optMenu);
+		}
 	}
-	if (key == KeyConfig::keyBindings["editorMenu"] && action == GLFW_RELEASE && currentMenu != Menu::SAVE) {
+	if (key == KeyConfig::keyBindings["editorMenu"] && action == GLFW_RELEASE) {
 		if (currentMenu == Menu::NONE) {
 			currentMenu = Menu::ITEM;
-		} else {
+			//Fix cursor
+			if (panning) {
+				glfwSetCursor(window, cursorNormal);
+				panning = false;
+			}
+		} else if (currentMenu == Menu::ITEM) {
 			currentMenu = Menu::NONE;
 		}
-		//Fix cursor
-		if (panning) {
-			glfwSetCursor(window, cursorNormal);
-			panning = false;
-		}
-		//TODO: handle closing menu?
 	}
 }
 
@@ -396,10 +438,16 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 			loadButton.mouseDown((int)x, (int)y);
 			saveButton.mouseDown((int)x, (int)y);
 			exitButton.mouseDown((int)x, (int)y);
+			returnButton.mouseDown((int)x, (int)y);
 			fileBox.mouseDown((int)x, (int)y);
 			levelBox.mouseDown((int)x, (int)y);
 			nextBox.mouseDown((int)x, (int)y);
 			gravBox.mouseDown((int)x, (int)y);
+		}
+	} else if (currentMenu == Menu::OPTIONS) {
+		optMenu->mouseEvent(button, action, mods);
+		if (action == GLFW_RELEASE) {
+			returnButton.mouseDown((int)x, (int)y);
 		}
 	} else {
 		//If in editor bar
@@ -407,6 +455,12 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 			int index = (int)x / ((int)(sHeight * 0.05));
 			if (action == GLFW_RELEASE && index < EDITOR_BAR_BUTTONS) {
 				current = index;
+				//Select options menu
+				if (index == 4 && selected) {
+					currentMenu = Menu::OPTIONS;
+					selected->createOptions();
+					optMenu = selected->getOptions();
+				}
 				return;
 			}
 		}
@@ -543,7 +597,19 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 			}
 			break;
 		}
-		case 4: //Delete
+		case 4: //Options
+		{
+			if (action == GLFW_PRESS) {
+				select(world);
+			}
+			if (selected) {
+				selected->createOptions();
+				optMenu = selected->getOptions();
+				currentMenu = Menu::OPTIONS;
+			}
+			break;
+		}
+		case 5: //Delete
 		{
 			//Deselect current object in case it is removed
 			if (selected) {
@@ -641,18 +707,21 @@ void LevelEditor::mouseMoveEvent(GLFWwindow* window, double x, double y) {
 
 
 void LevelEditor::textEvent(GLFWwindow *, unsigned int ch) {
+	//Pass text input to textboxes
 	if (currentMenu == Menu::SAVE) {
 		fileBox.textEvent(ch);
 		levelBox.textEvent(ch);
 		nextBox.textEvent(ch);
 		gravBox.textEvent(ch);
+	} else if (currentMenu == Menu::OPTIONS) {
+		optMenu->textEvent(ch);
 	}
 }
 
 
-// Sets whether the item menu is visible
-void LevelEditor::setInItemMenu(bool inMenu) {
-	currentMenu = inMenu ? Menu::ITEM : Menu::NONE;
+// Sets the current menu
+void LevelEditor::setMenu(int m) {
+	currentMenu = (Menu)m;
 }
 
 
@@ -819,7 +888,7 @@ void LevelEditor::select(Vec2D world) {
 
 // Draws a TexBox with a corresponding label
 void LevelEditor::drawTextBox(string label, TextBox &box, int y) {
-	int textWidth = freetype::getLength(fontSmall, (label+" ").c_str());
+	int textWidth = freetype::getLength(fontSmall, (label + " ").c_str());
 	glColor3ub(0, 0, 0);
 	freetype::print(fontSmall, sWidth * 0.1f, y - fontSmall.h * 0.325f, label.c_str());
 	box.setWidth((4 * sWidth) / 5 - textWidth);

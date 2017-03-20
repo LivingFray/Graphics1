@@ -4,7 +4,7 @@
 #include "GradButton.h"
 #include "TextBox.h"
 //The number of buttons in the editor bar
-#define EDITOR_BAR_BUTTONS 5
+#define EDITOR_BAR_BUTTONS 6
 class LevelEditor:
 	public BaseState, 
 	public LevelRenderer {
@@ -19,8 +19,8 @@ public:
 	void mouseEvent(GLFWwindow* window, int button, int action, int mods);
 	void mouseMoveEvent(GLFWwindow* window, double x, double y);
 	void textEvent(GLFWwindow*, unsigned int ch);
-	// Sets whether the item menu is visible
-	void setInItemMenu(bool inMenu);
+	// Sets the current menu
+	void setMenu(int m);
 	// Gets the current position of the camera
 	Vec2D getCameraPos();
 	// Gets the position of the camera ex seconds after last update
@@ -38,7 +38,7 @@ public:
 	// Adds a gravity field to the level
 	void addGravityField(GravityField* field);
 private:
-	enum class Menu {NONE, ITEM, SAVE};
+	enum class Menu {NONE, ITEM, SAVE, OPTIONS};
 	Menu currentMenu;
 	struct MenuItem {
 		string name;
@@ -70,6 +70,8 @@ private:
 	TextBox nextBox;
 	TextBox gravBox;
 	GradButton exitButton;
+	GradButton returnButton;
+	OptionMenu* optMenu;
 	void drawTextBox(string label, TextBox &box, int y);
 };
 

@@ -3,6 +3,7 @@
 
 
 Selectable::Selectable() {
+	options = OptionMenu();
 }
 
 
@@ -84,4 +85,35 @@ double Selectable::getWidth() {
 // Gets the height of the selectable
 double Selectable::getHeight() {
 	return 0.0;
+}
+
+
+// Gets the options screen for this selectable
+OptionMenu* Selectable::getOptions() {
+	return &options;
+}
+
+
+// Sets the options for this selectable
+void Selectable::setOptions(OptionMenu* menu) {
+
+}
+
+
+// Creates an option menu using the current values as defaults
+void Selectable::createOptions() {
+	//Clear out options
+	options = OptionMenu();
+	//Add default options
+	if (canMove()) {
+		options.addOption("X Position", true, to_string(getPos().getX()));
+		options.addOption("Y Position", true, to_string(getPos().getY()));
+	}
+	if (canResize()) {
+		options.addOption("Width", true, to_string(getWidth()));
+		options.addOption("Height", true, to_string(getHeight()));
+	}
+	if (canRotate()) {
+		options.addOption("Angle", true, to_string(getAngle()));
+	}
 }
