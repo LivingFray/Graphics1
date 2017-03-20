@@ -67,7 +67,9 @@ private:
 	Button loadButton;
 	TextBox fileBox;
 	TextBox levelBox;
+	TextBox nextBox;
 	TextBox gravBox;
+	GradButton exitButton;
 	void drawTextBox(string label, TextBox &box, int y);
 };
 

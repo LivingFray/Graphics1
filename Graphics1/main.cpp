@@ -4,7 +4,8 @@
 #include "MainMenu.h"
 /*
 Task list intergration:
-TODO: Implement acceleration to entities to improve prediction
+TODO: Refactor out rectangles
+TODO: Fix size of handles
 TODO: Fix entities sliding on slopes
 TODO: Broad collision detection
 TODO: Graphics/Animations

@@ -398,13 +398,13 @@ double Level::getCameraAngleAt(double ex) {
 void Level::nextLevel() {
 	//Check the level can actually be read
 	DataObject check = DataObject();
-	check.loadFromFile(nextLevelPath);
+	check.loadFromFile("Levels\\" + nextLevelPath);
 	bool valid;
 	check.getString("name", valid);
 	if (!valid) {
 		return;
 	}
-	loadLevel(nextLevelPath);
+	loadLevel("Levels\\" + nextLevelPath);
 }
 
 

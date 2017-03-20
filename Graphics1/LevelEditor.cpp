@@ -114,9 +114,18 @@ LevelEditor::LevelEditor() {
 	fileBox.setText("");
 	levelBox = TextBox();
 	levelBox.setText("");
+	nextBox = TextBox();
+	nextBox.setText("");
 	gravBox = TextBox();
 	gravBox.setText("");
 	gravBox.setNumeric(true);
+
+	exitButton = GradButton();
+	exitButton.setLabel("Exit to menu");
+	auto exitCall = [](BaseState* s) {
+		state = new MainMenu();
+	};
+	exitButton.setCallback(exitCall);
 	//TODO: Start with choosing a level
 	loadLevel("");
 }
@@ -264,7 +273,13 @@ void LevelEditor::draw(double ex) {
 		//Default gravity
 		y -= (int)fontSmall.h * 4;
 		drawTextBox("Default gravity", gravBox, y);
-
+		y -= (int)fontSmall.h * 4;
+		drawTextBox("Next level", nextBox, y);
+		//Exit button
+		exitButton.setY((int)(fontLarge.h * 2));
+		exitButton.setHeight((int)(fontLarge.h * 2));
+		exitButton.setWidth(w * 2);
+		exitButton.draw(0);
 	} else {
 		int bSize = (int)(sHeight * 0.05);
 		//Draw editor bar
@@ -331,6 +346,7 @@ void LevelEditor::keyEvent(GLFWwindow * window, int key, int scan, int action, i
 	if (currentMenu == Menu::SAVE) {
 		fileBox.keyDown(key, scan, action, mods);
 		levelBox.keyDown(key, scan, action, mods);
+		nextBox.keyDown(key, scan, action, mods);
 		gravBox.keyDown(key, scan, action, mods);
 	}
 	if (key == KeyConfig::keyBindings["editorMenu"] && action == GLFW_RELEASE && currentMenu != Menu::SAVE) {
@@ -379,8 +395,10 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 		if (action == GLFW_RELEASE) {
 			loadButton.mouseDown((int)x, (int)y);
 			saveButton.mouseDown((int)x, (int)y);
+			exitButton.mouseDown((int)x, (int)y);
 			fileBox.mouseDown((int)x, (int)y);
 			levelBox.mouseDown((int)x, (int)y);
+			nextBox.mouseDown((int)x, (int)y);
 			gravBox.mouseDown((int)x, (int)y);
 		}
 	} else {
@@ -626,6 +644,7 @@ void LevelEditor::textEvent(GLFWwindow *, unsigned int ch) {
 	if (currentMenu == Menu::SAVE) {
 		fileBox.textEvent(ch);
 		levelBox.textEvent(ch);
+		nextBox.textEvent(ch);
 		gravBox.textEvent(ch);
 	}
 }
@@ -678,6 +697,7 @@ void LevelEditor::saveLevel(string filePath) {
 	//Update settings
 	levelName = levelBox.getText();
 	defaultGravity = atof(gravBox.getText().c_str());
+	nextLevelPath = nextBox.getText();
 	LevelRenderer::saveLevel(filePath);
 	//Close menu
 	currentMenu = Menu::NONE;
