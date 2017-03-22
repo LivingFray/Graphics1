@@ -6,6 +6,7 @@
 #include "DataObject.h"
 #include "ImageLoader.h"
 #include "KeyConfig.h"
+#include "Vec2D.h"
 //The time in seconds between updates
 #define TICKRATE 0.05
 //The games title

@@ -12,16 +12,22 @@ Storable::~Storable() {
 
 // Returns a DataObject representing the storable object
 DataObject Storable::save() {
-	return DataObject();
+	DataObject obj = DataObject();
+	obj.add("id", id);
+	obj.add("x", pos.getX());
+	obj.add("y", pos.getY());
+	obj.add("width", width);
+	obj.add("height", height);
+	obj.add("angle", angle);
+	return obj;
 }
 
 
 // Loads the storable object from the DataObject
 void Storable::load(DataObject obj) {
-}
-
-
-// Gets the id of the object
-string Storable::getId() {
-	return id;
+	pos.setX(obj.getDouble("x"));
+	pos.setY(obj.getDouble("y"));
+	setWidth(obj.getDouble("width"));
+	setHeight(obj.getDouble("height"));
+	setAngle(obj.getDouble("angle"));
 }

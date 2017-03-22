@@ -4,13 +4,9 @@
 #include <math.h>
 
 Entity::Entity() {
-	pos = Vec2D(0.0, 0.0);
 	vel = Vec2D(0.0, 0.0);
 	maxSpeed = DEFAULT_MAXSPEED;
 	onGround = false;
-	width = DEFAULT_ENTITY_WIDTH;
-	height = DEFAULT_ENTITY_HEIGHT;
-	angle = 0.0;
 	visAngle = 0.0;
 	id = "entity";
 	idle = ImageLoader::getImage("error");
@@ -25,7 +21,6 @@ Entity::~Entity() {
 double Entity::getX() {
 	return pos.getX();
 }
-
 
 // Gets the y-coordinate of the entity
 double Entity::getY() {
@@ -176,18 +171,6 @@ double Entity::getVelRelY(double theta) {
 }
 
 
-// Gets the angle of the entity
-double Entity::getAngle() {
-	return angle;
-}
-
-
-// Sets the angle of the entity
-void Entity::setAngle(double angle) {
-	this->angle = angle;
-}
-
-
 // Gets the normal vectors needed to check collision
 Vec2D* Entity::getNormals(int* numNormals) {
 	*numNormals = 2;
@@ -217,48 +200,6 @@ Vec2D* Entity::getVertices(int* numVertices) {
 	r[2] = pos.subtract(w).subtract(h);
 	r[3] = pos.add(w).subtract(h);
 	return r;
-}
-
-
-// Called when a collision occurs
-void Entity::onCollide(Collider* other) {
-
-}
-
-
-// Sets the width of the entity
-void Entity::setWidth(double width) {
-	this->width = width;
-}
-
-
-// Gets the width of the entity
-double Entity::getWidth() {
-	return width;
-}
-
-
-// Sets the height of the entity
-void Entity::setHeight(double height) {
-	this->height = height;
-}
-
-
-// Gets the height of the entity
-double Entity::getHeight() {
-	return height;
-}
-
-
-// Gets the current position of the entity
-Vec2D Entity::getPos() {
-	return pos;
-}
-
-
-// Sets the position of the entity
-void Entity::setPos(Vec2D pos) {
-	this->pos = pos;
 }
 
 
@@ -321,26 +262,6 @@ Vec2D Entity::getVel() {
 }
 
 
-// Called when the selectable is moved
-bool Entity::onMove(double dX, double dY) {
-	pos.addTo(Vec2D(dX, dY));
-	return true;
-}
-
-
-// Called when the selectable is rotated
-bool Entity::onRotate(double dAngle) {
-	angle += dAngle;
-	if (angle > 360) {
-		angle -= 360;
-	}
-	if (angle < 0) {
-		angle += 360;
-	}
-	return true;
-}
-
-
 // Returns if the selectable can be moved
 bool Entity::canMove() {
 	return true;
@@ -359,28 +280,9 @@ bool Entity::canRotate() {
 }
 
 
-// Returns if the selectable is selected
-bool Entity::isInBoundingBox(double x, double y) {
-	//Translate point to be relative to the BB's centre
-	Vec2D p = Vec2D(x, y).subtract(pos);
-	//Rotate the point back to be AA with the BB (-angle)
-	double cTheta = cos(-DEG_TO_RAD * angle);
-	double sTheta = sin(-DEG_TO_RAD * angle);
-	double xPrime = p.getX() * cTheta - p.getY() * sTheta;
-	double yPrime = p.getY() * cTheta + p.getX() * sTheta;
-	//Calculate field strength at point
-	return xPrime >= -width / 2 && xPrime <= width / 2
-		&& yPrime >= -height / 2 && yPrime <= height / 2;
-}
-
-
 // Returns a DataObject representing the storable object
 DataObject Entity::save() {
-	DataObject entity = DataObject();
-	entity.add("id", id);
-	entity.add("x", pos.getX());
-	entity.add("y", pos.getY());
-	entity.add("angle", angle);
+	DataObject entity = Storable::save();
 	entity.add("velX", vel.getX());
 	entity.add("velY", vel.getY());
 	return entity;
@@ -389,25 +291,7 @@ DataObject Entity::save() {
 
 // Loads the storable object from the DataObject
 void Entity::load(DataObject obj) {
-	//Default values
-	double x, y, vx, vy, a;
-	//Load in values where possible
-	x = obj.getDouble("x");
-	y = obj.getDouble("y");
-	a = obj.getDouble("angle");
-	vx = obj.getDouble("velX");
-	vy = obj.getDouble("velY");
-	//Move angle in range
-	if (a < 0) {
-		a *= -1;
-		a -= (floor(a) / 360) * 360;
-		a = 360 - a;
-	}
-	if (a > 360) {
-		a -= (floor(a) / 360) * 360;
-	}
-	//Assign values
-	pos = Vec2D(x, y);
-	vel = Vec2D(vx, vy);
-	angle = a;
+	Storable::load(obj);
+	vel.setX(obj.getDouble("velX"));
+	vel.setY(obj.getDouble("velY"));
 }

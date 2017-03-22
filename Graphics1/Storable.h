@@ -1,7 +1,8 @@
 #pragma once
 #include "DataObject.h"
-#include "Globals.h"
-class Storable {
+#include "WorldObject.h"
+class Storable:
+	virtual public WorldObject {
 public:
 	Storable();
 	~Storable();
@@ -9,9 +10,5 @@ public:
 	virtual DataObject save();
 	// Loads the storable object from the DataObject
 	virtual void load(DataObject obj);
-	// Gets the id of the object
-	virtual string getId();
-protected:
-	string id;
 };
 

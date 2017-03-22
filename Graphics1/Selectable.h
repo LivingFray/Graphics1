@@ -1,7 +1,8 @@
 #pragma once
-#include "Vec2D.h"
+#include "WorldObject.h"
 #include "OptionMenu.h"
-class Selectable {
+class Selectable:
+	virtual public WorldObject {
 public:
 	Selectable();
 	~Selectable();
@@ -21,16 +22,6 @@ public:
 	virtual bool canDelete();
 	// Returns if the selectable is selected
 	virtual bool isInBoundingBox(double x, double y);
-	// Returns the centre of the selectable
-	virtual Vec2D getPos();
-	// Sets the position of the selectable
-	virtual void setPos(Vec2D pos);
-	// Gets the angle of the selectable
-	virtual double getAngle();
-	// Gets the width of the selectable
-	virtual double getWidth();
-	// Gets the height of the selectable
-	virtual double getHeight();
 	// Creates an option menu using the current values as defaults
 	virtual void createOptions();
 	// Gets the options screen for this selectable

@@ -13,19 +13,35 @@ Selectable::~Selectable() {
 
 // Called when the selectable is moved
 bool Selectable::onMove(double dX, double dY) {
-	return false;
+	pos.addTo(Vec2D(dX, dY));
+	return true;
 }
 
 
 // Called when the selectable is resized
 bool Selectable::onResize(double dX, double dY) {
-	return false;
+	if (width + dX <= SMALLEST_THICKNESS) {
+		return false;
+	}
+	if (height + dY <= SMALLEST_THICKNESS) {
+		return false;
+	}
+	setWidth(width + dX);
+	setHeight(height + dY);
+	return true;
 }
 
 
 // Called when the selectable is rotated
 bool Selectable::onRotate(double dAngle) {
-	return false;
+	angle += dAngle;
+	if (angle > 360) {
+		angle -= 360;
+	}
+	if (angle < 0) {
+		angle += 360;
+	}
+	return true;
 }
 
 
@@ -55,36 +71,16 @@ bool Selectable::canDelete() {
 
 // Returns if the selectable is selected
 bool Selectable::isInBoundingBox(double x, double y) {
-	return false;
-}
-
-
-// Returns the centre of the selectable
-Vec2D Selectable::getPos() {
-	return Vec2D(0, 0);
-}
-
-
-// Sets the position of the selectable
-void Selectable::setPos(Vec2D pos) {
-}
-
-
-// Gets the angle of the selectable
-double Selectable::getAngle() {
-	return 0.0;
-}
-
-
-// Gets the width of the selectable
-double Selectable::getWidth() {
-	return 0.0;
-}
-
-
-// Gets the height of the selectable
-double Selectable::getHeight() {
-	return 0.0;
+	//Translate point to be relative to the BB's centre
+	Vec2D p = Vec2D(x, y).subtract(pos);
+	//Rotate the point back to be AA with the BB (-angle)
+	double cTheta = cos(-DEG_TO_RAD * angle);
+	double sTheta = sin(-DEG_TO_RAD * angle);
+	double xPrime = p.getX() * cTheta - p.getY() * sTheta;
+	double yPrime = p.getY() * cTheta + p.getX() * sTheta;
+	//Calculate field strength at point
+	return xPrime >= -width / 2 && xPrime <= width / 2
+		&& yPrime >= -height / 2 && yPrime <= height / 2;
 }
 
 
@@ -96,7 +92,24 @@ OptionMenu* Selectable::getOptions() {
 
 // Sets the options for this selectable
 void Selectable::setOptions(OptionMenu* menu) {
-
+	string v;
+	std::map<string, string> values = menu->getValues();
+	if (canMove()) {
+		v = values["X Position"];
+		pos.setX(atof(v.c_str()));
+		v = values["Y Position"];
+		pos.setY(atof(v.c_str()));
+	}
+	if (canResize()) {
+		v = values["Width"];
+		width = atof(v.c_str());
+		v = values["Height"];
+		height = atof(v.c_str());
+	}
+	if (canRotate()) {
+		v = values["Angle"];
+		angle = atof(v.c_str());
+	}
 }
 
 

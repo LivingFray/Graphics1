@@ -2,27 +2,17 @@
 #include "Vec2D.h"
 #include "Collider.h"
 #include "Selectable.h"
+#include "Storable.h"
 
 using namespace std;
 
 class Entity:
 	public Collider,
-	public Selectable {
+	public Selectable,
+	public Storable {
 public:
 	Entity();
 	~Entity();
-protected:
-	Vec2D pos;
-	Vec2D vel;
-	double angle;
-	double visAngle;
-	double width;
-	double height;
-	bool onGround;
-	double maxSpeed;
-	bool flip = false;
-	GLuint idle;
-public:
 	// Gets the x-coordinate of the entity
 	double getX();
 	// Gets the y-coordinate of the entity
@@ -59,28 +49,10 @@ public:
 	double getVelRelX(double theta);
 	// Gets the vertical (relative to the rotation) velocity
 	double getVelRelY(double theta);
-	// Gets the angle of the entity
-	double getAngle();
-	// Sets the angle of the entity
-	void setAngle(double angle);
 	// Gets the normal vectors needed to check collision
 	virtual Vec2D* getNormals(int* numNormals);
 	// Gets the vertices of the bounding box
 	virtual Vec2D* getVertices(int* numVertices);
-	// Called when a collision occurs
-	virtual void onCollide(Collider* other);
-	// Sets the width of the entity
-	void setWidth(double width);
-	// Gets the width of the entity
-	double getWidth();
-	// Sets the height of the entity
-	void setHeight(double height);
-	// Gets the height of the entity
-	double getHeight();
-	// Gets the current position of the entity
-	Vec2D getPos();
-	// Sets the position of the entity
-	void setPos(Vec2D pos);
 	// Sets whether the entity is currently on the ground
 	void setOnGround(bool onGround);
 	// Gets if the entity is currently on the ground
@@ -93,21 +65,22 @@ public:
 	double updatedVisAngle(double ex);
 	// Gets the current velocity of the entity
 	Vec2D getVel();
-	// Called when the selectable is moved
-	virtual bool onMove(double dX, double dY);
-	// Called when the selectable is rotated
-	virtual bool onRotate(double dAngle);
 	// Returns if the selectable can be moved
 	virtual bool canMove();
 	// Returns if the selectable can be rotated
 	virtual bool canResize();
 	// Returns if the selectable can be rotated
 	virtual bool canRotate();
-	// Returns if the selectable is selected
-	virtual bool isInBoundingBox(double x, double y);
 	// Returns a DataObject representing the storable object
 	virtual DataObject save();
 	// Loads the storable object from the DataObject
 	virtual void load(DataObject obj);
+protected:
+	Vec2D vel;
+	double visAngle;
+	bool onGround;
+	double maxSpeed;
+	bool flip = false;
+	GLuint idle;
 };
 

@@ -4,10 +4,6 @@
 
 
 Platform::Platform() {
-	pos = Vec2D(0.0, 0.0);
-	width = 0.0;
-	height = 0.0;
-	angle = 0.0;
 	id = "platform";
 	textureString = "";
 	texture = ImageLoader::getImage(textureString);
@@ -25,52 +21,19 @@ Platform::~Platform() {
 }
 
 
-// Gets the position of the platform
-Vec2D Platform::getPos() {
-	return pos;
-}
-
-
-// Sets the position of the platform
-void Platform::setPos(Vec2D pos) {
-	this->pos = pos;
-}
-
 // Sets the width of the platform
 void Platform::setWidth(double width) {
-	this->width = width;
+	Selectable::setWidth(width);
 	texX = width / texXSize;
 }
 
 
 // Sets the height of the platform
 void Platform::setHeight(double height) {
-	this->height = height;
+	Selectable::setHeight(height);
 	texY = height / texYSize;
 }
 
-
-// Gets the width of the platform
-double Platform::getWidth() {
-	return width;
-}
-
-
-// Gets the height of the platform
-double Platform::getHeight() {
-	return height;
-}
-
-// Sets the angle of the platform
-void Platform::setAngle(double angle) {
-	this->angle = angle;
-}
-
-
-// Gets the angle of the platform
-double Platform::getAngle() {
-	return angle;
-}
 
 // Gets the normal vectors needed to check collision
 Vec2D* Platform::getNormals(int* numNormals) {
@@ -82,6 +45,7 @@ Vec2D* Platform::getNormals(int* numNormals) {
 	r[1].set(-r[0].getY(), r[0].getX());
 	return r;
 }
+
 
 // Gets the vertices of the bounding box
 Vec2D* Platform::getVertices(int* numVertices) {
@@ -102,9 +66,9 @@ Vec2D* Platform::getVertices(int* numVertices) {
 	return r;
 }
 
+
 // Called when a collision occurs
 void Platform::onCollide(Collider* other) {
-
 }
 
 
@@ -131,40 +95,6 @@ void Platform::draw(double ex) {
 }
 
 
-// Called when the selectable is moved
-bool Platform::onMove(double dX, double dY) {
-	pos.addTo(Vec2D(dX, dY));
-	return true;
-}
-
-
-// Called when the selectable is resized
-bool Platform::onResize(double dX, double dY) {
-	if (width + dX <= SMALLEST_THICKNESS) {
-		return false;
-	}
-	if (height + dY <= SMALLEST_THICKNESS) {
-		return false;
-	}
-	setWidth(width + dX);
-	setHeight(height + dY);
-	return true;
-}
-
-
-// Called when the selectable is rotated
-bool Platform::onRotate(double dAngle) {
-	angle += dAngle;
-	if (angle > 360) {
-		angle -= 360;
-	}
-	if (angle < 0) {
-		angle += 360;
-	}
-	return true;
-}
-
-
 // Returns if the selectable can be moved
 bool Platform::canMove() {
 	return true;
@@ -183,30 +113,9 @@ bool Platform::canRotate() {
 }
 
 
-// Returns if the selectable is selected
-bool Platform::isInBoundingBox(double x, double y) {
-	//Translate point to be relative to the BB's centre
-	Vec2D p = Vec2D(x, y).subtract(pos);
-	//Rotate the point back to be AA with the BB (-angle)
-	double cTheta = cos(-DEG_TO_RAD * angle);
-	double sTheta = sin(-DEG_TO_RAD * angle);
-	double xPrime = p.getX() * cTheta - p.getY() * sTheta;
-	double yPrime = p.getY() * cTheta + p.getX() * sTheta;
-	//Calculate field strength at point
-	return xPrime >= -width / 2 && xPrime <= width / 2
-		&& yPrime >= -height / 2 && yPrime <= height / 2;
-}
-
-
 // Returns a DataObject representing the storable object
 DataObject Platform::save() {
-	DataObject platform = DataObject();
-	platform.add("id", id);
-	platform.add("x", pos.getX());
-	platform.add("y", pos.getY());
-	platform.add("width", width);
-	platform.add("height", height);
-	platform.add("angle", angle);
+	DataObject platform = Storable::save();
 	platform.add("texture", textureString);
 	platform.add("texScaleX", texX);
 	platform.add("texScaleY", texY);
@@ -216,32 +125,10 @@ DataObject Platform::save() {
 
 // Loads the storable object from the DataObject
 void Platform::load(DataObject obj) {
-	//Default values
-	double x, y, w, h, a, u, v;
-	string t;
-	//Load in values where possible
-	x = obj.getDouble("x");
-	y = obj.getDouble("y");
-	w = obj.getDouble("width");
-	h = obj.getDouble("height");
-	a = obj.getDouble("angle");
-	t = obj.getString("texture");
-	u = obj.getDouble("texScaleX");
-	v = obj.getDouble("texScaleY");
-	//Move angle in range
-	if (a<0) {
-		a *= -1;
-		a -= (floor(a)/360) * 360;
-		a = 360 - a;
-	}
-	if (a > 360) {
-		a -= (floor(a) / 360) * 360;
-	}
-	//Assign values
-	pos = Vec2D(x, y);
-	width = w>SMALLEST_THICKNESS ? w : SMALLEST_THICKNESS;
-	height = h>SMALLEST_THICKNESS ? h : SMALLEST_THICKNESS;
-	angle = a;
+	Storable::load(obj);
+	setTexture(obj.getString("texture"));
+	setTexScaleX(obj.getDouble("texScaleX"));
+	setTexScaleY(obj.getDouble("texScaleY"));
 }
 
 
@@ -282,16 +169,6 @@ void Platform::setOptions(OptionMenu* menu) {
 	//Return pair not list
 	std::map<string, string> values = menu->getValues();
 	string v;
-	v = values["X Position"];
-	pos.setX(atof(v.c_str()));
-	v = values["Y Position"];
-	pos.setY(atof(v.c_str()));
-	v = values["Width"];
-	width = atof(v.c_str());
-	v = values["Height"];
-	height = atof(v.c_str());
-	v = values["Angle"];
-	angle = atof(v.c_str());
 	v = values["Texture"];
 	textureString = v;
 	texture = ImageLoader::getImage(textureString);

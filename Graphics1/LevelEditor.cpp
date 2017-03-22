@@ -294,7 +294,7 @@ void LevelEditor::draw(double ex) {
 		exitButton.draw(0);
 		//Return button
 		returnButton.setY((int)(fontLarge.h * 4));
-		returnButton.setWidth((w - fontLarge.h) * 2);
+		returnButton.setWidth((w - (int)fontLarge.h) * 2);
 		returnButton.setHeight((int)(fontLarge.h * 1.9));
 		returnButton.draw(0);
 	} else if (currentMenu == Menu::OPTIONS) {

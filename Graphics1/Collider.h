@@ -1,8 +1,8 @@
 #pragma once
 #include "Vec2D.h"
-#include "Storable.h"
+#include "WorldObject.h"
 class Collider: 
-	public Storable {
+	virtual public WorldObject {
 public:
 	Collider();
 	~Collider();
