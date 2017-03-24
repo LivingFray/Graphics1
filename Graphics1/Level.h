@@ -49,14 +49,10 @@ public:
 	// Adds to the current score
 	void addScore(int score);
 protected:
-	double defaultGravity = 2; //Fallback for outside the fields
+	double defaultGravity; //Fallback for outside the fields
 	Player* player;
 	GLuint spawnBeam;
 	double levelTime;
-	// Calculates if two colliders are intersecting and provides the vector to move one in if so
-	bool intersects(Collider* a, Collider* b, Vec2D* res);
-	// Projects an object onto a vector
-	void project(Collider* c, Vec2D vec, double* min, double* max);
 	bool reachedGoal;
 	bool paused;
 	int score;

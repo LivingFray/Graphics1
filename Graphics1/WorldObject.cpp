@@ -4,6 +4,7 @@
 
 WorldObject::WorldObject() {
 	pos = Vec2D(0.0, 0.0);
+	vel = Vec2D(0.0, 0.0);
 	width = SMALLEST_THICKNESS;
 	height = SMALLEST_THICKNESS;
 	angle = 0.0;
@@ -74,4 +75,56 @@ double WorldObject::getHeight() {
 // Sets the width of the selectable
 void WorldObject::setHeight(double height) {
 	this->height = height > SMALLEST_THICKNESS ? height : SMALLEST_THICKNESS;
+}
+
+
+// Gets the horizontal velocity of the entity
+double WorldObject::getVelX() {
+	return vel.getX();
+}
+
+
+// Gets the vertical velocity of the entity
+double WorldObject::getVelY() {
+	return vel.getY();
+}
+
+
+// Sets the horizontal velocity of the entity
+void WorldObject::setVelX(double x) {
+	vel.setX(x);
+}
+
+
+// Sets the vertical velocity of the entity
+void WorldObject::setVelY(double y) {
+	vel.setY(y);
+}
+
+
+// Gets the horizontal (relative to the rotation) velocity
+double WorldObject::getVelRelX(double theta) {
+	double cTheta = cos(-DEG_TO_RAD * theta);
+	double sTheta = sin(-DEG_TO_RAD * theta);
+	return vel.getX() * cTheta - vel.getY() * sTheta;
+}
+
+
+// Gets the vertical (relative to the rotation) velocity
+double WorldObject::getVelRelY(double theta) {
+	double cTheta = cos(-DEG_TO_RAD * theta);
+	double sTheta = sin(-DEG_TO_RAD * theta);
+	return vel.getY() * cTheta + vel.getX() * sTheta;
+}
+
+
+// Gets the current velocity of the entity
+Vec2D WorldObject::getVel() {
+	return vel;
+}
+
+
+// Gets the current velocity of the entity
+void WorldObject::setVel(Vec2D vel) {
+	this->vel = vel;
 }

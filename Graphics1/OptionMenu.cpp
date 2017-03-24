@@ -83,7 +83,7 @@ void OptionMenu::mouseEvent(int button, int action, int mods) {
 	y = sHeight - y;
 	if (action == GLFW_RELEASE) {
 		for (Option* o : options) {
-			o->box.mouseDown(x, y);
+			o->box.mouseDown((int)x, (int)y);
 		}
 	}
 }

@@ -2,6 +2,7 @@
 #include "Globals.h"
 #include "Player.h"
 #include "MainMenu.h"
+#include "Collision.h"
 
 //How long before the spawn beam begins to fade
 #define SPAWN_ANIM_BEGIN 1.0
@@ -86,47 +87,52 @@ void Level::update() {
 	//TODO: Update world
 	//Only set onGround to false for entities that moved / floor moved
 	//Update the entities
+	int index = 0;
 	for (Entity* e : entities) {
+		index++;
 		e->update();
 		bool onGround = e->getOnGround();
-		bool moving = abs(e->getVelX()) > FLOAT_ZERO || abs(e->getVelY()) > FLOAT_ZERO;
-		if (moving) {
+		if (e->getVel().magnitudeSquare() > FLOAT_ZERO) {
 			onGround = false;
 		}
 		Vec2D res;
-		for (Entity* e2 : entities) {
+		//Start by checking the entity after 'e'
+		auto start = entities.begin() + index;
+		while(start!=entities.end()){
+			Entity* e2 = *start;
 			//Entities don't collide with each other
-			if (intersects(e, e2, &res)) {
+			if (Collision::intersects(e, e2, &res)) {
 				e->onCollide(e2);
-				//Some entities can be destroyed on collision
 				e2->onCollide(e);
 			}
+			start++;
 		}
-		//TODO: Skip entities that haven't moved
 		//TODO: Handle moving platforms once implemented
 		//Perform collision detection + resolution
 		for (Platform* p : platforms) {
-			//TODO: Broad check here
-
+			//Perform a broad check
+			if (!Collision::broadCheck(e, p)) {
+				continue;
+			}
 			//Use SAT to check for collisions
-			if (intersects(e, p, &res) && res.magnitudeSquare() > FLOAT_ZERO) {
+			if (Collision::intersects(e, p, &res) && res.magnitudeSquare() > FLOAT_ZERO) {
 				//Move outside of collision
 				e->addPosX(res.getX());
 				e->addPosY(res.getY());
 				//Arrest velocity
 				//This took me longer to do than it took to implement the rest
 				//of the entire collision detection system...
-				if (moving) {
+				Vec2D vel = e->getVel();
+				if (vel.magnitudeSquare() > FLOAT_ZERO) {
 					//Only remove in direction of response
-					Vec2D vel = Vec2D(e->getVelX(), e->getVelY());
 					//cos(theta) = (res).(-vel) / (|res||vel|)
 					//newResponse = unit(response) * |vel|cos(theta)
-					//newVel = oldVel - newResponse
+					//scaledResponse = oldVel * cos(theta)
+					//newVel = oldVel - scaledResponse
 					double cTheta = (res.dot(vel.multiply(-1))) / (res.magnitude() * vel.magnitude());
-					//double sTheta = sqrt(1 - cTheta * cTheta);
-					vel.addTo(res.unit().multiply(vel.magnitude() * cTheta));
-					e->setVelX(vel.getX());
-					e->setVelY(vel.getY());
+					//vel.addTo(res.unit().multiply(vel.magnitude() * cTheta));
+					vel.addTo(vel.multiply(-cTheta));
+					e->setVel(vel);
 				}
 				Vec2D grav;
 				getGravityAtPos(e->getPos(), &grav);
@@ -137,9 +143,11 @@ void Level::update() {
 				if cos(theta)<cos(45) onGround
 				cos(theta) = grav.res / (|grav||res|)
 				*/
-				double cosAngle = grav.dot(res) / (grav.magnitude() * res.magnitude());
-				if (cosAngle >= COS_GROUND_ANGLE_MIN && cosAngle <= COS_GROUND_ANGLE_MAX) {
-					onGround = true;
+				if (grav.magnitudeSquare() > FLOAT_ZERO) {
+					double cosAngle = grav.dot(res) / (grav.magnitude() * res.magnitude());
+					if (cosAngle >= COS_GROUND_ANGLE_MIN && cosAngle <= COS_GROUND_ANGLE_MAX) {
+						onGround = true;
+					}
 				}
 				//Handle other collisiony things
 				e->onCollide(p);
@@ -306,64 +314,6 @@ void Level::getGravityAtPos(Vec2D pos, Vec2D* grav) {
 	}
 	if (grav->getX() == 0 && grav->getY() == 0) {
 		grav->setY(-defaultGravity);
-	}
-}
-
-
-// Calculates if two colliders are intersecting and provides the vector to move one in if so
-bool Level::intersects(Collider* a, Collider* b, Vec2D* res) {
-	//Get a list of each vector to project onto
-	vector<Vec2D> normals;
-	int num;
-	Vec2D* n = a->getNormals(&num);
-	for (int i = 0; i < num; i++) {
-		normals.push_back(n[i]);
-	}
-	n = b->getNormals(&num);
-	for (int i = 0; i < num; i++) {
-		normals.push_back(n[i]);
-	}
-	//Check each normal for intersection
-	double smallestMag = HUGE;
-	for (Vec2D n : normals) {
-		n.toUnit();
-		double aMin, aMax, bMin, bMax;
-		project(a, n, &aMin, &aMax);
-		project(b, n, &bMin, &bMax);
-		if (aMax < bMin || bMax < aMin) {
-			return false;
-		}
-		//Calculate the distance needed to move the object
-		double d;
-		if (aMax < bMax) {
-			d = bMin - aMax;
-		} else {
-			d = bMax - aMin;
-		}
-		//Check if smallest vector so far
-		if (abs(d) < abs(smallestMag)) {
-			smallestMag = d;
-			*res = n;
-		}
-	}
-	res->multiplyBy(smallestMag);
-	return true;
-}
-
-
-// Projects an object onto a vector
-void Level::project(Collider* c, Vec2D vec, double* min, double* max) {
-	int n;
-	Vec2D* vertices = c->getVertices(&n);
-	*min = vertices[0].dot(vec);
-	*max = *min;
-	for (int i = 1; i < n; i++) {
-		double p = vertices[i].dot(vec);
-		if (p < *min) {
-			*min = p;
-		} else if (p > *max) {
-			*max = p;
-		}
 	}
 }
 

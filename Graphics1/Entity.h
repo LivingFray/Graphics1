@@ -21,14 +21,6 @@ public:
 	void setX(double x);
 	// Sets the y-coordinate of the entity
 	void setY(double y);
-	// Gets the horizontal velocity of the entity
-	double getVelX();
-	// Gets the vertical velocity of the entity
-	double getVelY();
-	// Sets the horizontal velocity of the entity
-	void setVelX(double x);
-	// Sets the vertical velocity of the entity
-	void setVelY(double x);
 	// Updates the entity
 	virtual void update();
 	// Draws the entity
@@ -45,10 +37,6 @@ public:
 	void setMaxSpeed(double speed);
 	// Gets the entity's max speed
 	double getMaxSpeed();
-	// Gets the horizontal (relative to the rotation) velocity
-	double getVelRelX(double theta);
-	// Gets the vertical (relative to the rotation) velocity
-	double getVelRelY(double theta);
 	// Gets the normal vectors needed to check collision
 	virtual Vec2D* getNormals(int* numNormals);
 	// Gets the vertices of the bounding box
@@ -63,20 +51,13 @@ public:
 	void setVisAngle(double angle);
 	// Gets the updated visible angle for ex seconds of motion
 	double updatedVisAngle(double ex);
-	// Gets the current velocity of the entity
-	Vec2D getVel();
 	// Returns if the selectable can be moved
 	virtual bool canMove();
 	// Returns if the selectable can be rotated
 	virtual bool canResize();
 	// Returns if the selectable can be rotated
 	virtual bool canRotate();
-	// Returns a DataObject representing the storable object
-	virtual DataObject save();
-	// Loads the storable object from the DataObject
-	virtual void load(DataObject obj);
 protected:
-	Vec2D vel;
 	double visAngle;
 	bool onGround;
 	double maxSpeed;

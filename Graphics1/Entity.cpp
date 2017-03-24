@@ -4,7 +4,6 @@
 #include <math.h>
 
 Entity::Entity() {
-	vel = Vec2D(0.0, 0.0);
 	maxSpeed = DEFAULT_MAXSPEED;
 	onGround = false;
 	visAngle = 0.0;
@@ -40,30 +39,6 @@ void Entity::setY(double y) {
 }
 
 
-// Gets the horizontal velocity of the entity
-double Entity::getVelX() {
-	return vel.getX();
-}
-
-
-// Gets the vertical velocity of the entity
-double Entity::getVelY() {
-	return vel.getY();
-}
-
-
-// Sets the horizontal velocity of the entity
-void Entity::setVelX(double x) {
-	vel.setX(x);
-}
-
-
-// Sets the vertical velocity of the entity
-void Entity::setVelY(double y) {
-	vel.setY(y);
-}
-
-
 // Updates the entity
 void Entity::update() {
 	Vec2D g;
@@ -80,16 +55,26 @@ void Entity::update() {
 	double dX = getVelRelX(angle);
 	if (dX > maxSpeed) {
 		Vec2D h = Vec2D(-g.getY(), g.getX());
-		h.toUnit();
+		if (h.magnitudeSquare() > FLOAT_ZERO) {
+			h.toUnit();
+		} else {
+			h.set(cos(DEG_TO_RAD * angle), sin(DEG_TO_RAD * angle));
+		}
 		h.multiplyBy(dX - maxSpeed);
 		vel.subtractFrom(h);
 	} else if (dX < -maxSpeed) {
 		Vec2D h = Vec2D(-g.getY(), g.getX());
-		h.toUnit();
+		if (h.magnitudeSquare() > FLOAT_ZERO) {
+			h.toUnit();
+		} else {
+			h.set(cos(DEG_TO_RAD * angle), sin(DEG_TO_RAD * angle));
+		}
 		h.multiplyBy(dX + maxSpeed);
 		vel.subtractFrom(h);
 	}
+	//Update position
 	pos.addTo(vel.multiply(TICKRATE));
+	//Track how far the entity has visually rotated
 	visAngle = updatedVisAngle(TICKRATE);
 }
 
@@ -115,8 +100,24 @@ void Entity::draw(double ex) {
 	glTexCoord2d(f, 0.0);
 	glVertex2d(0.5 * width, 0.5 * -height);
 	glEnd();
-	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
+#ifdef DEBUG
+	//Draw hitbox
+	glColor3ub(onGround ? 0:255, 127, 0);
+	glBegin(GL_LINE_LOOP);
+	glVertex2d(0.5 * -width, 0.5 * -height);
+	glVertex2d(0.5 * -width, 0.5 * height);
+	glVertex2d(0.5 * width, 0.5 * height);
+	glVertex2d(0.5 * width, 0.5 * -height);
+	glEnd();
+	//Draw velocity
+	glColor3ub(0, 0, 255);
+	glBegin(GL_LINES);
+	glVertex2d(0.0, 0.0);
+	glVertex2d(vel.getX(), vel.getY());
+	glEnd();
+#endif
+	glPopMatrix();
 }
 
 // Adds the given value to the horizontal velocity
@@ -152,22 +153,6 @@ void Entity::setMaxSpeed(double speed) {
 // Gets the entity's max speed
 double Entity::getMaxSpeed() {
 	return maxSpeed;
-}
-
-
-// Gets the horizontal (relative to the rotation) velocity
-double Entity::getVelRelX(double theta) {
-	double cTheta = cos(-DEG_TO_RAD * theta);
-	double sTheta = sin(-DEG_TO_RAD * theta);
-	return vel.getX() * cTheta - vel.getY() * sTheta;
-}
-
-
-// Gets the vertical (relative to the rotation) velocity
-double Entity::getVelRelY(double theta) {
-	double cTheta = cos(-DEG_TO_RAD * theta);
-	double sTheta = sin(-DEG_TO_RAD * theta);
-	return vel.getY() * cTheta + vel.getX() * sTheta;
 }
 
 
@@ -256,12 +241,6 @@ double Entity::updatedVisAngle(double ex) {
 }
 
 
-// Gets the current velocity of the entity
-Vec2D Entity::getVel() {
-	return vel;
-}
-
-
 // Returns if the selectable can be moved
 bool Entity::canMove() {
 	return true;
@@ -277,21 +256,4 @@ bool Entity::canResize() {
 // Returns if the selectable can be rotated
 bool Entity::canRotate() {
 	return true;
-}
-
-
-// Returns a DataObject representing the storable object
-DataObject Entity::save() {
-	DataObject entity = Storable::save();
-	entity.add("velX", vel.getX());
-	entity.add("velY", vel.getY());
-	return entity;
-}
-
-
-// Loads the storable object from the DataObject
-void Entity::load(DataObject obj) {
-	Storable::load(obj);
-	vel.setX(obj.getDouble("velX"));
-	vel.setY(obj.getDouble("velY"));
 }

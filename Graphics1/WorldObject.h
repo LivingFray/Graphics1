@@ -22,9 +22,26 @@ public:
 	virtual double getHeight();
 	// Sets the width of the selectable
 	virtual void setHeight(double height);
+	// Gets the horizontal velocity of the entity
+	double getVelX();
+	// Gets the vertical velocity of the entity
+	double getVelY();
+	// Gets the current velocity of the entity
+	Vec2D getVel();
+	// Sets the horizontal velocity of the entity
+	void setVelX(double x);
+	// Sets the vertical velocity of the entity
+	void setVelY(double x);
+	// Sets the current velocity of the entity
+	void setVel(Vec2D vel);
+	// Gets the horizontal (relative to the rotation) velocity
+	double getVelRelX(double theta);
+	// Gets the vertical (relative to the rotation) velocity
+	double getVelRelY(double theta);
 protected:
 	string id;
 	Vec2D pos;
+	Vec2D vel;
 	double angle;
 	double width;
 	double height;

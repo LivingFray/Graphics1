@@ -61,6 +61,8 @@
 #define PLAYER_ACCELERATION 0.30
 //How fast the player jumps
 #define PLAYER_JUMP 6.0
+//Debug mode
+#define DEBUG
 extern GLFWwindow* gameWindow;
 extern int sWidth;
 extern int sHeight;

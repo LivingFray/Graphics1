@@ -19,6 +19,8 @@ DataObject Storable::save() {
 	obj.add("width", width);
 	obj.add("height", height);
 	obj.add("angle", angle);
+	obj.add("velX", vel.getX());
+	obj.add("velY", vel.getY());
 	return obj;
 }
 
@@ -30,4 +32,6 @@ void Storable::load(DataObject obj) {
 	setWidth(obj.getDouble("width"));
 	setHeight(obj.getDouble("height"));
 	setAngle(obj.getDouble("angle"));
+	vel.setX(obj.getDouble("velX"));
+	vel.setY(obj.getDouble("velY"));
 }

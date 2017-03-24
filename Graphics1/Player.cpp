@@ -52,7 +52,7 @@ void Player::update() {
 	if (move.magnitudeSquare() > FLOAT_ZERO) {
 		move.toUnit();
 	} else {
-		move.set(1.0, 0.0);
+		move.set(cos(DEG_TO_RAD * angle), sin(DEG_TO_RAD * angle));
 	}
 	//Scale it to the movement
 	move.multiplyBy(dX);

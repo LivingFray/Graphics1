@@ -4,7 +4,6 @@
 #include "MainMenu.h"
 /*
 Task list intergration:
-TODO: Refactor out rectangles
 TODO: Debug mode
 TODO: Fix size of handles
 TODO: Fix entities sliding on slopes
@@ -19,6 +18,7 @@ TODO: --Better spawn menu
 TODO: AI
 TODO: Multiple levels
 TODO: Every stupid thing on the mark sheet
+TODO: --Floating orb follows and scans player on death?
 TODO: Settings
 TODO: Ensure all states can be exited
 TODO: Display score/time when in game
