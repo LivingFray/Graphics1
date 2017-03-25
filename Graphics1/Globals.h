@@ -57,6 +57,8 @@
 #define GOAL_ANGLE_DIF 5
 //How much the player slows down in the horizontal axis when not moving
 #define PLAYER_FRICTION 0.05
+//The coefficient of friction for platforms (mu)
+#define GROUND_FRICTION 1
 //How fast the player accelerates when pressing a direction key
 #define PLAYER_ACCELERATION 0.30
 //How fast the player jumps

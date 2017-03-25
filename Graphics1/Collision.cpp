@@ -94,10 +94,6 @@ bool Collision::broadCheck(Collider* a, Collider* b) {
 	return radii > a->getPos().subtract(b->getPos()).magnitudeSquare();
 }
 
-//New collision method:
-//Calculate new positions
-//Resolve collisions (moving back in vel)
-//Move remainder of update (ignores secondary collisions, but should be fine)
 
 //Handles collisions between two objects
 void Collision::handle(Level* l, Entity* a, Platform* b, bool &onGround) {
@@ -112,9 +108,10 @@ void Collision::handle(Level* l, Entity* a, Platform* b, bool &onGround) {
 		a->addPosX(res.getX());
 		a->addPosY(res.getY());
 		//Arrest velocity
-		//This took me longer to do than it took to implement the rest
-		//of the entire collision detection system...
-		Vec2D vel = a->getVel();
+		Vec2D grav;
+		l->getGravityAtPos(a->getPos(), &grav);
+		Vec2D vel = a->getVel().subtract(b->getVel());
+		//TODO: Fix properly, current implementation is a long winded route to set vel to 0
 		if (vel.magnitudeSquare() > FLOAT_ZERO) {
 			//Only remove in direction of response
 			//cos(theta) = (res).(-vel) / (|res||vel|)
@@ -123,11 +120,17 @@ void Collision::handle(Level* l, Entity* a, Platform* b, bool &onGround) {
 			//newVel = oldVel - scaledResponse
 			double cTheta = (res.dot(vel.multiply(-1))) / (res.magnitude() * vel.magnitude());
 			vel.addTo(res.unit().multiply(vel.magnitude() * cTheta));
-			//vel.addTo(vel.multiply(-cTheta));
+			//Apply friction (|F| = u|R|, R = mA -> |F| = u|A|m -> ma = u|A|m -> |a| = u|A|
+			//-> dv/dt = u|A| -> dv = u|A| * TICKRATE
+			//A = vel / dt
+			//|vel| = |vel| - u|vel / TICKRATE|*TICKRATE
+			//|vel| = |vel| - u|vel|
+			//|vel| = (1-u)|vel|
+			////vel = vel - unit(vel) * u * |g| * tickrate
+			////vel.subtractFrom(vel.unit().multiply(GROUND_FRICTION * TICKRATE * grav.magnitude()));
+			vel.multiplyBy(1 - GROUND_FRICTION);
 			a->setVel(vel);
 		}
-		Vec2D grav;
-		l->getGravityAtPos(a->getPos(), &grav);
 		//Check resolution vector is in angle range to suggest floor
 		/*
 		a.b = |a||b|cos(theta)
