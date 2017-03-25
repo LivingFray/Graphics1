@@ -1,6 +1,7 @@
 #pragma once
 #include "Vec2D.h"
 #include "Collider.h"
+#include "Level.h"
 
 namespace Collision {
 	// Projects an object onto a vector
@@ -11,4 +12,6 @@ namespace Collision {
 	double distance(Collider* a, Collider* b, Vec2D n);
 	//Performs a rough check to see if the colliders have collided
 	bool broadCheck(Collider* a, Collider* b);
+	//Handles collisions between two objects
+	void handle(Level* l, Entity* a, Platform* b, bool &onGround);
 }

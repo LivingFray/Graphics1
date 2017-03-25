@@ -9,9 +9,6 @@
 //The time after which the spawn animation is complete
 #define SPAWN_ANIM_END 2.0
 
-//The cosine of the angle between collision and vector and ground needed to count as standing on it
-#define COS_GROUND_ANGLE_MIN -1
-#define COS_GROUND_ANGLE_MAX -0.707106
 
 Level::Level() {
 	spawnBeam = ImageLoader::getImage("Resources\\spawnBeam.png");
@@ -85,7 +82,6 @@ void Level::update() {
 		player->setVisAngle(spawnAngle);
 	}
 	//TODO: Update world
-	//Only set onGround to false for entities that moved / floor moved
 	//Update the entities
 	int index = 0;
 	for (Entity* e : entities) {
@@ -110,49 +106,7 @@ void Level::update() {
 		//TODO: Handle moving platforms once implemented
 		//Perform collision detection + resolution
 		for (Platform* p : platforms) {
-			//Perform a broad check
-			if (!Collision::broadCheck(e, p)) {
-				continue;
-			}
-			//Use SAT to check for collisions
-			if (Collision::intersects(e, p, &res) && res.magnitudeSquare() > FLOAT_ZERO) {
-				//Move outside of collision
-				e->addPosX(res.getX());
-				e->addPosY(res.getY());
-				//Arrest velocity
-				//This took me longer to do than it took to implement the rest
-				//of the entire collision detection system...
-				Vec2D vel = e->getVel();
-				if (vel.magnitudeSquare() > FLOAT_ZERO) {
-					//Only remove in direction of response
-					//cos(theta) = (res).(-vel) / (|res||vel|)
-					//newResponse = unit(response) * |vel|cos(theta)
-					//scaledResponse = oldVel * cos(theta)
-					//newVel = oldVel - scaledResponse
-					double cTheta = (res.dot(vel.multiply(-1))) / (res.magnitude() * vel.magnitude());
-					//vel.addTo(res.unit().multiply(vel.magnitude() * cTheta));
-					vel.addTo(vel.multiply(-cTheta));
-					e->setVel(vel);
-				}
-				Vec2D grav;
-				getGravityAtPos(e->getPos(), &grav);
-				//Check resolution vector is in angle range to suggest floor
-				/*
-				a.b = |a||b|cos(theta)
-				grav.res = |grav||res|cos(theta)
-				if cos(theta)<cos(45) onGround
-				cos(theta) = grav.res / (|grav||res|)
-				*/
-				if (grav.magnitudeSquare() > FLOAT_ZERO) {
-					double cosAngle = grav.dot(res) / (grav.magnitude() * res.magnitude());
-					if (cosAngle >= COS_GROUND_ANGLE_MIN && cosAngle <= COS_GROUND_ANGLE_MAX) {
-						onGround = true;
-					}
-				}
-				//Handle other collisiony things
-				e->onCollide(p);
-				p->onCollide(e);
-			}
+			Collision::handle(this, e, p, onGround);
 		}
 		e->setOnGround(onGround);
 	}

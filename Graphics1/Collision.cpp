@@ -93,3 +93,56 @@ bool Collision::broadCheck(Collider* a, Collider* b) {
 	double radii = w1 + h1 + w2 + h2;
 	return radii > a->getPos().subtract(b->getPos()).magnitudeSquare();
 }
+
+//New collision method:
+//Calculate new positions
+//Resolve collisions (moving back in vel)
+//Move remainder of update (ignores secondary collisions, but should be fine)
+
+//Handles collisions between two objects
+void Collision::handle(Level* l, Entity* a, Platform* b, bool &onGround) {
+	//Perform a broad check
+	if (!Collision::broadCheck(a, b)) {
+		return;
+	}
+	Vec2D res;
+	//Use SAT to check for collisions
+	if (Collision::intersects(a, b, &res) && res.magnitudeSquare() > FLOAT_ZERO) {
+		//Move outside of collision
+		a->addPosX(res.getX());
+		a->addPosY(res.getY());
+		//Arrest velocity
+		//This took me longer to do than it took to implement the rest
+		//of the entire collision detection system...
+		Vec2D vel = a->getVel();
+		if (vel.magnitudeSquare() > FLOAT_ZERO) {
+			//Only remove in direction of response
+			//cos(theta) = (res).(-vel) / (|res||vel|)
+			//newResponse = unit(response) * |vel|cos(theta)
+			//scaledResponse = oldVel * cos(theta)
+			//newVel = oldVel - scaledResponse
+			double cTheta = (res.dot(vel.multiply(-1))) / (res.magnitude() * vel.magnitude());
+			vel.addTo(res.unit().multiply(vel.magnitude() * cTheta));
+			//vel.addTo(vel.multiply(-cTheta));
+			a->setVel(vel);
+		}
+		Vec2D grav;
+		l->getGravityAtPos(a->getPos(), &grav);
+		//Check resolution vector is in angle range to suggest floor
+		/*
+		a.b = |a||b|cos(theta)
+		grav.res = |grav||res|cos(theta)
+		if cos(theta)<cos(45) onGround
+		cos(theta) = grav.res / (|grav||res|)
+		*/
+		if (grav.magnitudeSquare() > FLOAT_ZERO) {
+			double cosAngle = grav.dot(res) / (grav.magnitude() * res.magnitude());
+			if (cosAngle >= COS_GROUND_ANGLE_MIN && cosAngle <= COS_GROUND_ANGLE_MAX) {
+				onGround = true;
+			}
+		}
+		//Handle other collisiony things
+		a->onCollide(b);
+		b->onCollide(a);
+	}
+}

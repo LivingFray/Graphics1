@@ -61,6 +61,9 @@
 #define PLAYER_ACCELERATION 0.30
 //How fast the player jumps
 #define PLAYER_JUMP 6.0
+//The cosine of the angle between collision and vector and ground needed to count as standing on it
+#define COS_GROUND_ANGLE_MIN -1
+#define COS_GROUND_ANGLE_MAX -0.707106
 //Debug mode
 #define DEBUG
 extern GLFWwindow* gameWindow;
