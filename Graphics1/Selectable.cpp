@@ -45,24 +45,6 @@ bool Selectable::onRotate(double dAngle) {
 }
 
 
-// Returns if the selectable can be moved
-bool Selectable::canMove() {
-	return true;
-}
-
-
-// Returns if the selectable can be rotated
-bool Selectable::canResize() {
-	return true;
-}
-
-
-// Returns if the selectable can be rotated
-bool Selectable::canRotate() {
-	return true;
-}
-
-
 // Returns if the selectable can be deleted
 bool Selectable::canDelete() {
 	return true;

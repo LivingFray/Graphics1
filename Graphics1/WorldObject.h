@@ -38,6 +38,12 @@ public:
 	double getVelRelX(double theta);
 	// Gets the vertical (relative to the rotation) velocity
 	double getVelRelY(double theta);
+	// Returns if the world object can be moved
+	virtual bool canMove();
+	// Returns if the world object can be rotated
+	virtual bool canResize();
+	// Returns if the world object can be rotated
+	virtual bool canRotate();
 protected:
 	string id;
 	Vec2D pos;

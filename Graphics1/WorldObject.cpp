@@ -128,3 +128,21 @@ Vec2D WorldObject::getVel() {
 void WorldObject::setVel(Vec2D vel) {
 	this->vel = vel;
 }
+
+
+// Returns if the world object can be moved
+bool WorldObject::canMove() {
+	return true;
+}
+
+
+// Returns if the world object can be rotated
+bool WorldObject::canResize() {
+	return true;
+}
+
+
+// Returns if the world object can be rotated
+bool WorldObject::canRotate() {
+	return true;
+}

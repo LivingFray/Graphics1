@@ -6,8 +6,6 @@
 Task list intergration:
 TODO: Debug mode
 TODO: Fix size of handles
-TODO: Fix entities sliding on slopes
-TODO: Broad collision detection
 TODO: Graphics/Animations
 TODO: Cleanup code (auto generated classes, import orders, etc)
 TODO: UI

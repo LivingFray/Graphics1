@@ -12,12 +12,6 @@ public:
 	virtual bool onResize(double dX, double dY);
 	// Called when the selectable is rotated
 	virtual bool onRotate(double dAngle);
-	// Returns if the selectable can be moved
-	virtual bool canMove();
-	// Returns if the selectable can be rotated
-	virtual bool canResize();
-	// Returns if the selectable can be rotated
-	virtual bool canRotate();
 	// Returns if the selectable can be deleted
 	virtual bool canDelete();
 	// Returns if the selectable is selected
