@@ -57,11 +57,14 @@ public:
 	virtual bool canResize();
 	// Returns if the selectable can be rotated
 	virtual bool canRotate();
+	// Returns whether the entity is currently moving
+	bool isMoving();
 protected:
 	double visAngle;
 	bool onGround;
 	double maxSpeed;
 	bool flip = false;
 	GLuint idle;
+	bool moving;
 };
 

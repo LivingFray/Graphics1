@@ -21,6 +21,7 @@ TODO: Settings
 TODO: Ensure all states can be exited
 TODO: Display score/time when in game
 TODO: Make image sizes independent of hitbox
+TODO: Delete level button
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;

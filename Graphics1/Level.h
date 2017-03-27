@@ -49,7 +49,6 @@ public:
 	// Adds to the current score
 	void addScore(int score);
 protected:
-	double defaultGravity; //Fallback for outside the fields
 	Player* player;
 	GLuint spawnBeam;
 	double levelTime;

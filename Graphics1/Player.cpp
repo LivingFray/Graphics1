@@ -32,20 +32,8 @@ void Player::update() {
 		dX += PLAYER_ACCELERATION;
 		flip = false;
 	}
-	//Slow down if not trying to move
-	if (abs(dX) <= FLOAT_ZERO) {
-		double fr = PLAYER_FRICTION;
-		if (onGround) {
-			fr = PLAYER_FRICTION * 5;
-		}
-		if (vX > fr) {
-			dX -= fr;
-		} else if (vX < -fr) {
-			dX += fr;
-		} else {
-			dX = -vX;
-		}
-	}
+	//Set whether the player is moving
+	moving = abs(dX) > FLOAT_ZERO;
 	//Rotate the vector through 90 degrees
 	Vec2D move = Vec2D(-g.getY(), g.getX());
 	//Normalise the value

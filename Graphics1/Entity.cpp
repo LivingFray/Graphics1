@@ -6,6 +6,7 @@
 Entity::Entity() {
 	maxSpeed = DEFAULT_MAXSPEED;
 	onGround = false;
+	moving = false;
 	visAngle = 0.0;
 	id = "entity";
 	idle = ImageLoader::getImage("error");
@@ -104,6 +105,7 @@ void Entity::draw(double ex) {
 #ifdef DEBUG
 	//Draw hitbox
 	glColor3ub(onGround ? 0:255, 127, 0);
+	glLineWidth(1);
 	glBegin(GL_LINE_LOOP);
 	glVertex2d(0.5 * -width, 0.5 * -height);
 	glVertex2d(0.5 * -width, 0.5 * height);
@@ -256,4 +258,10 @@ bool Entity::canResize() {
 // Returns if the selectable can be rotated
 bool Entity::canRotate() {
 	return true;
+}
+
+
+// Returns whether the entity is currently moving
+bool Entity::isMoving() {
+	return moving;
 }

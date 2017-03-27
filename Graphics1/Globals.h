@@ -55,8 +55,6 @@
 #define GOAL_DISTANCE_SQR 0.04
 //The maximum angle between the player anf goal to count as in
 #define GOAL_ANGLE_DIF 5
-//How much the player slows down in the horizontal axis when not moving
-#define PLAYER_FRICTION 0.05
 //The coefficient of friction for platforms (mu)
 #define GROUND_FRICTION 1
 //How fast the player accelerates when pressing a direction key

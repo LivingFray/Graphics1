@@ -128,7 +128,9 @@ void Collision::handle(Level* l, Entity* a, Platform* b, bool &onGround) {
 			//|vel| = (1-u)|vel|
 			////vel = vel - unit(vel) * u * |g| * tickrate
 			////vel.subtractFrom(vel.unit().multiply(GROUND_FRICTION * TICKRATE * grav.magnitude()));
-			vel.multiplyBy(1 - GROUND_FRICTION);
+			if (!a->isMoving()) {
+				vel.multiplyBy(1 - GROUND_FRICTION);
+			}
 			a->setVel(vel);
 		}
 		//Check resolution vector is in angle range to suggest floor
