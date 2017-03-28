@@ -7,7 +7,17 @@ Player::Player() {
 	width = PLAYER_WIDTH;
 	height = PLAYER_HEIGHT;
 	flip = false;
-	idle = ImageLoader::getImage("Resources\\playerIdle.png");
+	//idle = ImageLoader::getImage("Resources\\playerIdle.png");
+	//TODO: Different frames for different actions
+	currentAnim = Animation();
+	currentAnim.setPos(Vec2D(0.0, 0.0));
+	currentAnim.setRepeat(true);
+	currentAnim.setSize(1.0, 2.0);
+	currentAnim.addFrame(0, 1.0);
+	currentAnim.addFrame(1, 0.5);
+	currentAnim.setSpriteSheet("Resources\\playerSprite.png");
+	//TEMP, make correct size when I have textures
+	currentAnim.setSpritesheetSize(2, 2);
 }
 
 

@@ -3,6 +3,7 @@
 #include "Collider.h"
 #include "Selectable.h"
 #include "Storable.h"
+#include "Animation.h"
 
 using namespace std;
 
@@ -64,7 +65,7 @@ protected:
 	bool onGround;
 	double maxSpeed;
 	bool flip = false;
-	GLuint idle;
 	bool moving;
+	Animation currentAnim;
 };
 

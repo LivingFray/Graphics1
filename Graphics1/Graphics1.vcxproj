@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
     <ClCompile Include="BaseMenu.cpp" />
     <ClCompile Include="BaseState.cpp" />
     <ClCompile Include="Button.cpp" />
@@ -169,6 +170,7 @@
     <ClCompile Include="WorldObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="BaseMenu.h" />
     <ClInclude Include="BaseState.h" />
     <ClInclude Include="Button.h" />
