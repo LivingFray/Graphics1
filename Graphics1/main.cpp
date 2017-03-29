@@ -14,13 +14,10 @@ TODO: --Enter exact value
 TODO: --Snapping
 TODO: --Better spawn menu
 TODO: AI
-TODO: Multiple levels
 TODO: Every stupid thing on the mark sheet
 TODO: --Floating orb follows and scans player on death?
 TODO: Settings
 TODO: Ensure all states can be exited
-TODO: Display score/time when in game
-TODO: Make image sizes independent of hitbox
 TODO: Delete level button
 */
 //----------------------------------Globals----------------------------------//

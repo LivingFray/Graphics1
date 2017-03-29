@@ -94,7 +94,7 @@ void Level::update() {
 		Vec2D res;
 		//Start by checking the entity after 'e'
 		auto start = entities.begin() + index;
-		while(start!=entities.end()){
+		while (start != entities.end()) {
 			Entity* e2 = *start;
 			//Entities don't collide with each other
 			if (Collision::intersects(e, e2, &res)) {
@@ -212,8 +212,7 @@ void Level::draw(double ex) {
 		buttonNext.setWidth(w);
 		buttonNext.setHeight(h);
 		buttonNext.draw();
-	}
-	if (paused) {
+	} else if (paused) {
 		//Darken the screen to show the game is paused
 		glColor4ub(0, 0, 0, 200);
 		glBegin(GL_QUADS);
@@ -239,8 +238,11 @@ void Level::draw(double ex) {
 		gradResume.draw(0);
 		gradRetry.draw(0);
 		gradMenu.draw(0);
+	} else {
+		//Draw in game UI
+		glColor3ub(0, 0, 0);
+		freetype::print(fontSmall, 10.0f, sHeight - fontSmall.h, "Score: %d Time: %d:%02d", score, (int)levelTime / 60, (int)levelTime % 60);
 	}
-	levelTime += ex;
 }
 
 
