@@ -52,6 +52,33 @@ void Animation::setRepeat(bool repeat) {
 // Sets how far along the animation has progressed
 void Animation::setTime(double time) {
 	elapsed = time;
+	//If the frame needs updating
+	if (elapsed - frameStart > frames[frame].duration) {
+		frameStart += frames[frame].duration;
+		frame++;
+		if (frame == frames.size()) {
+			if (repeat) {
+				//If repeating set back to beginning + however much time elapsed
+				elapsed -= duration * floor(elapsed / duration);
+				frame = 0;
+				frameStart = 0.0;
+				double t = 0;
+				//Count how many frames to skip (syncs animations on low fps)
+				for (Frame f : frames) {
+					t += f.duration;
+					if (t >= elapsed) {
+						break;
+					}
+					frameStart += f.duration;
+					frame++;
+				}
+			} else {
+				//No looping, simply stay on the last frame
+				elapsed = duration;
+				frame = frames.size() - 1;
+			}
+		}
+	}
 }
 
 
@@ -91,6 +118,7 @@ void Animation::draw(double dt) {
 	glVertex2d(-w, h);
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
+	setTime(elapsed - dt);
 }
 
 
@@ -102,34 +130,7 @@ double Animation::getTime() {
 
 // Adds to how far along the animation has progressed
 void Animation::addTime(double dt) {
-	elapsed += dt;
-	//If the frame needs updating
-	if (elapsed - frameStart > frames[frame].duration) {
-		frameStart += frames[frame].duration;
-		frame++;
-		if (frame == frames.size()) {
-			if (repeat) {
-				//If repeating set back to beginning + however much time elapsed
-				elapsed -= duration * floor(elapsed / duration);
-				frame = 0;
-				frameStart = 0.0;
-				double t = 0;
-				//Count how many frames to skip (syncs animations on low fps)
-				for (Frame f : frames) {
-					t += f.duration;
-					if (t >= elapsed) {
-						break;
-					}
-					frameStart += f.duration;
-					frame++;
-				}
-			} else {
-				//No looping, simply stay on the last frame
-				elapsed = duration;
-				frame = frames.size() - 1;
-			}
-		}
-	}
+	setTime(elapsed + dt);
 }
 
 

@@ -6,17 +6,33 @@
 
 //How long before the spawn beam begins to fade
 #define SPAWN_ANIM_BEGIN 1.0
+//How long before the spawn doors open
+#define SPAWN_ANIM_DOORS 1.5
 //The time after which the spawn animation is complete
 #define SPAWN_ANIM_END 2.0
 
 
 Level::Level() {
+	//Load textures
 	spawnBeam = ImageLoader::getImage("Resources\\spawnBeam.png");
+	//Load animation
+	spawnAnim = Animation();
+	spawnAnim.setPos(Vec2D(0, 0));
+	spawnAnim.setSpriteSheet("Resources\\spawnDoors.png");
+	spawnAnim.setRepeat(false);
+	spawnAnim.setSpritesheetSize(4, 2);
+	spawnAnim.setSize(SPAWN_WIDTH, SPAWN_HEIGHT);
+	for (int i = 0; i < 8; i++) {
+		spawnAnim.addFrame(i, (SPAWN_ANIM_END - SPAWN_ANIM_DOORS) / 8);
+	}
+	spawnAnim.setTime(0);
+	//Reset variables
 	levelTime = 0;
 	reachedGoal = false;
 	paused = false;
 	score = 0;
 	nextLevelPath = "";
+	//Create menus
 	buttonMenu = Button();
 	buttonMenu.setLabel("Menu");
 	auto callMenu = [](BaseState* s) {
@@ -54,7 +70,6 @@ Level::Level() {
 
 
 Level::~Level() {
-	//TODO: Free level data
 	for (Entity* e : entities) {
 		delete e;
 	}
@@ -80,6 +95,15 @@ void Level::update() {
 		player->setPos(spawn);
 		player->setAngle(spawnAngle);
 		player->setVisAngle(spawnAngle);
+	}
+	//Update animation
+	if (levelTime >= SPAWN_ANIM_DOORS) {
+		spawnAnim.addTime(TICKRATE);
+	}
+	//Don't update if the spawn animation is still ongoing
+	if (levelTime <= SPAWN_ANIM_END) {
+		levelTime += TICKRATE;
+		return;
 	}
 	//TODO: Update world
 	//Update the entities
@@ -145,15 +169,17 @@ void Level::draw(double ex) {
 	}
 	LevelRenderer::draw(ex);
 	//Spawn animation
+	glPushMatrix();
+	glTranslated(spawn.getX(), spawn.getY(), 0.0);
+	glRotated(spawnAngle, 0.0, 0.0, 1.0);
 	if (levelTime <= SPAWN_ANIM_END) {
+		//Set opacity of spawn beam
 		if (levelTime >= SPAWN_ANIM_BEGIN) {
 			glColor4d(1.0, 1.0, 1.0, 1.25 * (1.0 - pow(2.25 * (levelTime - SPAWN_ANIM_BEGIN) / (SPAWN_ANIM_END - SPAWN_ANIM_BEGIN), 0.5)) - 0.25);
 		} else {
 			glColor4d(1.0, 1.0, 1.0, 1.0);
 		}
-		glPushMatrix();
-		glTranslated(spawn.getX(), spawn.getY(), 0.0);
-		glRotated(spawnAngle, 0.0, 0.0, 1.0);
+		//Draw spawn beam
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, spawnBeam);
 		glBegin(GL_QUADS);
@@ -167,9 +193,10 @@ void Level::draw(double ex) {
 		glVertex2d(SPAWN_WIDTH * 0.5, -SPAWN_HEIGHT * 0.5);
 		glEnd();
 		glDisable(GL_TEXTURE_2D);
-		glPopMatrix();
 	}
-	//Insert any UI stuff here
+	//Draw doors
+	spawnAnim.draw(ex);
+	glPopMatrix();
 	//Reset viewport
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();

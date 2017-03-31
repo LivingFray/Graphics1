@@ -10,10 +10,17 @@ TODO: Cleanup code (auto generated classes, import orders, etc)
 TODO: Level editor
 TODO: --Snapping
 TODO: --Better spawn menu
-TODO: AI
 TODO: Every stupid thing on the mark sheet
+TODO: --Moving platforms
+TODO: --AI
+TODO: --Sound
+TODO: --Special effects
+TODO: --"Additional game information"
 TODO: --Floating orb follows and scans player on death?
+TODO: Buttons/Levers/etc
 TODO: Settings
+TODO: Build demo levels
+TODO: Distinguish between spawn and goal
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;

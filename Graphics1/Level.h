@@ -48,6 +48,8 @@ public:
 	void setScore(int score);
 	// Adds to the current score
 	void addScore(int score);
+	// Safely remove an entity during an update call
+	void safeDelete(Entity* e);
 protected:
 	Player* player;
 	GLuint spawnBeam;
@@ -62,8 +64,6 @@ protected:
 	GradButton gradRetry;
 	GradButton gradResume;
 	vector<Entity*> toRemoveE;
-public:
-	// Safely remove an entity during an update call
-	void safeDelete(Entity* e);
+	Animation spawnAnim;
 };
 
