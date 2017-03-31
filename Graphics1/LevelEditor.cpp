@@ -7,7 +7,7 @@
 #define EDITOR_MOVE_SPEED 1.00
 #define EDITOR_ROTATE_SPEED 30
 #define MOVE_SIZE 0.5
-#define SELECT_RADIUS 0.20
+#define SELECT_RADIUS 0.05
 #define POS_SNAP 0.05
 #define ANG_SNAP 0.05
 #define ROTATE_SEGMENTS 36
@@ -166,11 +166,8 @@ void LevelEditor::draw(double ex) {
 		//Draw point showing centre of object
 		Vec2D pos = selected->getPos();
 		glColor3ub(255, 127, 0);
-		glPointSize(8);
 		glLineWidth(4);
-		glBegin(GL_POINTS);
-		glVertex2d(pos.getX(), pos.getY());
-		glEnd();
+		drawHandle(pos.getX(), pos.getY());
 		switch (current) {
 		case 1: //Move
 			if (!selected->canMove()) {
@@ -182,12 +179,10 @@ void LevelEditor::draw(double ex) {
 			glVertex2d(pos.getX(), pos.getY() - MOVE_SIZE);
 			glVertex2d(pos.getX(), pos.getY() + MOVE_SIZE);
 			glEnd();
-			glBegin(GL_POINTS);
-			glVertex2d(pos.getX() + MOVE_SIZE, pos.getY());
-			glVertex2d(pos.getX() - MOVE_SIZE, pos.getY());
-			glVertex2d(pos.getX(), pos.getY() - MOVE_SIZE);
-			glVertex2d(pos.getX(), pos.getY() + MOVE_SIZE);
-			glEnd();
+			drawHandle(pos.getX() + MOVE_SIZE, pos.getY());
+			drawHandle(pos.getX() - MOVE_SIZE, pos.getY());
+			drawHandle(pos.getX(), pos.getY() - MOVE_SIZE);
+			drawHandle(pos.getX(), pos.getY() + MOVE_SIZE);
 			break;
 		case 2: //Resize
 		{
@@ -896,6 +891,15 @@ void LevelEditor::drawTextBox(string label, TextBox &box, int y) {
 	box.setX((sWidth + textWidth) / 2);
 	box.setY(y);
 	box.draw();
+}
+
+void LevelEditor::drawHandle(double x, double y) {
+	glBegin(GL_QUADS);
+	glVertex2d(x - SELECT_RADIUS, y - SELECT_RADIUS);
+	glVertex2d(x + SELECT_RADIUS, y - SELECT_RADIUS);
+	glVertex2d(x + SELECT_RADIUS, y + SELECT_RADIUS);
+	glVertex2d(x - SELECT_RADIUS, y + SELECT_RADIUS);
+	glEnd();
 }
 
 

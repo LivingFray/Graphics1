@@ -5,7 +5,6 @@
 /*
 Task list intergration:
 TODO: Debug mode
-TODO: Fix size of handles
 TODO: Graphics/Animations
 TODO: Cleanup code (auto generated classes, import orders, etc)
 TODO: UI

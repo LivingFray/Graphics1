@@ -73,5 +73,6 @@ private:
 	GradButton returnButton;
 	OptionMenu* optMenu;
 	void drawTextBox(string label, TextBox &box, int y);
+	void drawHandle(double x, double y);
 };
 
