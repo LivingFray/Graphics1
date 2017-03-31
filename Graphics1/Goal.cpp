@@ -16,14 +16,19 @@ Goal::~Goal() {
 }
 
 
+// Returns if the selectable can be resized
 bool Goal::canResize() {
 	return false;
 }
 
+
+// Returns if the selectable can be deleted
 bool Goal::canDelete() {
 	return false;
 }
 
+
+// Called when the selectable is moved
 bool Goal::onMove(double dx, double dy) {
 	LevelEditor* editor = (LevelEditor*)state;
 	if (Platform::onMove(dx, dy)) {
@@ -34,6 +39,7 @@ bool Goal::onMove(double dx, double dy) {
 }
 
 
+// Called when the selectable is rotated
 bool Goal::onRotate(double da) {
 	LevelEditor* editor = (LevelEditor*)state;
 	if (Platform::onRotate(da)) {
@@ -43,6 +49,35 @@ bool Goal::onRotate(double da) {
 	return false;
 }
 
-void Goal::draw(double ex) {
 
+// Draws the goal ex seconds after last update
+void Goal::draw(double ex) {
+}
+
+
+// Sets the options for this selectable
+void Goal::setOptions(OptionMenu* menu) {
+	Selectable::setOptions(menu);
+	LevelEditor* editor = (LevelEditor*)state;
+	editor->setGoalAngle(angle);
+	editor->setGoal(pos);
+}
+
+
+// Creates an option menu using the current values as defaults
+void Goal::createOptions() {
+	Selectable::createOptions();
+}
+
+
+// Returns a DataObject representing the storable object
+DataObject Goal::save() {
+	DataObject platform = Storable::save();
+	return platform;
+}
+
+
+// Loads the storable object from the DataObject
+void Goal::load(DataObject obj) {
+	Storable::load(obj);
 }

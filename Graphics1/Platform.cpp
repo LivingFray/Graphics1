@@ -166,7 +166,7 @@ double Platform::getTexScaleY() {
 
 // Sets the options for this selectable
 void Platform::setOptions(OptionMenu* menu) {
-	//Return pair not list
+	Selectable::setOptions(menu);
 	std::map<string, string> values = menu->getValues();
 	string v;
 	v = values["Texture"];

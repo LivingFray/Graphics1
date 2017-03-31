@@ -24,7 +24,7 @@ public:
 	virtual void draw(double ex);
 	// Returns if the selectable can be moved
 	virtual bool canMove();
-	// Returns if the selectable can be rotated
+	// Returns if the selectable can be resized
 	virtual bool canResize();
 	// Returns if the selectable can be rotated
 	virtual bool canRotate();
