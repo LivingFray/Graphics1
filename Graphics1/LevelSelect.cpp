@@ -1,6 +1,7 @@
 #include "LevelSelect.h"
 #include "Level.h"
 #include "LevelButton.h"
+#include "MainMenu.h"
 #include <filesystem>
 #include <iostream>
 using std::experimental::filesystem::directory_iterator;
@@ -15,8 +16,6 @@ LevelSelect::LevelSelect() {
 		lvl->loadFromFile(d.path().string());
 		string lName = lvl->getString("name", exists);
 		if (exists) {
-			//TODO: TMP, REMOVE OUTPUT
-			std::cout << d << " " << lName << std::endl;
 			levels.push_back(lvl);
 			paths.push_back(d.path().string());
 		}
@@ -34,6 +33,13 @@ LevelSelect::LevelSelect() {
 	}
 	planet = ImageLoader::getImage("Resources\\planet.png");
 	stars = ImageLoader::getImage("Resources\\stars.png");
+	menuButton = new GradButton();
+	menuButton->setLabel("Return to menu");
+	auto menuCall = [](BaseState* s) {
+		newState = new MainMenu();
+	};
+	menuButton->setCallback(menuCall);
+	buttons.push_back(menuButton);
 }
 
 
@@ -86,6 +92,13 @@ void LevelSelect::draw(double ex) {
 		b->setWidth(sWidth / 2 - 50);
 		b->setHeight((int)fontLarge.h * 2);
 		b->setY(sHeight - ((c + 1) / 2) * (int)(fontLarge.h * 2.1));
-		b->draw();
+		//Don't draw last button
+		if (c != buttons.size()) {
+			b->draw();
+		}
 	}
+	menuButton->setWidth(sWidth / 2);
+	menuButton->setHeight((int)fontLarge.h * 2);
+	menuButton->setY((int)fontLarge.h);
+	menuButton->draw(0);
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseMenu.h"
+#include "GradButton.h"
 class LevelSelect:
 	public BaseMenu {
 public:
@@ -11,5 +12,6 @@ protected:
 	vector<DataObject*> levels;
 	GLuint planet = ImageLoader::getImage("Resources\\planet.png");
 	GLuint stars = ImageLoader::getImage("Resources\\stars.png");
+	GradButton* menuButton;
 };
 

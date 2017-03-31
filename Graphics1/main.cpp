@@ -7,17 +7,13 @@ Task list intergration:
 TODO: Debug mode
 TODO: Graphics/Animations
 TODO: Cleanup code (auto generated classes, import orders, etc)
-TODO: UI
 TODO: Level editor
-TODO: --Enter exact value
 TODO: --Snapping
 TODO: --Better spawn menu
 TODO: AI
 TODO: Every stupid thing on the mark sheet
 TODO: --Floating orb follows and scans player on death?
 TODO: Settings
-TODO: Ensure all states can be exited
-TODO: Delete level button
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;
