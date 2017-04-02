@@ -1,6 +1,7 @@
 #include "LevelRenderer.h"
 #include "Globals.h"
 #include "PointGiver.h"
+#include "BombEntity.h"
 
 #define NUM_PANELS 8
 #define PARALLAX 0.5
@@ -340,6 +341,10 @@ void LevelRenderer::loadLevel(string filePath) {
 				PointGiver* p = new PointGiver();
 				p->load(item);
 				entities.push_back(p);
+			} else if (id == "bomb") {
+				BombEntity* b = new BombEntity();
+				b->load(item);
+				entities.push_back(b);
 			}
 		}
 		//Get next item

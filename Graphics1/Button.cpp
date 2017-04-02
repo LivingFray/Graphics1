@@ -7,8 +7,8 @@ Button::Button() {
 	y = 0;
 	width = 0;
 	height = 0;
-	img = ImageLoader::getImage("Resources\\button.png");
-	imgSelected = ImageLoader::getImage("Resources\\buttonSelected.png");
+	img = ImageLoader::getImage("Resources\\buttons\\button.png");
+	imgSelected = ImageLoader::getImage("Resources\\buttons\\buttonSelected.png");
 	glBindTexture(GL_TEXTURE_2D, img);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);

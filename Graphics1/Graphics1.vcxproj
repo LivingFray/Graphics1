@@ -140,11 +140,13 @@
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="BaseMenu.cpp" />
     <ClCompile Include="BaseState.cpp" />
+    <ClCompile Include="BombEntity.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="DataObject.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="EntityAI.cpp" />
     <ClCompile Include="FreeType.cpp" />
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="GradButton.cpp" />
@@ -173,11 +175,13 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="BaseMenu.h" />
     <ClInclude Include="BaseState.h" />
+    <ClInclude Include="BombEntity.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="DataObject.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="EntityAI.h" />
     <ClInclude Include="FreeType.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Goal.h" />

@@ -76,6 +76,7 @@ extern BaseState* state;
 extern BaseState* newState;
 extern GLFWcursor* cursorNormal;
 extern GLFWcursor* cursorPan;
+enum class Damage {EXPLOSION};
 
 //Macro function to print centred text
 #define printCentre(font,x,y,text)	do {																\

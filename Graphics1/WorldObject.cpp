@@ -146,3 +146,8 @@ bool WorldObject::canResize() {
 bool WorldObject::canRotate() {
 	return true;
 }
+
+
+// Called when damage is inflicted on the object
+void WorldObject::onDamage(Damage d) {
+}

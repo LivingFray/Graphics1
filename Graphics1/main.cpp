@@ -21,6 +21,7 @@ TODO: Buttons/Levers/etc
 TODO: Settings
 TODO: Build demo levels
 TODO: Distinguish between spawn and goal
+TODO: Only update UI sizes on screen resize
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;

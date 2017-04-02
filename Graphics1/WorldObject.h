@@ -44,6 +44,8 @@ public:
 	virtual bool canResize();
 	// Returns if the world object can be rotated
 	virtual bool canRotate();
+	// Called when damage is inflicted on the object
+	virtual void onDamage(Damage d);
 protected:
 	string id;
 	Vec2D pos;

@@ -4,6 +4,7 @@
 #include "SpawnPoint.h"
 #include "Goal.h"
 #include "PointGiver.h"
+#include "BombEntity.h"
 #define EDITOR_MOVE_SPEED 1.00
 #define EDITOR_ROTATE_SPEED 30
 #define MOVE_SIZE 0.5
@@ -53,12 +54,12 @@ LevelEditor::LevelEditor() {
 	glEnd();
 	glEndList();
 	//Load button images
-	barButtons[0] = ImageLoader::getImage("Resources\\selectButton.png");
-	barButtons[1] = ImageLoader::getImage("Resources\\moveButton.png");
-	barButtons[2] = ImageLoader::getImage("Resources\\resizeButton.png");
-	barButtons[3] = ImageLoader::getImage("Resources\\rotateButton.png");
-	barButtons[4] = ImageLoader::getImage("Resources\\optionsButton.png");
-	barButtons[5] = ImageLoader::getImage("Resources\\deleteButton.png");
+	barButtons[0] = ImageLoader::getImage("Resources\\buttons\\select.png");
+	barButtons[1] = ImageLoader::getImage("Resources\\buttons\\move.png");
+	barButtons[2] = ImageLoader::getImage("Resources\\buttons\\resize.png");
+	barButtons[3] = ImageLoader::getImage("Resources\\buttons\\rotate.png");
+	barButtons[4] = ImageLoader::getImage("Resources\\buttons\\options.png");
+	barButtons[5] = ImageLoader::getImage("Resources\\buttons\\delete.png");
 	//Create elements of spawn menu
 	MenuItem item;
 	//Reset item
@@ -95,6 +96,17 @@ LevelEditor::LevelEditor() {
 	item.create = [](BaseState* s) {
 		LevelEditor* l = (LevelEditor*)s;
 		PointGiver* p = new PointGiver();
+		p->setPos(l->getCameraPos());
+		p->setAngle(l->getCameraAngleAt(0));
+		l->addEntity(p);
+		l->setMenu(0);
+	};
+	menuItems.push_back(item);
+	item = MenuItem();
+	item.name = "TEST Bomb";
+	item.create = [](BaseState* s) {
+		LevelEditor* l = (LevelEditor*)s;
+		BombEntity* p = new BombEntity();
 		p->setPos(l->getCameraPos());
 		p->setAngle(l->getCameraAngleAt(0));
 		l->addEntity(p);
@@ -196,12 +208,10 @@ void LevelEditor::draw(double ex) {
 			glTranslated(pos.getX(), pos.getY(), 0.0);
 			glRotated(selected->getAngle(), 0.0, 0.0, 1.0);
 			glTranslated(-pos.getX(), -pos.getY(), 0.0);
-			glBegin(GL_POINTS);
-			glVertex2d(pos.getX() + w, pos.getY());
-			glVertex2d(pos.getX() - w, pos.getY());
-			glVertex2d(pos.getX(), pos.getY() - h);
-			glVertex2d(pos.getX(), pos.getY() + h);
-			glEnd();
+			drawHandle(pos.getX() + w, pos.getY());
+			drawHandle(pos.getX() - w, pos.getY());
+			drawHandle(pos.getX(), pos.getY() - h);
+			drawHandle(pos.getX(), pos.getY() + h);
 			glPopMatrix();
 			break;
 		}
@@ -363,7 +373,6 @@ void LevelEditor::draw(double ex) {
 void LevelEditor::keyEvent(GLFWwindow * window, int key, int scan, int action, int mods) {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
 		if (currentMenu != Menu::NONE) {
-			//TODO: Any necessary things
 			currentMenu = Menu::NONE;
 		} else {
 			currentMenu = Menu::SAVE;
@@ -792,6 +801,10 @@ void LevelEditor::loadLevel(string filePath) {
 	goalObj->setPos(goal);
 	goalObj->setAngle(goalAngle);
 	platforms.push_back(goalObj);
+	//Update menu
+	nextBox.setText(nextLevelPath);
+	levelBox.setText(levelName);
+	gravBox.setText(to_string(defaultGravity));
 }
 
 
