@@ -27,6 +27,14 @@ public:
 	void setSize(double width, double height);
 	// Sets the position of the animation
 	void setPos(Vec2D pos);
+	// Sets the width of the animation
+	void setWidth(double width);
+	// Sets the height of the animation
+	void setHeight(double height);
+	// Sets the width of the animation
+	double getWidth();
+	// Sets the height of the animation
+	double setHeight();
 private:
 	GLuint spritesheet;
 	double elapsed;

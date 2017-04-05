@@ -7,5 +7,9 @@ public:
 	~BombEntity();
 	//Updates the entity
 	void update();
+protected:
+	double fuse;
+	bool triggered;
+	Animation explodeAnim;
 };
 

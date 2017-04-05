@@ -12,7 +12,6 @@ TODO: --Snapping
 TODO: --Better spawn menu
 TODO: Every stupid thing on the mark sheet
 TODO: --Moving platforms
-TODO: --AI
 TODO: --Sound
 TODO: --Special effects
 TODO: --"Additional game information"
@@ -22,6 +21,7 @@ TODO: Settings
 TODO: Build demo levels
 TODO: Distinguish between spawn and goal
 TODO: Only update UI sizes on screen resize
+TODO: Fix acceleration
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;

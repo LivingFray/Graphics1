@@ -2,6 +2,10 @@
 #include <string>
 #include <map>
 #include <vector>
+using std::string;
+using std::to_string;
+using std::map;
+using std::vector;
 #include "FreeType.h"
 #include "DataObject.h"
 #include "ImageLoader.h"

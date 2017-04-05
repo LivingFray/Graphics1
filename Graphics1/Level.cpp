@@ -70,15 +70,6 @@ Level::Level() {
 
 
 Level::~Level() {
-	for (Entity* e : entities) {
-		delete e;
-	}
-	for (Platform* p : platforms) {
-		delete p;
-	}
-	for (GravityField* f : gravFields) {
-		delete f;
-	}
 }
 
 
@@ -155,6 +146,7 @@ void Level::update() {
 void Level::loadLevel(string filePath) {
 	LevelRenderer::loadLevel(filePath);
 	levelTime = 0;
+	spawnAnim.setTime(0);
 	reachedGoal = false;
 	paused = false;
 	score = 0;

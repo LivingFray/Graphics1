@@ -2,17 +2,35 @@
 #include "Level.h"
 
 
+#define TRIGGER_RADIUS 2.0
+#define FUSE_TIME 2.0
+#define BOMB_FLASHES 5
+
 BombEntity::BombEntity() {
 	id = "bomb";
 	currentAnim = Animation();
 	currentAnim.setSpriteSheet("Resources\\entities\\bomb.png");
 	currentAnim.setSpritesheetSize(2, 1);
 	currentAnim.setSize(0.5, 0.5);
-	currentAnim.setRepeat(false);
+	currentAnim.setRepeat(true);
 	currentAnim.addFrame(0, 0.5);
 	currentAnim.addFrame(1, 0.5);
 	width = 0.5;
 	height = 0.5;
+	explodeAnim = Animation();
+	explodeAnim.setSpriteSheet("Resources\\entities\\bomb.png");
+	explodeAnim.setSpritesheetSize(2, 1);
+	explodeAnim.setSize(0.5, 0.5);
+	explodeAnim.setRepeat(false);
+	//Each frame lasts half as long as the last
+	double time = 0.5 * (FUSE_TIME / 2.0);
+	for (int i = 0; i < BOMB_FLASHES; i++) {
+		explodeAnim.addFrame(0, time);
+		explodeAnim.addFrame(1, time);
+		time *= 0.5;
+	}
+	triggered = false;
+	fuse = FUSE_TIME;
 }
 
 
@@ -24,6 +42,14 @@ BombEntity::~BombEntity() {
 void BombEntity::update() {
 	Level* l = (Level*)state;
 	Entity* player = l->getPlayer();
-	//TODO: Explosion if in range
+	//Explode if in range
+	if (!triggered && player != NULL) {
+		//Check distance to player
+		double d = player->getPos().subtract(pos).magnitudeSquare();
+		if (d < TRIGGER_RADIUS * TRIGGER_RADIUS) {
+			triggered = true;
+			currentAnim = explodeAnim;
+		}
+	}
 	EntityAI::update();
 }

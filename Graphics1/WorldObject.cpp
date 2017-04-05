@@ -8,6 +8,7 @@ WorldObject::WorldObject() {
 	width = SMALLEST_THICKNESS;
 	height = SMALLEST_THICKNESS;
 	angle = 0.0;
+	id = "object";
 }
 
 

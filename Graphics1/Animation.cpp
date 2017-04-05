@@ -52,8 +52,14 @@ void Animation::setRepeat(bool repeat) {
 // Sets how far along the animation has progressed
 void Animation::setTime(double time) {
 	elapsed = time;
-	//If the frame needs updating
+	//If the frame is before the current one
+	if (elapsed < frameStart) {
+		frameStart = 0;
+		frame = 0;
+	}
+	//If the frame is after the current one
 	if (elapsed - frameStart > frames[frame].duration) {
+
 		frameStart += frames[frame].duration;
 		frame++;
 		if (frame == frames.size()) {
@@ -151,4 +157,28 @@ void Animation::setSize(double width, double height) {
 // Sets the position of the animation
 void Animation::setPos(Vec2D pos) {
 	this->pos = pos;
+}
+
+
+// Sets the width of the animation
+void Animation::setWidth(double width) {
+	this->width = width;
+}
+
+
+// Sets the height of the animation
+void Animation::setHeight(double height) {
+	this->height = height;
+}
+
+
+// Sets the width of the animation
+double Animation::getWidth() {
+	return width;
+}
+
+
+// Sets the height of the animation
+double Animation::setHeight() {
+	return height;
 }

@@ -29,6 +29,15 @@ LevelRenderer::LevelRenderer() {
 
 
 LevelRenderer::~LevelRenderer() {
+	for (Entity* e: entities) {
+		delete e;
+	}
+	for (Platform* p: platforms) {
+		delete p;
+	}
+	for (GravityField* f: gravFields) {
+		delete f;
+	}
 }
 
 
@@ -275,12 +284,12 @@ void LevelRenderer::loadLevel(string filePath) {
 		defaultGravity = 0;
 	}
 	spawn.setX(lvl.getDouble("spawnX", exists));
-	if (!exists){
+	if (!exists) {
 		printf("Error loading level: No spawn x coordinate found\n");
 		spawn.setX(0.0);
 	}
 	spawn.setY(lvl.getDouble("spawnY", exists));
-	if (!exists){
+	if (!exists) {
 		printf("Error loading level: No spawn y coordinate found\n");
 		spawn.setY(0.0);
 	}
@@ -309,15 +318,15 @@ void LevelRenderer::loadLevel(string filePath) {
 		objs = DataObject();
 	}
 	//Wipe any existing data
-	for (GravityField* f : gravFields) {
+	for (GravityField* f: gravFields) {
 		delete f;
 	}
 	gravFields.clear();
-	for (Platform* p : platforms) {
+	for (Platform* p: platforms) {
 		delete p;
 	}
 	platforms.clear();
-	for (Entity* e : entities) {
+	for (Entity* e: entities) {
 		delete e;
 	}
 	entities.clear();

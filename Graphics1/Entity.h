@@ -5,7 +5,6 @@
 #include "Storable.h"
 #include "Animation.h"
 
-using namespace std;
 
 class Entity:
 	public Collider,

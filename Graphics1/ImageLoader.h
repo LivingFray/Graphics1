@@ -1,7 +1,7 @@
 #pragma once
 #include "Globals.h"
 
-using namespace std;
+
 typedef map<string, GLuint> imageMap;
 
 namespace ImageLoader {

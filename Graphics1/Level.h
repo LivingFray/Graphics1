@@ -1,15 +1,12 @@
 #pragma once
-#include <vector>
 #include "Globals.h"
 #include "Platform.h"
-#include "Vec2D.h"
 #include "Entity.h"
 #include "Player.h"
 #include "BaseState.h"
 #include "LevelRenderer.h"
 #include "GradButton.h"
 
-using namespace std;
 
 class Entity;
 class Player;

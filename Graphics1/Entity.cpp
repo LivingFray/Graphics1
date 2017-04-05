@@ -84,25 +84,11 @@ void Entity::update() {
 // Draws the entity
 void Entity::draw(double ex) {
 	visAngle = updatedVisAngle(ex);
-	//TODO: Animation
-	//glEnable(GL_TEXTURE_2D);
-	//glBindTexture(GL_TEXTURE_2D, idle);
 	double f = flip ? -1.0 : 1.0;
 	glPushMatrix();
-	//glColor3ub(255, 255, 255);
 	glTranslated(pos.getX() + vel.getX()*ex, pos.getY() + vel.getY()*ex, 0.0);
 	glRotated(visAngle, 0.0, 0.0, 1.0);
-	//glBegin(GL_QUADS);
-	//glTexCoord2d(0.0, 0.0);
-	//glVertex2d(0.5 * -width, 0.5 * -height);
-	//glTexCoord2d(0.0, 1.0);
-	//glVertex2d(0.5 * -width, 0.5 * height);
-	//glTexCoord2d(f, 1.0);
-	//glVertex2d(0.5 * width, 0.5 * height);
-	//glTexCoord2d(f, 0.0);
-	//glVertex2d(0.5 * width, 0.5 * -height);
-	//glEnd();
-	//glDisable(GL_TEXTURE_2D);
+	currentAnim.setWidth(abs(currentAnim.getWidth()) * f);
 	currentAnim.draw(ex);
 #ifdef DEBUG
 	//Draw hitbox
