@@ -4,7 +4,7 @@ class EntityAI :
 	public Entity {
 public:
 	EntityAI();
-	~EntityAI();
+	virtual ~EntityAI();
 	// Updates the entity
 	virtual void update();
 };

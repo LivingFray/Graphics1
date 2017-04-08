@@ -12,7 +12,7 @@ class Entity:
 	public Storable {
 public:
 	Entity();
-	~Entity();
+	virtual ~Entity();
 	// Gets the x-coordinate of the entity
 	double getX();
 	// Gets the y-coordinate of the entity

@@ -3,7 +3,7 @@
 class BaseState {
 public:
 	BaseState();
-	~BaseState();
+	virtual ~BaseState();
 	// Draws the state
 	virtual void draw(double ex);
 	// Updates the state

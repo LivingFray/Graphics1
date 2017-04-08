@@ -3,7 +3,7 @@
 class WorldObject {
 public:
 	WorldObject();
-	~WorldObject();
+	virtual ~WorldObject();
 	// Gets the id of the object
 	virtual string getId();
 	// Returns the centre of the selectable

@@ -10,7 +10,7 @@
 class LevelRenderer {
 public:
 	LevelRenderer();
-	~LevelRenderer();
+	virtual ~LevelRenderer();
 	// Draws the level
 	virtual void draw(double ex);
 	// Saves the level to the given file
