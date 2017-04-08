@@ -91,20 +91,26 @@ void Entity::draw(double ex) {
 	currentAnim.setWidth(abs(currentAnim.getWidth()) * f);
 	currentAnim.draw(ex);
 #ifdef DEBUG
-	//Draw hitbox
-	glColor3ub(onGround ? 0:255, 127, 0);
-	glLineWidth(1);
-	glBegin(GL_LINE_LOOP);
-	glVertex2d(0.5 * -width, 0.5 * -height);
-	glVertex2d(0.5 * -width, 0.5 * height);
-	glVertex2d(0.5 * width, 0.5 * height);
-	glVertex2d(0.5 * width, 0.5 * -height);
-	glEnd();
 	//Draw velocity
+	glRotated(-visAngle, 0.0, 0.0, 1.0);
 	glColor3ub(0, 0, 255);
 	glBegin(GL_LINES);
 	glVertex2d(0.0, 0.0);
 	glVertex2d(vel.getX(), vel.getY());
+	glEnd();
+	//Draw hitbox
+	//Note: The laggy appearance of the hitbox is because the game runs at 20hz
+	//and is made to appear smoother by extrapolating graphical positions when
+	//the game is drawn
+	glTranslated(-pos.getX() - vel.getX()*ex, -pos.getY() - vel.getY()*ex, 0.0);
+	glColor3ub(onGround ? 0 : 255, 127, 0);
+	glLineWidth(1);
+	int n;
+	Vec2D* vecs = getVertices(&n);
+	glBegin(GL_LINE_LOOP);
+	for (int i = 0; i < n; i++) {
+		glVertex2d(vecs[i].getX(), vecs[i].getY());
+	}
 	glEnd();
 #endif
 	glPopMatrix();
