@@ -37,9 +37,11 @@ using std::vector;
 #define FONT_SIZE_SMALL 12
 //The name of the font being used
 #define FONT_NAME "arial.ttf"
-//Useful angles
+//Useful constants
 #define PI 3.14159265359
 #define TAU 6.28318530718
+#define RT2 1.41421356237
+#define ONE_OVER_RT2 0.70710678118
 //The width of the player
 #define PLAYER_WIDTH 0.45
 //The height of the player

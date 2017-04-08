@@ -98,9 +98,8 @@ void Level::update() {
 	}
 	//TODO: Update world
 	//Update the entities
-	int index = 0;
-	for (Entity* e : entities) {
-		index++;
+	for (int i = 0; i < entities.size(); i++) {
+		Entity* e = entities.at(i);
 		e->update();
 		bool onGround = e->getOnGround();
 		if (e->getVel().magnitudeSquare() > FLOAT_ZERO) {
@@ -108,7 +107,7 @@ void Level::update() {
 		}
 		Vec2D res;
 		//Start by checking the entity after 'e'
-		auto start = entities.begin() + index;
+		auto start = entities.begin() + i + 1;
 		while (start != entities.end()) {
 			Entity* e2 = *start;
 			//Entities don't collide with each other

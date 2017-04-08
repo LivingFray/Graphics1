@@ -1,9 +1,10 @@
 #include "BombEntity.h"
 #include "Level.h"
+#include "Explosion.h"
 
 
 #define TRIGGER_RADIUS 2.0
-#define FUSE_TIME 2.0
+#define FUSE_TIME 4.0
 #define BOMB_FLASHES 5
 
 BombEntity::BombEntity() {
@@ -49,6 +50,16 @@ void BombEntity::update() {
 		if (d < TRIGGER_RADIUS * TRIGGER_RADIUS) {
 			triggered = true;
 			currentAnim = explodeAnim;
+			explodeAnim.setTime(0);
+		}
+	} else if (triggered) {
+		fuse -= TICKRATE;
+		if (fuse <= 0) {
+			l->safeDelete(this);
+			Explosion* exp = new Explosion();
+			exp->setRadius(2);
+			exp->setPos(pos);
+			l->addEntity(exp);
 		}
 	}
 	EntityAI::update();

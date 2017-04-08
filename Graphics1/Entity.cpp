@@ -156,7 +156,7 @@ double Entity::getMaxSpeed() {
 Vec2D* Entity::getNormals(int* numNormals) {
 	*numNormals = 2;
 	Vec2D* r = new Vec2D[2];
-	//Calculate the angle of one of the nromals
+	//Calculate the angle of one of the normals
 	r[0].set(cos(DEG_TO_RAD * angle), sin(DEG_TO_RAD * angle));
 	//Rotate the other by 90 degrees to get the second normal
 	r[1].set(-r[0].getY(), r[0].getX());
