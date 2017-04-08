@@ -51,7 +51,14 @@ void Animation::setRepeat(bool repeat) {
 
 // Sets how far along the animation has progressed
 void Animation::setTime(double time) {
-	elapsed = time;
+	//Keep the time within the bounds of the animation
+	if (repeat) {
+		elapsed = time - duration * floor(time / duration);
+	} else if (time > duration) {
+		elapsed = duration;
+	} else {
+		elapsed = time;
+	}
 	//If the frame is before the current one
 	if (elapsed < frameStart) {
 		frameStart = 0;
@@ -59,31 +66,12 @@ void Animation::setTime(double time) {
 	}
 	//If the frame is after the current one
 	if (elapsed - frameStart > frames[frame].duration) {
-
-		frameStart += frames[frame].duration;
-		frame++;
-		if (frame == frames.size()) {
-			if (repeat) {
-				//If repeating set back to beginning + however much time elapsed
-				elapsed -= duration * floor(elapsed / duration);
-				frame = 0;
-				frameStart = 0.0;
-				double t = 0;
-				//Count how many frames to skip (syncs animations on low fps)
-				for (Frame f : frames) {
-					t += f.duration;
-					if (t >= elapsed) {
-						break;
-					}
-					frameStart += f.duration;
-					frame++;
-				}
-			} else {
-				//No looping, simply stay on the last frame
-				elapsed = duration;
-				frame = frames.size() - 1;
-			}
+		while (frameStart < elapsed) {
+			frameStart += frames[frame].duration;
+			frame++;
 		}
+		frame--;
+		frameStart -= frames[frame].duration;
 	}
 }
 
