@@ -1,17 +1,15 @@
 #include "Explosion.h"
-
+#include "Level.h"
 
 
 Explosion::Explosion() {
 	id = "explosion";
 	width = 1;
 	height = 1;
-	currentAnim = Animation();
-	currentAnim.setSpriteSheet("Resources\\entities\\explosion.png");
-	currentAnim.setSize(width, height);
-	currentAnim.setRepeat(false);
-	currentAnim.setSpritesheetSize(2, 2);
-	currentAnim.addFrame(0, 1);
+	age = 1;
+	lastTime = 0;
+	time = 0;
+	ps.setTexture("Resources\\entities\\explosion.png");
 }
 
 
@@ -70,10 +68,47 @@ Vec2D* Explosion::getVertices(int* numVertices) {
 
 //Updates the entity
 void Explosion::update() {
+	time += TICKRATE;
+	if (time >= age) {
+		Level* l = (Level*)state;
+		l->safeDelete(this);
+	}
+	ps.setPosition(pos);
 }
 
 
 // Called when a collision occurs
 void Explosion::onCollide(Collider* other) {
 	other->onDamage(Damage::EXPLOSION);
+}
+
+
+// Sets the max age of the explosion
+void Explosion::setMaxAge(double age) {
+	this->age = age;
+	time = 0;
+	lastTime = 0;
+}
+
+
+void Explosion::draw(double ex) {
+	time += ex;
+	ps.draw(time - lastTime);
+	lastTime = time;
+	time -= ex;
+#ifdef DEBUG
+	//Draw hitbox
+	//Note: The laggy appearance of the hitbox is because the game runs at 20hz
+	//and is made to appear smoother by extrapolating graphical positions when
+	//the game is drawn
+	glColor3ub(onGround ? 0 : 255, 127, 0);
+	glLineWidth(1);
+	int n;
+	Vec2D* vecs = getVertices(&n);
+	glBegin(GL_LINE_LOOP);
+	for (int i = 0; i < n; i++) {
+		glVertex2d(vecs[i].getX(), vecs[i].getY());
+	}
+	glEnd();
+#endif
 }

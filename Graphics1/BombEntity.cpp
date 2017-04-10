@@ -59,6 +59,7 @@ void BombEntity::update() {
 			Explosion* exp = new Explosion();
 			exp->setRadius(2);
 			exp->setPos(pos);
+			exp->setMaxAge(5);
 			l->addEntity(exp);
 		}
 	}
