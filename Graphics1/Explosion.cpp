@@ -10,6 +10,17 @@ Explosion::Explosion() {
 	lastTime = 0;
 	time = 0;
 	ps.setTexture("Resources\\entities\\explosion.png");
+	ps.setParticlesPerSecond((int)(EXPLOSION_NEW_PARTICLES / EXPLOSION_NEW_PARTICLES_DURATION));
+	ps.addColor(255, 0, 0, 255, 255, 0, 0, 0);
+	ps.addColor(255, 127, 0, 255, 255, 127, 0, 0);
+	ps.addColor(255, 255, 0, 255, 255, 255, 0, 0);
+	ps.addColor(0, 0, 0, 255, 0, 0, 0, 0);
+	ps.setMinLife(0);
+	ps.setMaxLife(age);
+	ps.setMinVelocity(0);
+	ps.setMaxVelocity(3 * (width / age) / 2);
+	ps.setMinSize(0.05);
+	ps.setMaxSize(0.1);
 }
 
 
@@ -22,6 +33,8 @@ void Explosion::setRadius(double r) {
 	this->width = r;
 	this->height = r;
 	currentAnim.setSize(r * 2, r * 2);
+	ps.setMinVelocity(0);
+	ps.setMaxVelocity((width / age));
 }
 
 
@@ -73,7 +86,6 @@ void Explosion::update() {
 		Level* l = (Level*)state;
 		l->safeDelete(this);
 	}
-	ps.setPosition(pos);
 }
 
 
@@ -88,11 +100,18 @@ void Explosion::setMaxAge(double age) {
 	this->age = age;
 	time = 0;
 	lastTime = 0;
+	ps.setMinLife(0);
+	ps.setMaxLife(age);
+	ps.setMaxVelocity((width / age));
 }
 
 
 void Explosion::draw(double ex) {
+	ps.setPosition(pos);
 	time += ex;
+	if (time > EXPLOSION_NEW_PARTICLES_DURATION) {
+		ps.setEmitting(false);
+	}
 	ps.draw(time - lastTime);
 	lastTime = time;
 	time -= ex;

@@ -45,6 +45,8 @@ public:
 	void setScore(int score);
 	// Adds to the current score
 	void addScore(int score);
+	// Safely add an entity during an update call
+	void safeAdd(Entity * e);
 	// Safely remove an entity during an update call
 	void safeDelete(Entity* e);
 protected:
@@ -60,6 +62,7 @@ protected:
 	GradButton gradMenu;
 	GradButton gradRetry;
 	GradButton gradResume;
+	vector<Entity*> toAddE;
 	vector<Entity*> toRemoveE;
 	Animation spawnAnim;
 };

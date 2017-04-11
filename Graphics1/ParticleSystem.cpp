@@ -1,13 +1,26 @@
 #include "ParticleSystem.h"
-#define DEBUG
 
 
 ParticleSystem::ParticleSystem() {
 	for (int i = 0; i < MAX_PARTICLES; i++) {
 		particles[i].age = -1;
 	}
-	particlesPerSecond = 500;
+	particlesPerSecond = 5000;
 	lastAddedParticle = 0;
+	minVel = 0;
+	maxVel = 1;
+	minAngle = 0;
+	maxAngle = 360;
+	angle = 0;
+	width = 0;
+	height = 0;
+	dX = Vec2D(1, 0);
+	dY = Vec2D(0, 1);
+	emitting = true;
+	minLife = 1;
+	maxLife = 1;
+	minSize = 0.1;
+	maxSize = 0.1;
 }
 
 
@@ -37,8 +50,10 @@ void ParticleSystem::draw(double elapsed) {
 	}
 	unsigned int totalAlive = 0;
 	for (unsigned int i = 0; i < MAX_PARTICLES; i++) {
-		particles[i].age -= elapsed;
-		if (toAdd > 0 && particles[i].age < 0.0) {
+		if (particles[i].age > 0.0) {
+			particles[i].age -= elapsed;
+		}
+		if (emitting && toAdd > 0 && particles[i].age < 0.0) {
 			newParticle(i);
 			toAdd--;
 		}
@@ -69,17 +84,23 @@ void ParticleSystem::draw(double elapsed) {
 			tex[totalAlive * 8 + 6] = 0;
 			tex[totalAlive * 8 + 7] = 1;
 			//Colour buffer
-			colors[totalAlive * 4 + 0] = particles[i].r;
-			colors[totalAlive * 4 + 1] = particles[i].g;
-			colors[totalAlive * 4 + 2] = particles[i].b;
-			colors[totalAlive * 4 + 3] = particles[i].a;
+			unsigned char r, g, b, a;
+			//Interpolate the colours
+			Color c = presetColors[particles[i].color];
+			double t = (particles[i].maxAge - particles[i].age)/particles[i].maxAge;
+			r = c.sR + (int)((c.eR - c.sR) * t);
+			g = c.sG + (int)((c.eG - c.sG) * t);
+			b = c.sB + (int)((c.eB - c.sB) * t);
+			a = c.sA + (int)((c.eA - c.sA) * t);
+			for (int i = 0; i < 4; i++) {
+				colors[totalAlive * 16 + 0 + (i * 4)] = r;
+				colors[totalAlive * 16 + 1 + (i * 4)] = g;
+				colors[totalAlive * 16 + 2 + (i * 4)] = b;
+				colors[totalAlive * 16 + 3 + (i * 4)] = a;
+			}
 			totalAlive++;
 		}
 	}
-	glPushAttrib(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-	glDepthMask(GL_FALSE);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//Standard texture binding
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, texId);
@@ -89,7 +110,7 @@ void ParticleSystem::draw(double elapsed) {
 	glEnableClientState(GL_COLOR_ARRAY);
 	//Send buffers to GPU
 	glVertexPointer(2, GL_FLOAT, 0, vertices);
-	glTexCoordPointer(2, GL_FLOAT,0, tex);
+	glTexCoordPointer(2, GL_FLOAT, 0, tex);
 	glColorPointer(4, GL_UNSIGNED_BYTE, 0, colors);
 	//Draw particles
 	glDrawArrays(GL_QUADS, 0, totalAlive * 4);
@@ -98,7 +119,6 @@ void ParticleSystem::draw(double elapsed) {
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisable(GL_TEXTURE_2D);
-	glPopAttrib();
 #ifdef DEBUG
 	if (totalAlive > 0) {
 		glBegin(GL_POINTS);
@@ -111,14 +131,117 @@ void ParticleSystem::draw(double elapsed) {
 
 void inline ParticleSystem::newParticle(int i) {
 	Particle& p = particles[i];
-	p.pos = pos;
-	p.size = 0.1f;
-	p.vel = Vec2D(rand() % 2000 / 1000.0 - 1, rand() % 2000 / 1000.0 - 1);
-	p.age = 5;
-	p.angle = 0;
-	//p.r = rand() % 256;
-	//p.g = rand() % 256;
-	//p.b = rand() % 256;
-	p.r = p.g = p.b = 255;
-	p.a = 255;
+	double rX = randD(-width / 2, width / 2);
+	double rY = randD(-height / 2, height / 2);
+	p.pos = pos.add(dX.multiply(rX)).add(dY.multiply(rY));
+	p.size = randD(minSize, maxSize);
+	p.age = randD(minLife,maxLife);
+	p.maxAge = p.age;
+	p.angle = randD(minAngle, maxAngle);
+	p.vel = Vec2D(cos(p.angle * DEG_TO_RAD), sin(p.angle * DEG_TO_RAD));
+	p.vel.multiplyBy(randD(minVel, maxVel));
+	p.color = rand() % presetColors.size();
+}
+
+
+// Sets the minimum angle the particles travel in
+void ParticleSystem::setMinAngle(double angle) {
+	this->minAngle = angle;
+}
+
+
+// Sets the maximum angle the particles travel in
+void ParticleSystem::setMaxAngle(double angle) {
+	this->maxAngle = angle;
+}
+
+
+// Sets the width in which particles can spawn
+void ParticleSystem::setWidth(double width) {
+	this->width = width;
+	dX = Vec2D(cos(angle * DEG_TO_RAD), sin(angle * DEG_TO_RAD));
+	dY = Vec2D(-dX.getY(), dX.getX());
+}
+
+
+// Sets the width in which particles can spawn
+void ParticleSystem::setHeight(double height) {
+	this->height = height;
+	dX = Vec2D(cos(angle * DEG_TO_RAD), sin(angle * DEG_TO_RAD));
+	dY = Vec2D(-dX.getY(), dX.getX());
+}
+
+
+// Sets the angle of the emitter
+void ParticleSystem::setAngle(double angle) {
+	this->angle = angle;
+	dX = Vec2D(cos(angle * DEG_TO_RAD), sin(angle * DEG_TO_RAD));
+	dY = Vec2D(-dX.getY(), dX.getX());
+	dX.multiplyBy(randD(-width / 2, width / 2));
+	dY.multiplyBy(randD(-height / 2, height / 2));
+}
+
+
+// Sets the minimum velocity of the particles
+void ParticleSystem::setMinVelocity(double vel) {
+	this->minVel = vel;
+}
+
+
+// Sets the maximum velocity of the particles
+void ParticleSystem::setMaxVelocity(double vel) {
+	this->maxVel = vel;
+}
+
+
+// Sets whether the particle system emits new particles
+void ParticleSystem::setEmitting(bool emitting) {
+	this->emitting = emitting;
+}
+
+
+// Sets the number of particles emitted per second
+void ParticleSystem::setParticlesPerSecond(int pps) {
+	particlesPerSecond = pps;
+}
+
+
+// Sets the minimum time a particle can exist for
+void ParticleSystem::setMinLife(double life) {
+	this->minLife = life;
+}
+
+
+// Sets the maximum time a particle can exist for
+void ParticleSystem::setMaxLife(double life) {
+	this->maxLife = life;
+}
+
+
+// Sets the minimum size of a particle
+void ParticleSystem::setMinSize(double size) {
+	minSize = size;
+}
+
+
+// Sets the maximum size of a particle
+void ParticleSystem::setMaxSize(double size) {
+	maxSize = size;
+}
+
+
+// Adds a pair of colours a particle can be
+void ParticleSystem::addColor(unsigned char sR, unsigned char sG, 
+	unsigned char sB, unsigned char sA, unsigned char eR, 
+	unsigned char eG,unsigned char eB, unsigned char eA) {
+	Color c = Color();
+	c.sR = sR;
+	c.sG = sG;
+	c.sB = sB;
+	c.sA = sA;
+	c.eR = eR;
+	c.eG = eG;
+	c.eB = eB;
+	c.eA = eA;
+	presetColors.push_back(c);
 }

@@ -70,6 +70,12 @@ using std::vector;
 //The cosine of the angle between collision and vector and ground needed to count as standing on it
 #define COS_GROUND_ANGLE_MIN -1
 #define COS_GROUND_ANGLE_MAX -0.707106
+//How many particles make up an explosion
+#define EXPLOSION_NEW_PARTICLES 5000
+//How long explosions emit particles for after being created
+#define EXPLOSION_NEW_PARTICLES_DURATION 0.05
+//Maximum number of particles per particle system
+#define MAX_PARTICLES 10000
 //Debug mode
 #define DEBUG
 extern GLFWwindow* gameWindow;
@@ -89,3 +95,5 @@ enum class Damage {EXPLOSION};
 									int l = freetype::getLength((font), (text));						\
 									freetype::print((font), (float)(x) - l * 0.5f, (float)(y), (text));	\
 								} while(0)
+//Macro function to generate a random double
+#define randD(min, max) (min) + (((max) - (min)) * ((min) + ((double)rand()) / (double)RAND_MAX))

@@ -55,13 +55,27 @@ void BombEntity::update() {
 	} else if (triggered) {
 		fuse -= TICKRATE;
 		if (fuse <= 0) {
-			l->safeDelete(this);
-			Explosion* exp = new Explosion();
-			exp->setRadius(2);
-			exp->setPos(pos);
-			exp->setMaxAge(5);
-			l->addEntity(exp);
+			explode();
 		}
 	}
 	EntityAI::update();
+}
+
+
+void BombEntity::explode() {
+	Level* l = (Level*)state;
+	l->safeDelete(this);
+	Explosion* exp = new Explosion();
+	exp->setRadius(2);
+	exp->setPos(pos);
+	exp->setMaxAge(1);
+	l->safeAdd(exp);
+}
+
+
+// Called when damage is inflicted on the object
+void BombEntity::onDamage(Damage d) {
+	if (d == Damage::EXPLOSION) {
+		explode();
+	}
 }

@@ -7,9 +7,12 @@ public:
 	~BombEntity();
 	//Updates the entity
 	void update();
+	// Called when damage is inflicted on the object
+	void onDamage(Damage d);
 protected:
 	double fuse;
 	bool triggered;
 	Animation explodeAnim;
+	void explode();
 };
 

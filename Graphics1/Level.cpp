@@ -98,7 +98,7 @@ void Level::update() {
 	}
 	//TODO: Update world
 	//Update the entities
-	for (int i = 0; i < entities.size(); i++) {
+	for (unsigned int i = 0; i < entities.size(); i++) {
 		Entity* e = entities.at(i);
 		e->update();
 		bool onGround = e->getOnGround();
@@ -131,6 +131,11 @@ void Level::update() {
 			reachedGoal = true;
 		}
 	}
+	//Safely handle anything that was added this update
+	for (Entity* e : toAddE) {
+		addEntity(e);
+	}
+	toAddE.clear();
 	//Safely handle anything that was removed this update
 	for (Entity* e : toRemoveE) {
 		removeEntity(e);
@@ -396,6 +401,11 @@ void Level::addScore(int score) {
 	this->score += score;
 }
 
+
+// Safely add an entity during an update call
+void Level::safeAdd(Entity* e) {
+	toAddE.push_back(e);
+}
 
 // Safely remove an entity during an update call
 void Level::safeDelete(Entity* e) {
