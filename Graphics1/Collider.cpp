@@ -26,3 +26,9 @@ Vec2D* Collider::getVertices(int* numVertices) {
 // Called when a collision occurs
 void Collider::onCollide(Collider* other) {
 }
+
+
+// Returns whether the object is solid
+bool Collider::isSolid() {
+	return true;
+}

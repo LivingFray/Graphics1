@@ -12,5 +12,11 @@ public:
 	void draw(double ex);
 	// Called when damage is inflicted on the object
 	void onDamage(Damage d);
+	// Gives the player a shield granting immunity to 1 attack
+	void giveShield(Entity* giver);
+protected:
+	vector<Entity*> shields;
+	GLuint shield;
+	double immuneTime;
 };
 

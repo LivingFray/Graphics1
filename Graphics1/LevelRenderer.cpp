@@ -2,6 +2,7 @@
 #include "Globals.h"
 #include "PointGiver.h"
 #include "BombEntity.h"
+#include "ShieldGiver.h"
 
 #define NUM_PANELS 8
 #define PARALLAX 0.5
@@ -354,6 +355,10 @@ void LevelRenderer::loadLevel(string filePath) {
 				BombEntity* b = new BombEntity();
 				b->load(item);
 				entities.push_back(b);
+			} else if (id == "shieldgiver") {
+				ShieldGiver* s = new ShieldGiver();
+				s->load(item);
+				entities.push_back(s);
 			}
 		}
 		//Get next item

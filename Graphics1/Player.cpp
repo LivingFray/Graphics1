@@ -18,6 +18,8 @@ Player::Player() {
 	currentAnim.setSpriteSheet("Resources\\playerSprite.png");
 	//TEMP, make correct size when I have textures
 	currentAnim.setSpritesheetSize(2, 2);
+	shield = ImageLoader::getImage("Resources\\entities\\shield.png");
+	immuneTime = 0;
 }
 
 
@@ -69,6 +71,13 @@ void Player::update() {
 		jump.multiplyBy(PLAYER_JUMP);
 		vel.subtractFrom(jump);
 	}
+	//Handle damage immunity timer
+	if (immuneTime > 0) {
+		immuneTime -= TICKRATE;
+		if (immuneTime < 0) {
+			immuneTime = 0;
+		}
+	}
 	//Call inherited update (handles moving)
 	Entity::update();
 }
@@ -77,12 +86,47 @@ void Player::update() {
 // Draws the player, ex seconds from last update
 void Player::draw(double ex) {
 	Entity::draw(ex);
+	if (shields.size() > 0 || immuneTime > 0) {
+		Vec2D p = pos.add(vel.multiply(ex));
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, shield);
+		glPushMatrix();
+		glColor3ub(255, 255, 255);
+		glTranslated(p.getX(), p.getY(), 0.0);
+		glRotated(visAngle, 0.0, 0.0, 1.0);
+		glBegin(GL_QUADS);
+		glTexCoord2d(0.0, 0.0);
+		glVertex2d(-0.5, -1.0);
+		glTexCoord2d(0.0, 1.0);
+		glVertex2d(-0.5, 1.0);
+		glTexCoord2d(1.0, 1.0);
+		glVertex2d(0.5, 1.0);
+		glTexCoord2d(1.0, 0.0);
+		glVertex2d(0.5, -1.0);
+		glEnd();
+		glPopMatrix();
+		glDisable(GL_TEXTURE_2D);
+	}
 }
 
 
 // Called when damage is inflicted on the object
 void Player::onDamage(Damage d) {
-	//TODO: Immunity to some forms of damage
-	Level* l = (Level*)state;
-	l->failLevel();
+	if (immuneTime > 0) {
+		return;
+	}
+	if (shields.size() > 0) {
+		shields.back()->onDamage(Damage::INSTAKILL);
+		shields.pop_back();
+		immuneTime = 1;
+	} else {
+		Level* l = (Level*)state;
+		l->failLevel();
+	}
+}
+
+
+// Gives the player a shield granting immunity to 1 attack
+void Player::giveShield(Entity* giver) {
+	shields.push_back(giver);
 }

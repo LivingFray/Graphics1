@@ -21,6 +21,10 @@ ParticleSystem::ParticleSystem() {
 	maxLife = 1;
 	minSize = 0.1;
 	maxSize = 0.1;
+	grav = Vec2D(0, 0);
+	vertices.assign(MAX_PARTICLES * 8, 0);
+	colors.assign(MAX_PARTICLES * 16, 0);
+	tex.assign(MAX_PARTICLES * 8, 0);
 }
 
 
@@ -60,6 +64,7 @@ void ParticleSystem::draw(double elapsed) {
 		//Add particle to the buffers
 		if (particles[i].age > 0.0) {
 			//Update particle
+			particles[i].vel.addTo(grav.multiply(elapsed));
 			particles[i].pos.addTo(particles[i].vel.multiply(elapsed));
 			//Position buffer
 			GLfloat x = (GLfloat)particles[i].pos.getX();
@@ -84,7 +89,7 @@ void ParticleSystem::draw(double elapsed) {
 			tex[totalAlive * 8 + 6] = 0;
 			tex[totalAlive * 8 + 7] = 1;
 			//Colour buffer
-			unsigned char r, g, b, a;
+			GLubyte r, g, b, a;
 			//Interpolate the colours
 			Color c = presetColors[particles[i].color];
 			double t = (particles[i].maxAge - particles[i].age)/particles[i].maxAge;
@@ -109,9 +114,9 @@ void ParticleSystem::draw(double elapsed) {
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	//Send buffers to GPU
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
-	glTexCoordPointer(2, GL_FLOAT, 0, tex);
-	glColorPointer(4, GL_UNSIGNED_BYTE, 0, colors);
+	glVertexPointer(2, GL_FLOAT, 0, vertices.data());
+	glTexCoordPointer(2, GL_FLOAT, 0, tex.data());
+	glColorPointer(4, GL_UNSIGNED_BYTE, 0, colors.data());
 	//Draw particles
 	glDrawArrays(GL_QUADS, 0, totalAlive * 4);
 	//Disable use of buffers + textures
@@ -244,4 +249,9 @@ void ParticleSystem::addColor(unsigned char sR, unsigned char sG,
 	c.eB = eB;
 	c.eA = eA;
 	presetColors.push_back(c);
+}
+
+// Sets the gravity
+void ParticleSystem::setGravity(Vec2D grav) {
+	this->grav = grav;
 }

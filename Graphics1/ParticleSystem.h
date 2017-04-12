@@ -42,8 +42,11 @@ public:
 	void addColor(unsigned char sR, unsigned char sG,
 		unsigned char sB, unsigned char sA, unsigned char eR,
 		unsigned char eG, unsigned char eB, unsigned char eA);
+	// Sets the gravity
+	void setGravity(Vec2D grav);
 protected:
 	Vec2D pos;
+	Vec2D grav;
 	GLuint texId;
 	struct Particle {
 		Vec2D pos;
@@ -58,9 +61,9 @@ protected:
 	int particlesPerSecond;
 	double lastAddedParticle;
 	void inline newParticle(int i);
-	GLfloat vertices[MAX_PARTICLES * 8];
-	GLubyte colors[MAX_PARTICLES * 16];
-	GLfloat tex[MAX_PARTICLES * 8];
+	vector<GLfloat> vertices;
+	vector<GLubyte> colors;
+	vector<GLfloat> tex;
 	double minAngle;
 	double maxAngle;
 	double width;

@@ -104,46 +104,48 @@ void Collision::handle(Level* l, Entity* a, Platform* b, bool &onGround) {
 	Vec2D res;
 	//Use SAT to check for collisions
 	if (Collision::intersects(a, b, &res) && res.magnitudeSquare() > FLOAT_ZERO) {
-		//Move outside of collision
-		a->addPosX(res.getX());
-		a->addPosY(res.getY());
-		//Arrest velocity
-		Vec2D grav;
-		l->getGravityAtPos(a->getPos(), &grav);
-		Vec2D vel = a->getVel().subtract(b->getVel());
-		//TODO: Fix properly, current implementation is a long winded route to set vel to 0
-		if (vel.magnitudeSquare() > FLOAT_ZERO) {
-			//Only remove in direction of response
-			//cos(theta) = (res).(-vel) / (|res||vel|)
-			//newResponse = unit(response) * |vel|cos(theta)
-			//scaledResponse = oldVel * cos(theta)
-			//newVel = oldVel - scaledResponse
-			double cTheta = (res.dot(vel.multiply(-1))) / (res.magnitude() * vel.magnitude());
-			vel.addTo(res.unit().multiply(vel.magnitude() * cTheta));
-			//Apply friction (|F| = u|R|, R = mA -> |F| = u|A|m -> ma = u|A|m -> |a| = u|A|
-			//-> dv/dt = u|A| -> dv = u|A| * TICKRATE
-			//A = vel / dt
-			//|vel| = |vel| - u|vel / TICKRATE|*TICKRATE
-			//|vel| = |vel| - u|vel|
-			//|vel| = (1-u)|vel|
-			////vel = vel - unit(vel) * u * |g| * tickrate
-			////vel.subtractFrom(vel.unit().multiply(GROUND_FRICTION * TICKRATE * grav.magnitude()));
-			if (!a->isMoving()) {
-				vel.multiplyBy(1 - GROUND_FRICTION);
+		if (a->isSolid() && b->isSolid()) {
+			//Move outside of collision
+			a->addPosX(res.getX());
+			a->addPosY(res.getY());
+			//Arrest velocity
+			Vec2D grav;
+			l->getGravityAtPos(a->getPos(), &grav);
+			Vec2D vel = a->getVel().subtract(b->getVel());
+			//TODO: Fix properly, current implementation is a long winded route to set vel to 0
+			if (vel.magnitudeSquare() > FLOAT_ZERO) {
+				//Only remove in direction of response
+				//cos(theta) = (res).(-vel) / (|res||vel|)
+				//newResponse = unit(response) * |vel|cos(theta)
+				//scaledResponse = oldVel * cos(theta)
+				//newVel = oldVel - scaledResponse
+				double cTheta = (res.dot(vel.multiply(-1))) / (res.magnitude() * vel.magnitude());
+				vel.addTo(res.unit().multiply(vel.magnitude() * cTheta));
+				//Apply friction (|F| = u|R|, R = mA -> |F| = u|A|m -> ma = u|A|m -> |a| = u|A|
+				//-> dv/dt = u|A| -> dv = u|A| * TICKRATE
+				//A = vel / dt
+				//|vel| = |vel| - u|vel / TICKRATE|*TICKRATE
+				//|vel| = |vel| - u|vel|
+				//|vel| = (1-u)|vel|
+				////vel = vel - unit(vel) * u * |g| * tickrate
+				////vel.subtractFrom(vel.unit().multiply(GROUND_FRICTION * TICKRATE * grav.magnitude()));
+				if (!a->isMoving()) {
+					vel.multiplyBy(1 - GROUND_FRICTION);
+				}
+				a->setVel(vel);
 			}
-			a->setVel(vel);
-		}
-		//Check resolution vector is in angle range to suggest floor
-		/*
-		a.b = |a||b|cos(theta)
-		grav.res = |grav||res|cos(theta)
-		if cos(theta)<cos(45) onGround
-		cos(theta) = grav.res / (|grav||res|)
-		*/
-		if (grav.magnitudeSquare() > FLOAT_ZERO) {
-			double cosAngle = grav.dot(res) / (grav.magnitude() * res.magnitude());
-			if (cosAngle >= COS_GROUND_ANGLE_MIN && cosAngle <= COS_GROUND_ANGLE_MAX) {
-				onGround = true;
+			//Check resolution vector is in angle range to suggest floor
+			/*
+			a.b = |a||b|cos(theta)
+			grav.res = |grav||res|cos(theta)
+			if cos(theta)<cos(45) onGround
+			cos(theta) = grav.res / (|grav||res|)
+			*/
+			if (grav.magnitudeSquare() > FLOAT_ZERO) {
+				double cosAngle = grav.dot(res) / (grav.magnitude() * res.magnitude());
+				if (cosAngle >= COS_GROUND_ANGLE_MIN && cosAngle <= COS_GROUND_ANGLE_MAX) {
+					onGround = true;
+				}
 			}
 		}
 		//Handle other collisiony things

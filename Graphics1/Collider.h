@@ -12,5 +12,7 @@ public:
 	virtual Vec2D* getVertices(int* numVertices);
 	// Called when a collision occurs
 	virtual void onCollide(Collider* other);
+	// Returns whether the object is solid
+	virtual bool isSolid();
 };
 
