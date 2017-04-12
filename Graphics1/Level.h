@@ -39,6 +39,8 @@ public:
 	void restartLevel();
 	// Sets whether the game is paused or not
 	void setPause(bool p);
+	// Fails the level showing the fail screen
+	void failLevel();
 	// Gets the current score
 	int getScore();
 	// Sets the current score
@@ -55,6 +57,7 @@ protected:
 	double levelTime;
 	bool reachedGoal;
 	bool paused;
+	bool failed;
 	int score;
 	Button buttonMenu;
 	Button buttonRetry;

@@ -78,3 +78,11 @@ void Player::update() {
 void Player::draw(double ex) {
 	Entity::draw(ex);
 }
+
+
+// Called when damage is inflicted on the object
+void Player::onDamage(Damage d) {
+	//TODO: Immunity to some forms of damage
+	Level* l = (Level*)state;
+	l->failLevel();
+}

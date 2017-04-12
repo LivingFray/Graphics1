@@ -10,5 +10,7 @@ public:
 	void update();
 	// Draws the player, ex seconds from last update
 	void draw(double ex);
+	// Called when damage is inflicted on the object
+	void onDamage(Damage d);
 };
 

@@ -30,6 +30,7 @@ Level::Level() {
 	levelTime = 0;
 	reachedGoal = false;
 	paused = false;
+	failed = false;
 	score = 0;
 	nextLevelPath = "";
 	//Create menus
@@ -76,7 +77,7 @@ Level::~Level() {
 // Updates the level
 void Level::update() {
 	//Don't update in menus
-	if (reachedGoal || paused) {
+	if (reachedGoal || paused || failed) {
 		return;
 	}
 	//Add player if finished spawning
@@ -153,13 +154,14 @@ void Level::loadLevel(string filePath) {
 	spawnAnim.setTime(0);
 	reachedGoal = false;
 	paused = false;
+	failed = false;
 	score = 0;
 	player = NULL;
 }
 
 // Draws the level
 void Level::draw(double ex) {
-	if (reachedGoal || paused) {
+	if (reachedGoal || paused || failed) {
 		//Don't extrapolate if the game is paused
 		ex = 0;
 	}
@@ -200,7 +202,7 @@ void Level::draw(double ex) {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	//Level complete screen
-	if (reachedGoal) {
+	if (reachedGoal || failed) {
 		//Background
 		glColor4ub(0, 127, 255, 63);
 		glBegin(GL_QUADS);
@@ -211,30 +213,37 @@ void Level::draw(double ex) {
 		glEnd();
 		//Title
 		glColor3ub(255, 255, 255);
-		printCentre(fontLarge, sWidth * 0.5, sHeight * 0.625 - fontLarge.h * 1.5, "Level Complete");
+		if (reachedGoal) {
+			printCentre(fontLarge, sWidth * 0.5, sHeight * 0.625 - fontLarge.h * 1.5, "Level Complete");
+		} else {
+			printCentre(fontLarge, sWidth * 0.5, sHeight * 0.625 - fontLarge.h * 1.5, "Level failed");
+		}
 		//Score
 		string scoreLabel = "Score: ";
 		scoreLabel += to_string(score);
 		printCentre(fontLarge, sWidth * 0.5, sHeight * 0.625 - fontLarge.h * 3, scoreLabel.c_str());
 		//Buttons
 		int y = (int)(sHeight * 0.375) + (int)fontLarge.h;
-		int w = (int)(sWidth * 0.25f);
 		int h = (int)fontLarge.h * 2;
-		buttonRetry.setX((int)(sWidth * 0.25));
+		float move = failed ? (1 / 3.0f) : 0.25f;
+		int w = (int)(sWidth * move);
+		buttonRetry.setX((int)(sWidth * move));
 		buttonRetry.setY(y);
 		buttonRetry.setWidth(w);
 		buttonRetry.setHeight(h);
 		buttonRetry.draw();
-		buttonMenu.setX((int)(sWidth * 0.5));
+		buttonMenu.setX((int)(sWidth * move * 2));
 		buttonMenu.setY(y);
 		buttonMenu.setWidth(w);
 		buttonMenu.setHeight(h);
 		buttonMenu.draw();
-		buttonNext.setX((int)(sWidth * 0.75));
-		buttonNext.setY(y);
-		buttonNext.setWidth(w);
-		buttonNext.setHeight(h);
-		buttonNext.draw();
+		if (reachedGoal) {
+			buttonNext.setX((int)(sWidth * move * 3));
+			buttonNext.setY(y);
+			buttonNext.setWidth(w);
+			buttonNext.setHeight(h);
+			buttonNext.draw();
+		}
 	} else if (paused) {
 		//Darken the screen to show the game is paused
 		glColor4ub(0, 0, 0, 200);
@@ -357,6 +366,12 @@ void Level::setPause(bool p) {
 }
 
 
+// Fails the level showing the fail screen
+void Level::failLevel() {
+	failed = true;
+}
+
+
 void Level::mouseEvent(GLFWwindow* window, int button, int action, int mods) {
 	double dx, dy;
 	glfwGetCursorPos(window, &dx, &dy);
@@ -364,10 +379,12 @@ void Level::mouseEvent(GLFWwindow* window, int button, int action, int mods) {
 	x = (int)dx;
 	y = sHeight - (int)dy;
 	if (action == GLFW_RELEASE) {
-		if (reachedGoal) {
+		if (reachedGoal || failed) {
 			buttonMenu.mouseDown(x, y);
-			buttonNext.mouseDown(x, y);
 			buttonRetry.mouseDown(x, y);
+			if (reachedGoal) {
+				buttonNext.mouseDown(x, y);
+			}
 		} else if (paused) {
 			gradMenu.mouseDown(x, y);
 			gradResume.mouseDown(x, y);
@@ -378,7 +395,7 @@ void Level::mouseEvent(GLFWwindow* window, int button, int action, int mods) {
 
 
 void Level::keyEvent(GLFWwindow* window, int key, int scan, int action, int mods) {
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE && !reachedGoal) {
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE && !reachedGoal && !failed) {
 		paused = !paused;
 	}
 }
