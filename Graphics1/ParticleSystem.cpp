@@ -139,7 +139,7 @@ void inline ParticleSystem::newParticle(int i) {
 	double rX = randD(-width / 2, width / 2);
 	double rY = randD(-height / 2, height / 2);
 	p.pos = pos.add(dX.multiply(rX)).add(dY.multiply(rY));
-	p.size = randD(minSize, maxSize);
+	p.size = (GLfloat)(randD(minSize, maxSize));
 	p.age = randD(minLife,maxLife);
 	p.maxAge = p.age;
 	p.angle = randD(minAngle, maxAngle);
