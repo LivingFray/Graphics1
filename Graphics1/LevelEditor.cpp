@@ -6,6 +6,7 @@
 #include "PointGiver.h"
 #include "BombEntity.h"
 #include "ShieldGiver.h"
+#include "Spike.h"
 #define EDITOR_MOVE_SPEED 1.00
 #define EDITOR_ROTATE_SPEED 30
 #define MOVE_SIZE 0.5
@@ -122,6 +123,17 @@ LevelEditor::LevelEditor() {
 		p->setPos(l->getCameraPos());
 		p->setAngle(l->getCameraAngleAt(0));
 		l->addEntity(p);
+		l->setMenu(0);
+	};
+	menuItems.push_back(item);
+	item = MenuItem();
+	item.name = "TEST Spike";
+	item.create = [](BaseState* s) {
+		LevelEditor* l = (LevelEditor*)s;
+		Spike* p = new Spike();
+		p->setPos(l->getCameraPos());
+		p->setAngle(l->getCameraAngleAt(0));
+		l->addPlatform(p);
 		l->setMenu(0);
 	};
 	menuItems.push_back(item);

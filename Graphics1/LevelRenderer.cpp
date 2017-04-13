@@ -3,6 +3,7 @@
 #include "PointGiver.h"
 #include "BombEntity.h"
 #include "ShieldGiver.h"
+#include "Spike.h"
 
 #define NUM_PANELS 8
 #define PARALLAX 0.5
@@ -359,6 +360,10 @@ void LevelRenderer::loadLevel(string filePath) {
 				ShieldGiver* s = new ShieldGiver();
 				s->load(item);
 				entities.push_back(s);
+			} else if (id == "spike") {
+				Spike* s = new Spike();
+				s->load(item);
+				platforms.push_back(s);
 			}
 		}
 		//Get next item
