@@ -15,6 +15,7 @@ Button::Button() {
 	glBindTexture(GL_TEXTURE_2D, imgSelected);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	font = &fontLarge;
 }
 
 
@@ -116,13 +117,20 @@ void Button::draw() {
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 	glColor3ub(255, 255, 255);
-	float centre = freetype::getLength(fontLarge, label.c_str()) * 0.5f;
+	float centre = freetype::getLength(*font, label.c_str()) * 0.5f;
 	//Oh the wonders of fonts and their heights not including the entire letter
-	freetype::print(fontLarge, (float)x - centre, (float)y - fontLarge.h * 0.375f, label.c_str());
+	freetype::print(*font, (float)x - centre, (float)y - font->h * 0.375f, label.c_str());
 }
 
+
+// Draw the button with exrapolation
 void Button::draw(double ex) {
 	draw();
+}
+
+
+// Called when a key event is fired
+void Button::keyEvent(GLFWwindow * window, int key, int scan, int action, int mods) {
 }
 
 

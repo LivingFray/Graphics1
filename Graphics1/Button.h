@@ -28,6 +28,8 @@ public:
 	virtual void draw();
 	// Draw the button with exrapolation
 	virtual void draw(double ex);
+	// Called when a key event is fired
+	virtual void keyEvent(GLFWwindow* window, int key, int scan, int action, int mods);
 protected:
 	int x;
 	int y;
@@ -37,6 +39,7 @@ protected:
 	GLuint img;
 	GLuint imgSelected;
 	void(*callback)(BaseState* s);
+	freetype::font_data* font;
 public:
 	// Sets the function called when the button is pressed
 	void setCallback(void(*callback)(BaseState* s));

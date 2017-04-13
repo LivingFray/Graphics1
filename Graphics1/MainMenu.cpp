@@ -1,6 +1,7 @@
 #include "MainMenu.h"
 #include "LevelSelect.h"
 #include "LevelEditor.h"
+#include "SettingsMenu.h"
 #include "GradButton.h"
 
 #define MENU_BUTTON_HEIGHT 50
@@ -23,7 +24,7 @@ MainMenu::MainMenu() {
 	Button* settings = new GradButton();
 	settings->setLabel("Settings");
 	auto settingsCall = [](BaseState* s) {
-		printf("Clickity\n");
+		newState = new SettingsMenu();
 	};
 	settings->setCallback(settingsCall);
 	buttons.push_back(settings);
@@ -34,7 +35,6 @@ MainMenu::MainMenu() {
 	};
 	quit->setCallback(quitCall);
 	buttons.push_back(quit);
-	resizeEvent(gameWindow, sWidth, sHeight);
 }
 
 

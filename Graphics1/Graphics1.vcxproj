@@ -140,6 +140,7 @@
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="BaseMenu.cpp" />
     <ClCompile Include="BaseState.cpp" />
+    <ClCompile Include="BindingButton.cpp" />
     <ClCompile Include="BombEntity.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Collider.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="BaseMenu.h" />
     <ClInclude Include="BaseState.h" />
+    <ClInclude Include="BindingButton.h" />
     <ClInclude Include="BombEntity.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Collider.h" />

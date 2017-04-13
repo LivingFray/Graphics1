@@ -149,6 +149,8 @@ int main() {
 			delete state;
 			state = newState;
 			newState = NULL;
+			//Ensure new state has correct window dimensions
+			state->resizeEvent(gameWindow, sWidth, sHeight);
 		}
 		//Call updates until the game has caught up
 		//But don't update if not enough time has elapsed
