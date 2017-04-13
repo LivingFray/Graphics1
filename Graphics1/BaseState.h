@@ -16,5 +16,7 @@ public:
 	virtual void mouseMoveEvent(GLFWwindow* window, double x, double y);
 	// Called when a mousemove event is fire
 	virtual void textEvent(GLFWwindow* window, unsigned int ch);
+	// Called when the window is resized
+	virtual void resizeEvent(GLFWwindow* window, int width, int height);
 };
 

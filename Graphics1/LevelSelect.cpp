@@ -48,42 +48,8 @@ LevelSelect::~LevelSelect() {
 }
 
 
-// Draws the main menu ex seconds after last update
-void LevelSelect::draw(double ex) {
-	//Stars are 1px at 512x512, so scale to make visible
-	//TODO: Scale stars in level as well
-	float sX = sWidth / 512.0f;
-	float sY = sHeight / 512.0f;
-	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, stars);
-	glBegin(GL_QUADS);
-	glTexCoord2d(0.0, 0.0);
-	glVertex2d(0.0, 0.0);
-	glTexCoord2d(sX, 0.0);
-	glVertex2d(sWidth, 0.0);
-	glTexCoord2d(sX, sY);
-	glVertex2d(sWidth, sHeight);
-	glTexCoord2d(0.0, sY);
-	glVertex2d(0.0, sHeight);
-	glEnd();
-	glBindTexture(GL_TEXTURE_2D, planet);
-	glTranslatef(sWidth * 0.5f, 0, 0);
-	glBegin(GL_QUADS);
-	glTexCoord2d(0.0, 0.0);
-	glVertex2d(-sHeight, 0.0);
-	glTexCoord2d(1.0, 0.0);
-	glVertex2d(sHeight, 0.0);
-	glTexCoord2d(1.0, 1.0);
-	glVertex2d(sHeight, sHeight);
-	glTexCoord2d(0.0, 1.0);
-	glVertex2d(-sHeight, sHeight);
-	glEnd();
-	glDisable(GL_TEXTURE_2D);
-	glPopMatrix();
-	//TODO: Resize + reposition buttons
+// Called when the window is resized
+void LevelSelect::resizeEvent(GLFWwindow* window, int width, int height) {
 	//TODO: Handle too many levels
 	int c = 0;
 	for (Button* b : buttons) {
@@ -92,13 +58,8 @@ void LevelSelect::draw(double ex) {
 		b->setWidth(sWidth / 2 - 50);
 		b->setHeight((int)fontLarge.h * 2);
 		b->setY(sHeight - ((c + 1) / 2) * (int)(fontLarge.h * 2.1));
-		//Don't draw last button
-		if (c != buttons.size()) {
-			b->draw();
-		}
 	}
 	menuButton->setWidth(sWidth / 2);
 	menuButton->setHeight((int)fontLarge.h * 2);
 	menuButton->setY((int)fontLarge.h);
-	menuButton->draw(0);
 }

@@ -100,6 +100,7 @@ void resize(GLFWwindow* window, int width, int height) {
 	fontLarge.init(FONT_NAME, height / 25);
 	fontSmall.clean();
 	fontSmall.init(FONT_NAME, height / 50);
+	state->resizeEvent(window, width, height);
 }
 //-----------------------Window creation and game loop-----------------------//
 int main() {

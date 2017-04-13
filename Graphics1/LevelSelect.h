@@ -6,12 +6,10 @@ class LevelSelect:
 public:
 	LevelSelect();
 	~LevelSelect();
-	// Draws the main menu ex seconds after last update
-	void LevelSelect::draw(double ex);
+	// Called when the window is resized
+	void resizeEvent(GLFWwindow* window, int width, int height);
 protected:
 	vector<DataObject*> levels;
-	GLuint planet = ImageLoader::getImage("Resources\\planet.png");
-	GLuint stars = ImageLoader::getImage("Resources\\stars.png");
 	GradButton* menuButton;
 };
 
