@@ -160,7 +160,7 @@ LevelEditor::LevelEditor() {
 	exitButton = GradButton();
 	exitButton.setLabel("Exit to menu");
 	auto exitCall = [](BaseState* s) {
-		state = new MainMenu();
+		newState = new MainMenu();
 	};
 	exitButton.setCallback(exitCall);
 	returnButton = GradButton();

@@ -5,21 +5,21 @@ public:
 	Button();
 	~Button();
 	// Sets the x-position of the button
-	void Button::setX(int x);
+	void setX(int x);
 	// Gets the x-position of the button
-	int Button::getX();
+	int getX();
 	// Sets the y-position of the button
-	void Button::setY(int y);
+	void setY(int y);
 	// Gets the y-position of the button
-	int Button::getY();
+	int getY();
 	// Sets the width of the button
-	void Button::setWidth(int width);
+	void setWidth(int width);
 	// Gets the width of the button
-	int Button::getWidth();
+	int getWidth();
 	// Sets the height of the button
-	void Button::setHeight(int height);
+	void setHeight(int height);
 	// Gets the height of the button
-	int Button::getHeight();
+	int getHeight();
 	// Sets the label on the button
 	void setLabel(string label);
 	// Gets the label of the button
@@ -44,6 +44,6 @@ public:
 	// Sets the function called when the button is pressed
 	void setCallback(void(*callback)(BaseState* s));
 	// Called when the left mouse button is clicked
-	virtual void mouseDown(int x, int y);
+	virtual bool mouseDown(int x, int y);
 };
 

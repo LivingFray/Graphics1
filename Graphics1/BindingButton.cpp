@@ -26,7 +26,7 @@ void BindingButton::keyEvent(GLFWwindow* window, int key, int scan, int action, 
 
 
 // Called when the left mouse button is clicked
-void BindingButton::mouseDown(int x, int y) {
+bool BindingButton::mouseDown(int x, int y) {
 	float w = width*0.5f;
 	float h = height*0.5f;
 	if (x >= this->x - w && x <= this->x + w && y >= this->y - h && y <= this->y + h) {
@@ -37,7 +37,9 @@ void BindingButton::mouseDown(int x, int y) {
 			readingInput = true;
 			label = friendlyName + ": ???";
 		}
+		return true;
 	}
+	return false;
 }
 
 

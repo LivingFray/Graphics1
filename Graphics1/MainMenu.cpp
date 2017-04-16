@@ -47,20 +47,6 @@ void MainMenu::update() {
 }
 
 
-// Called when a mouse event is fired
-void MainMenu::mouseEvent(GLFWwindow* window, int button, int action, int mods) {
-	double x, y;
-	glfwGetCursorPos(window, &x, &y);
-	y = sHeight - y;
-	if (action != GLFW_RELEASE) {
-		return;
-	}
-	for (Button* b : buttons) {
-		b->mouseDown((int)x, (int)y);
-	}
-}
-
-
 // Called when the window is resized
 void MainMenu::resizeEvent(GLFWwindow* window, int width, int height) {
 	int i = 0;

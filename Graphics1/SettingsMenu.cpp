@@ -41,8 +41,8 @@ void SettingsMenu::resizeEvent(GLFWwindow* window, int width, int height) {
 		i++;
 		if (i == n) {
 			b->setWidth(sWidth / 2);
-			b->setY(fontLarge.h * 2);
-			b->setHeight(fontLarge.h * 1.5);
+			b->setY((int)fontLarge.h * 2);
+			b->setHeight((int)(fontLarge.h * 1.5));
 		}
 	}
 }

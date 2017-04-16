@@ -91,9 +91,9 @@ extern GLFWcursor* cursorPan;
 enum class Damage {EXPLOSION, SPIKE, INSTAKILL};
 
 //Macro function to print centred text
-#define printCentre(font,x,y,text)	do {																\
-									int l = freetype::getLength((font), (text));						\
-									freetype::print((font), (float)(x) - l * 0.5f, (float)(y), (text));	\
+#define printCentre(font,x,y,text, ...)	do {																	\
+									int l = freetype::getLength((font), (text));								\
+									freetype::print((font), (float)(x) - l * 0.5f, (float)(y), (text), ##__VA_ARGS__);	\
 								} while(0)
 //Macro function to generate a random double
 #define randD(min, max) (min) + (((max) - (min)) * ((min) + ((double)rand()) / (double)RAND_MAX))

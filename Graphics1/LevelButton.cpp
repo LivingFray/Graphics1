@@ -22,11 +22,13 @@ string LevelButton::getPath() {
 }
 
 // Called when the left mouse button is clicked
-void LevelButton::mouseDown(int x, int y) {
+bool LevelButton::mouseDown(int x, int y) {
 	float w = width*0.5f;
 	float h = height*0.5f;
 	if (x >= this->x - w && x <= this->x + w && y >= this->y - h && y <= this->y + h) {
 		newState = new Level();
 		((Level*)newState)->loadLevel(path);
+		return true;
 	}
+	return false;
 }

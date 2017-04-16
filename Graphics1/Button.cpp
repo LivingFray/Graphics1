@@ -141,10 +141,12 @@ void Button::setCallback(void(*callback)(BaseState* s)) {
 
 
 // Called when the left mouse button is clicked
-void Button::mouseDown(int x, int y) {
+bool Button::mouseDown(int x, int y) {
 	float w = width*0.5f;
 	float h = height*0.5f;
 	if (x >= this->x - w && x <= this->x + w && y >= this->y - h && y <= this->y + h) {
 		(*callback)(state);
+		return true;
 	}
+	return false;
 }

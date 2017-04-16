@@ -9,6 +9,9 @@ BaseMenu::BaseMenu() {
 
 
 BaseMenu::~BaseMenu() {
+	for (Button* b : buttons) {
+		delete b;
+	}
 	buttons.clear();
 }
 
@@ -67,6 +70,8 @@ void BaseMenu::mouseEvent(GLFWwindow* window, int button, int action, int mods) 
 		return;
 	}
 	for (Button* b : buttons) {
-		b->mouseDown((int)x, (int)y);
+		if (b->mouseDown((int)x, (int)y)) {
+			break;
+		}
 	}
 }
