@@ -7,6 +7,7 @@
 #include "BombEntity.h"
 #include "ShieldGiver.h"
 #include "Spike.h"
+#include "StompableEntity.h"
 #define EDITOR_MOVE_SPEED 1.00
 #define EDITOR_ROTATE_SPEED 30
 #define MOVE_SIZE 0.5
@@ -109,6 +110,17 @@ LevelEditor::LevelEditor() {
 	item.create = [](BaseState* s) {
 		LevelEditor* l = (LevelEditor*)s;
 		BombEntity* p = new BombEntity();
+		p->setPos(l->getCameraPos());
+		p->setAngle(l->getCameraAngleAt(0));
+		l->addEntity(p);
+		l->setMenu(0);
+	};
+	menuItems.push_back(item);
+	item = MenuItem();
+	item.name = "Stompable Enemy";
+	item.create = [](BaseState* s) {
+		LevelEditor* l = (LevelEditor*)s;
+		StompableEntity* p = new StompableEntity();
 		p->setPos(l->getCameraPos());
 		p->setAngle(l->getCameraAngleAt(0));
 		l->addEntity(p);

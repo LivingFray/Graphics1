@@ -75,7 +75,5 @@ void BombEntity::explode() {
 
 // Called when damage is inflicted on the object
 void BombEntity::onDamage(Damage d) {
-	if (d == Damage::EXPLOSION) {
-		explode();
-	}
+	explode();
 }

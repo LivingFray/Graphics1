@@ -88,7 +88,7 @@ extern BaseState* state;
 extern BaseState* newState;
 extern GLFWcursor* cursorNormal;
 extern GLFWcursor* cursorPan;
-enum class Damage {EXPLOSION, SPIKE, INSTAKILL};
+enum class Damage {EXPLOSION, SPIKE, ENEMYCOLLISION, INSTAKILL};
 
 //Macro function to print centred text
 #define printCentre(font,x,y,text, ...)	do {																	\
