@@ -67,7 +67,7 @@ LevelEditor::LevelEditor() {
 	//Reset item
 	//TODO: Better adding method, macro?
 	item = MenuItem();
-	item.name = "TEST Platform";
+	item.name = "Basic Platform";
 	item.create = [](BaseState* s) {
 		LevelEditor* l = (LevelEditor*)s;
 		Platform* pl = new Platform();
@@ -80,7 +80,7 @@ LevelEditor::LevelEditor() {
 	};
 	menuItems.push_back(item);
 	item = MenuItem();
-	item.name = "TEST GravField";
+	item.name = "Basic Gravity Field";
 	item.create = [](BaseState* s) {
 		LevelEditor* l = (LevelEditor*)s;
 		GravityField* f = new GravityField();
@@ -94,7 +94,7 @@ LevelEditor::LevelEditor() {
 	};
 	menuItems.push_back(item);
 	item = MenuItem();
-	item.name = "TEST Points";
+	item.name = "Point Giver";
 	item.create = [](BaseState* s) {
 		LevelEditor* l = (LevelEditor*)s;
 		PointGiver* p = new PointGiver();
@@ -105,7 +105,7 @@ LevelEditor::LevelEditor() {
 	};
 	menuItems.push_back(item);
 	item = MenuItem();
-	item.name = "TEST Bomb";
+	item.name = "Bomb";
 	item.create = [](BaseState* s) {
 		LevelEditor* l = (LevelEditor*)s;
 		BombEntity* p = new BombEntity();
@@ -116,7 +116,7 @@ LevelEditor::LevelEditor() {
 	};
 	menuItems.push_back(item);
 	item = MenuItem();
-	item.name = "TEST Shield";
+	item.name = "Shield Giver";
 	item.create = [](BaseState* s) {
 		LevelEditor* l = (LevelEditor*)s;
 		ShieldGiver* p = new ShieldGiver();
@@ -127,22 +127,22 @@ LevelEditor::LevelEditor() {
 	};
 	menuItems.push_back(item);
 	item = MenuItem();
-	item.name = "TEST Spike";
+	item.name = "Deadly Platform";
 	item.create = [](BaseState* s) {
 		LevelEditor* l = (LevelEditor*)s;
 		Spike* p = new Spike();
 		p->setPos(l->getCameraPos());
 		p->setAngle(l->getCameraAngleAt(0));
+		p->setWidth(1);
+		p->setHeight(1);
 		l->addPlatform(p);
 		l->setMenu(0);
 	};
 	menuItems.push_back(item);
 	//Create buttons for menu
 	for (MenuItem i : menuItems) {
-		GradButton* b = new GradButton();
+		Button* b = new Button();
 		int h = (int)fontLarge.h * 2;
-		b->setY(0);
-		b->setHeight((int)(h * 0.9));
 		b->setLabel(i.name);
 		b->setCallback(i.create);
 		buttons.push_back(b);
@@ -180,6 +180,9 @@ LevelEditor::~LevelEditor() {
 	//Clear up any lingering options menus
 	if (optMenu) {
 		delete optMenu;
+	}
+	for (Button* b : buttons) {
+		delete b;
 	}
 }
 
@@ -269,16 +272,8 @@ void LevelEditor::draw(double ex) {
 		glColor3ub(255, 255, 255);
 		freetype::print(fontLarge, 10, sHeight - fontLarge.h * 1.325f, "Select An Item To Add...");
 		//Draw menu buttons
-		//TODO: Scrolling, smaller font
-		int n = buttons.size();
-		int i = 0;
-		for (GradButton* b : buttons) {
-			int h = sHeight / 12;
-			b->setY((int)(sHeight - fontLarge.h * 1.325f - h * (i + 1)));
-			b->setWidth((int)(sWidth * 0.5 + h * i));
-			b->setHeight((int)(h * 0.9));
+		for (Button* b : buttons) {
 			b->draw(ex);
-			i++;
 		}
 	} else if (currentMenu == Menu::SAVE) {
 		glColor4ub(0, 0, 0, 127);
@@ -457,7 +452,7 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 	//Handle clicks in menu
 	if (currentMenu == Menu::ITEM) {
 		if (action == GLFW_RELEASE) {
-			for (GradButton* b : buttons) {
+			for (Button* b : buttons) {
 				b->mouseDown((int)x, (int)y);
 			}
 		}
@@ -743,6 +738,18 @@ void LevelEditor::textEvent(GLFWwindow *, unsigned int ch) {
 		gravBox.textEvent(ch);
 	} else if (currentMenu == Menu::OPTIONS) {
 		optMenu->textEvent(ch);
+	}
+}
+
+
+void LevelEditor::resizeEvent(GLFWwindow * window, int width, int height) {
+	int i = 0;
+	for (Button* b : buttons) {
+		b->setWidth((4 * sWidth) / 10);
+		b->setHeight((int)fontLarge.h * 2);
+		b->setX(sWidth / 4 + (i%2) * (sWidth / 2));
+		b->setY(sHeight - (int) fontLarge.h * 4 - (int) fontLarge.h * 2 * (i / 2));
+		i++;
 	}
 }
 

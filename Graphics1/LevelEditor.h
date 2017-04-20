@@ -19,6 +19,7 @@ public:
 	void mouseEvent(GLFWwindow* window, int button, int action, int mods);
 	void mouseMoveEvent(GLFWwindow* window, double x, double y);
 	void textEvent(GLFWwindow*, unsigned int ch);
+	void resizeEvent(GLFWwindow* window, int width, int height);
 	// Sets the current menu
 	void setMenu(int m);
 	// Gets the current position of the camera
@@ -45,7 +46,7 @@ private:
 		void(*create)(BaseState* l);
 	};
 	vector<MenuItem> menuItems;
-	vector<GradButton*> buttons;
+	vector<Button*> buttons;
 	Vec2D camPos;
 	double camAngle;
 	Vec2D panFrom;

@@ -5,7 +5,6 @@
 /*
 Task list intergration:
 TODO: Debug mode
-TODO: Graphics/Animations
 TODO: Cleanup code (auto generated classes, import orders, etc)
 TODO: Level editor
 TODO: --Snapping
@@ -18,7 +17,6 @@ TODO: Buttons/Levers/etc
 TODO: Settings
 TODO: Build demo levels
 TODO: Distinguish between spawn and goal
-TODO: Only update UI sizes on screen resize
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;
@@ -99,7 +97,7 @@ void resize(GLFWwindow* window, int width, int height) {
 	fontLarge.clean();
 	fontLarge.init(FONT_NAME, height / 25);
 	fontSmall.clean();
-	fontSmall.init(FONT_NAME, height / 50);
+	fontSmall.init(FONT_NAME, height / 40);
 	state->resizeEvent(window, width, height);
 }
 //-----------------------Window creation and game loop-----------------------//
