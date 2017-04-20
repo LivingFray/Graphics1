@@ -52,7 +52,7 @@ using std::vector;
 //How many points are given for picking up an item
 #define ITEM_SCORE_VALUE 100
 //Default speed cap for an entity
-#define DEFAULT_MAXSPEED 1.00
+#define DEFAULT_MAXSPEED 2.00
 //The width of an entity if none is provided
 #define DEFAULT_ENTITY_WIDTH 0.10
 //The height of an entity if none is provided

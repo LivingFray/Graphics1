@@ -98,6 +98,10 @@ void Level::update() {
 		return;
 	}
 	//TODO: Update world
+	//Update the platforms
+	for (Platform* p : platforms) {
+		p->update();
+	}
 	//Update the entities
 	for (unsigned int i = 0; i < entities.size(); i++) {
 		Entity* e = entities.at(i);

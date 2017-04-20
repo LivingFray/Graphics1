@@ -152,3 +152,8 @@ bool WorldObject::canRotate() {
 // Called when damage is inflicted on the object
 void WorldObject::onDamage(Damage d) {
 }
+
+
+// Updates the object
+void WorldObject::update() {
+}

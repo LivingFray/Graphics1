@@ -46,6 +46,8 @@ public:
 	virtual bool canRotate();
 	// Called when damage is inflicted on the object
 	virtual void onDamage(Damage d);
+	// Updates the object
+	virtual void update();
 protected:
 	string id;
 	Vec2D pos;

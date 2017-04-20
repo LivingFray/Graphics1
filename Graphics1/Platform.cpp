@@ -76,7 +76,7 @@ void Platform::onCollide(Collider* other) {
 void Platform::draw(double ex) {
 	glColor3ub(255, 255, 255);
 	glPushMatrix();
-	glTranslated(pos.getX(), pos.getY(), 0.0);
+	glTranslated(pos.getX() + vel.getX()*ex, pos.getY() + vel.getY()*ex, 0.0);
 	glRotated(angle, 0.0, 0.0, 1.0);
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, texture);
@@ -91,6 +91,29 @@ void Platform::draw(double ex) {
 	glVertex2d(width / 2, -height / 2);
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
+#ifdef DEBUG
+	//Draw velocity
+	glRotated(-angle, 0.0, 0.0, 1.0);
+	glColor3ub(0, 0, 255);
+	glBegin(GL_LINES);
+	glVertex2d(0.0, 0.0);
+	glVertex2d(vel.getX(), vel.getY());
+	glEnd();
+	//Draw hitbox
+	//Note: The laggy appearance of the hitbox is because the game runs at 20hz
+	//and is made to appear smoother by extrapolating graphical positions when
+	//the game is drawn
+	glTranslated(-pos.getX() - vel.getX()*ex, -pos.getY() - vel.getY()*ex, 0.0);
+	glColor3ub(255, 127, 0);
+	glLineWidth(1);
+	int n;
+	Vec2D* vecs = getVertices(&n);
+	glBegin(GL_LINE_LOOP);
+	for (int i = 0; i < n; i++) {
+		glVertex2d(vecs[i].getX(), vecs[i].getY());
+	}
+	glEnd();
+#endif
 	glPopMatrix();
 }
 
@@ -185,4 +208,10 @@ void Platform::createOptions() {
 	options.addOption("Texture", false, textureString);
 	options.addOption("Texture Scale X", true, to_string(texX));
 	options.addOption("Texture Scale Y", true, to_string(texY));
+}
+
+
+// Updates the platform
+void Platform::update() {
+	pos.addTo(vel.multiply(TICKRATE));
 }
