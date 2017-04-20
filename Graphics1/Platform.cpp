@@ -69,6 +69,7 @@ Vec2D* Platform::getVertices(int* numVertices) {
 
 // Called when a collision occurs
 void Platform::onCollide(Collider* other) {
+	vel = Vec2D(0.05, 0);
 }
 
 
