@@ -44,6 +44,8 @@ public:
 	virtual double getTexScaleY();
 	// Creates an option menu using the current values as defaults
 	virtual void createOptions();
+	// Updates the platform
+	virtual void update();
 	// Sets the options for this selectable
 	virtual void setOptions(OptionMenu* menu);
 protected:
