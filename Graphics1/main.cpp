@@ -8,7 +8,6 @@ TODO: Debug mode
 TODO: Cleanup code (auto generated classes, import orders, etc)
 TODO: Level editor
 TODO: --Snapping
-TODO: --Better spawn menu
 TODO: Every stupid thing on the mark sheet
 TODO: --Moving platforms
 TODO: --Sound

@@ -27,6 +27,7 @@ LevelRenderer::LevelRenderer() {
 	spawnAngle = 0;
 	goalAngle = 0;
 	defaultGravity = 0;
+	targetTime = 0;
 }
 
 
@@ -241,6 +242,7 @@ void LevelRenderer::saveLevel(string filePath) {
 	lvl.add("goalX", goal.getX());
 	lvl.add("goalY", goal.getY());
 	lvl.add("goalAngle", goalAngle);
+	lvl.add("targetTime", targetTime);
 	//For each type of object create a DO listing them
 	DataObject objs = DataObject();
 	int i = 0;
@@ -314,6 +316,11 @@ void LevelRenderer::loadLevel(string filePath) {
 	if (!exists) {
 		printf("Error loading level: No goal angle found\n");
 		goalAngle = (0.0);
+	}
+	targetTime = lvl.getDouble("targetTime", exists);
+	if (!exists) {
+		printf("Error loading level: No target time found\n");
+		targetTime = 0;
 	}
 	DataObject objs = lvl.getDataObject("objects", exists);
 	if (!exists) {

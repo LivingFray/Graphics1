@@ -55,6 +55,7 @@ protected:
 	double spawnAngle;
 	Vec2D goal;
 	double goalAngle;
+	double targetTime;
 public:
 	// Adds an entity to the level
 	void addEntity(Entity* entity);

@@ -70,10 +70,12 @@ private:
 	TextBox levelBox;
 	TextBox nextBox;
 	TextBox gravBox;
+	TextBox targetBox;
 	GradButton exitButton;
 	GradButton returnButton;
 	OptionMenu* optMenu;
 	void drawTextBox(string label, TextBox &box, int y);
+	void drawSmallTextBox(string label, TextBox & box, bool left, int y);
 	void drawHandle(double x, double y);
 };
 

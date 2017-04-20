@@ -130,6 +130,9 @@ void Level::update() {
 		//TODO: Buttons and things to enable exit
 		if (player->getPos().subtract(goal).magnitudeSquare() < GOAL_DISTANCE_SQR) {
 			reachedGoal = true;
+			if (targetTime > levelTime) {
+				addScore(10 * (int)(targetTime - levelTime));
+			}
 		}
 	}
 	//Safely handle anything that was added this update
@@ -273,7 +276,12 @@ void Level::draw(double ex) {
 	} else {
 		//Draw in game UI
 		glColor3ub(0, 0, 0);
-		freetype::print(fontSmall, 10.0f, sHeight - fontSmall.h, "Score: %d Time: %d:%02d", score, (int)levelTime / 60, (int)levelTime % 60);
+		double remaining = targetTime - levelTime;
+		if (remaining <= 0) {
+			glColor3ub(255, 0, 0);
+			remaining *= -1;
+		}
+		freetype::print(fontSmall, 10.0f, sHeight - fontSmall.h, "Score: %d Time: %d:%02d", score, (int)remaining / 60, (int)remaining % 60);
 	}
 }
 

@@ -156,6 +156,9 @@ LevelEditor::LevelEditor() {
 	gravBox = TextBox();
 	gravBox.setText("");
 	gravBox.setNumeric(true);
+	targetBox = TextBox();
+	targetBox.setText("");
+	targetBox.setNumeric(true);
 
 	exitButton = GradButton();
 	exitButton.setLabel("Exit to menu");
@@ -308,7 +311,10 @@ void LevelEditor::draw(double ex) {
 		drawTextBox("File location", fileBox, y);
 		//Default gravity
 		y -= (int)fontSmall.h * 4;
-		drawTextBox("Default gravity", gravBox, y);
+		drawSmallTextBox("Default gravity", gravBox, true, y);
+		//Target time
+		drawSmallTextBox("Target time", targetBox, false, y);
+		//Next level
 		y -= (int)fontSmall.h * 4;
 		drawTextBox("Next level", nextBox, y);
 		//Exit button
@@ -383,7 +389,7 @@ void LevelEditor::draw(double ex) {
 		}
 		glPopMatrix();
 		//Draw coordinates
-		glColor3ub(255, 255, 255);
+		glColor3ub(0, 0, 0);
 		freetype::print(fontSmall, 10, fontSmall.h * 2.625f, "Position: (%.2f, %.2f)\nAngle: %.2f", camPos.getX(), camPos.getY(), camAngle);
 	}
 }
@@ -408,6 +414,7 @@ void LevelEditor::keyEvent(GLFWwindow * window, int key, int scan, int action, i
 		levelBox.keyDown(key, scan, action, mods);
 		nextBox.keyDown(key, scan, action, mods);
 		gravBox.keyDown(key, scan, action, mods);
+		targetBox.keyDown(key, scan, action, mods);
 	} else if (currentMenu == Menu::OPTIONS) {
 		optMenu->keyEvent(key, scan, action, mods);
 		//Save changes
@@ -466,6 +473,7 @@ void LevelEditor::mouseEvent(GLFWwindow* window, int button, int action, int mod
 			levelBox.mouseDown((int)x, (int)y);
 			nextBox.mouseDown((int)x, (int)y);
 			gravBox.mouseDown((int)x, (int)y);
+			targetBox.mouseDown((int)x, (int)y);
 		}
 	} else if (currentMenu == Menu::OPTIONS) {
 		optMenu->mouseEvent(button, action, mods);
@@ -736,6 +744,7 @@ void LevelEditor::textEvent(GLFWwindow *, unsigned int ch) {
 		levelBox.textEvent(ch);
 		nextBox.textEvent(ch);
 		gravBox.textEvent(ch);
+		targetBox.textEvent(ch);
 	} else if (currentMenu == Menu::OPTIONS) {
 		optMenu->textEvent(ch);
 	}
@@ -747,8 +756,8 @@ void LevelEditor::resizeEvent(GLFWwindow * window, int width, int height) {
 	for (Button* b : buttons) {
 		b->setWidth((4 * sWidth) / 10);
 		b->setHeight((int)fontLarge.h * 2);
-		b->setX(sWidth / 4 + (i%2) * (sWidth / 2));
-		b->setY(sHeight - (int) fontLarge.h * 4 - (int) fontLarge.h * 2 * (i / 2));
+		b->setX(sWidth / 4 + (i % 2) * (sWidth / 2));
+		b->setY(sHeight - (int)fontLarge.h * 4 - (int)fontLarge.h * 2 * (i / 2));
 		i++;
 	}
 }
@@ -801,6 +810,7 @@ void LevelEditor::saveLevel(string filePath) {
 	//Update settings
 	levelName = levelBox.getText();
 	defaultGravity = atof(gravBox.getText().c_str());
+	targetTime = atof(targetBox.getText().c_str());
 	nextLevelPath = nextBox.getText();
 	LevelRenderer::saveLevel(filePath);
 	//Close menu
@@ -836,6 +846,7 @@ void LevelEditor::loadLevel(string filePath) {
 	nextBox.setText(nextLevelPath);
 	levelBox.setText(levelName);
 	gravBox.setText(to_string(defaultGravity));
+	targetBox.setText(to_string(targetTime));
 }
 
 
@@ -925,7 +936,7 @@ void LevelEditor::select(Vec2D world) {
 }
 
 
-// Draws a TexBox with a corresponding label
+// Draws a TextBox with a corresponding label
 void LevelEditor::drawTextBox(string label, TextBox &box, int y) {
 	int textWidth = freetype::getLength(fontSmall, (label + " ").c_str());
 	glColor3ub(0, 0, 0);
@@ -933,6 +944,23 @@ void LevelEditor::drawTextBox(string label, TextBox &box, int y) {
 	box.setWidth((4 * sWidth) / 5 - textWidth);
 	box.setHeight((int)(fontSmall.h * 1.5f));
 	box.setX((sWidth + textWidth) / 2);
+	box.setY(y);
+	box.draw();
+}
+
+
+// Draws a smaller TextBox with a corresponding label
+void LevelEditor::drawSmallTextBox(string label, TextBox &box, bool left, int y) {
+	int textWidth = freetype::getLength(fontSmall, (label + " ").c_str());
+	glColor3ub(0, 0, 0);
+	freetype::print(fontSmall, (left ? 4: 21) * sWidth / 40, y - fontSmall.h * 0.325f, label.c_str());
+	box.setWidth((15 * sWidth) / 40 - textWidth);
+	box.setHeight((int)(fontSmall.h * 1.5f));
+	if (left) {
+		box.setX((sWidth / 10 + textWidth + 19 * sWidth / 40) / 2);
+	} else {
+		box.setX(((21 * sWidth) / 40 + textWidth + 18 * sWidth / 20) / 2);
+	}
 	box.setY(y);
 	box.draw();
 }
