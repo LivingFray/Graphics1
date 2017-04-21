@@ -1,6 +1,7 @@
 #pragma once
 #include "Selectable.h"
 #include "Storable.h"
+#include "ParticleSystem.h"
 
 class GravityField:
 	public Selectable,
@@ -10,6 +11,8 @@ public:
 	~GravityField();
 	// Draws the gravity field ex seconds after last update
 	virtual void draw(double ex);
+	// Updates the grabity field
+	virtual void update();
 	// Gets the strength of the gravity field
 	virtual double getStrength();
 	// Sets the strength of the gravity field
@@ -24,5 +27,8 @@ public:
 	virtual void setOptions(OptionMenu* menu);
 protected:
 	double strength;
+	double time;
+	double lastTime;
+	ParticleSystem p;
 };
 

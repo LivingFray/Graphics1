@@ -4,13 +4,6 @@
 #include "MainMenu.h"
 #include "Collision.h"
 
-//How long before the spawn beam begins to fade
-#define SPAWN_ANIM_BEGIN 1.0
-//How long before the spawn doors open
-#define SPAWN_ANIM_DOORS 1.5
-//The time after which the spawn animation is complete
-#define SPAWN_ANIM_END 2.0
-
 
 Level::Level() {
 	//Load textures
@@ -93,11 +86,14 @@ void Level::update() {
 		spawnAnim.addTime(TICKRATE);
 	}
 	//Don't update if the spawn animation is still ongoing
-	if (levelTime <= SPAWN_ANIM_END) {
-		levelTime += TICKRATE;
-		return;
+	//if (levelTime <= SPAWN_ANIM_END) {
+	//	levelTime += TICKRATE;
+	//	return;
+	//}
+	//Update gravity fields
+	for (GravityField* g : gravFields) {
+		g->update();
 	}
-	//TODO: Update world
 	//Update the platforms
 	for (Platform* p : platforms) {
 		p->update();
@@ -286,6 +282,12 @@ void Level::draw(double ex) {
 			remaining *= -1;
 		}
 		freetype::print(fontSmall, 10.0f, sHeight - fontSmall.h, "Score: %d Time: %d:%02d", score, (int)remaining / 60, (int)remaining % 60);
+#ifdef DEBUG
+		glColor3ub(0, 0, 0);
+		if (player) {
+			freetype::print(fontSmall, 10.0f, sHeight - fontSmall.h * 3, "Position: %2.2f, %2.2f", player->getPos().getX(), player->getPos().getY());
+		}
+#endif
 	}
 }
 

@@ -25,7 +25,7 @@ ShieldGiver::ShieldGiver() {
 	lastTime = 0;
 	dead = false;
 	sparks = ParticleSystem();
-	sparks.setTexture("Resources\\entities\\explosion.png");
+	sparks.setTexture("Resources\\particles\\explosion.png");
 	sparks.setMinSize(0.05);
 	sparks.setMaxSize(0.05);
 	sparks.setWidth(0);

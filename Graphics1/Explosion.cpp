@@ -9,7 +9,7 @@ Explosion::Explosion() {
 	age = 1;
 	lastTime = 0;
 	time = 0;
-	ps.setTexture("Resources\\entities\\explosion.png");
+	ps.setTexture("Resources\\particles\\explosion.png");
 	ps.setParticlesPerSecond((int)(EXPLOSION_NEW_PARTICLES / EXPLOSION_NEW_PARTICLES_DURATION));
 	ps.addColor(255, 0, 0, 255, 255, 0, 0, 0);
 	ps.addColor(255, 127, 0, 255, 255, 127, 0, 0);
@@ -32,7 +32,6 @@ Explosion::~Explosion() {
 void Explosion::setRadius(double r) {
 	this->width = r;
 	this->height = r;
-	currentAnim.setSize(r * 2, r * 2);
 	ps.setMinVelocity(0);
 	ps.setMaxVelocity((width / age));
 }

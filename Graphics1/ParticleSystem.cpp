@@ -1,4 +1,5 @@
 #include "ParticleSystem.h"
+#include "Globals.h"
 
 
 ParticleSystem::ParticleSystem() {
@@ -126,8 +127,12 @@ void ParticleSystem::draw(double elapsed) {
 	glDisable(GL_TEXTURE_2D);
 #ifdef DEBUG
 	if (totalAlive > 0) {
-		glBegin(GL_POINTS);
-		glVertex2d(pos.getX(), pos.getY());
+		glColor3ub(255, 127, 0);
+		glBegin(GL_LINE_LOOP);
+		glVertex2d(pos.getX() - 0.1, pos.getY() - 0.1);
+		glVertex2d(pos.getX() + 0.1, pos.getY() - 0.1);
+		glVertex2d(pos.getX() + 0.1, pos.getY() + 0.1);
+		glVertex2d(pos.getX() - 0.1, pos.getY() + 0.1);
 		glEnd();
 	}
 #endif

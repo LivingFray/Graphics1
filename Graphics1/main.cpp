@@ -13,11 +13,11 @@ TODO: --Moving platforms
 TODO: --Sound
 TODO: --"Additional game information"
 TODO: Buttons/Levers/etc
-TODO: Settings
 TODO: Build demo levels
 TODO: Distinguish between spawn and goal
 TODO: Death animations
 TODO: Multiple animations (player walk, player jump, etc)
+TODO: Prewarm animations
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;

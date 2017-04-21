@@ -75,7 +75,13 @@ using std::vector;
 //How long explosions emit particles for after being created
 #define EXPLOSION_NEW_PARTICLES_DURATION 0.05
 //Maximum number of particles per particle system
-#define MAX_PARTICLES 10000
+#define MAX_PARTICLES 1000
+//How long before the spawn beam begins to fade
+#define SPAWN_ANIM_BEGIN 1.0
+//How long before the spawn doors open
+#define SPAWN_ANIM_DOORS 1.5
+//The time after which the spawn animation is complete
+#define SPAWN_ANIM_END 2.0
 //Debug mode
 #define DEBUG
 extern GLFWwindow* gameWindow;
@@ -96,4 +102,4 @@ enum class Damage {EXPLOSION, SPIKE, ENEMYCOLLISION, INSTAKILL};
 									freetype::print((font), (float)(x) - l * 0.5f, (float)(y), (text), ##__VA_ARGS__);	\
 								} while(0)
 //Macro function to generate a random double
-#define randD(min, max) (min) + (((max) - (min)) * ((min) + ((double)rand()) / (double)RAND_MAX))
+#define randD(min, max) (min) + (((max) - (min)) * (((double)rand()) / (double)RAND_MAX))
