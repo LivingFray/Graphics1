@@ -17,6 +17,7 @@ GravityField::GravityField() {
 	p.setMinSize(0.125);
 	p.setMaxSize(0.125);
 	p.setParticlesPerSecond(50);
+	warmed = false;
 }
 
 
@@ -26,7 +27,6 @@ GravityField::~GravityField() {
 
 // Draws the gravity field ex seconds after last update
 void GravityField::draw(double ex) {
-	//TODO: Special effects
 	double w = width / 2;
 	double h = height / 2;
 	glPushMatrix();
@@ -41,7 +41,7 @@ void GravityField::draw(double ex) {
 	glVertex2d(-1 * w, h);
 	glEnd();
 	//Draw particles
-	p.setPosition(Vec2D(0, height/2));
+	p.setPosition(Vec2D(0, height / 2));
 	p.setAngle(-90);
 	p.setMinAngle(-90);
 	p.setMaxAngle(-90);
@@ -51,6 +51,10 @@ void GravityField::draw(double ex) {
 	p.setMaxVelocity(strength * 0.175);
 	p.setMinLife(height / (strength * 0.175));
 	p.setMaxLife(height / (strength * 0.175));
+	if (!warmed) {
+		p.preWarm(1);
+		warmed = true;
+	}
 	time += ex;
 	p.draw(time - lastTime);
 	lastTime = time;

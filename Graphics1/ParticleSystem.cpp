@@ -45,6 +45,33 @@ void ParticleSystem::setPosition(Vec2D pos) {
 }
 
 
+// Updates the particle system to appear to have already been running
+void ParticleSystem::preWarm(double elapsed) {
+	lastAddedParticle += elapsed;
+	//Add new particles, stopping if max particles is reached
+	unsigned int toAdd = (int)(particlesPerSecond  * lastAddedParticle);
+	if (toAdd > 0) {
+		lastAddedParticle = 0;
+	}
+	for (unsigned int i = 0; i < MAX_PARTICLES; i++) {
+		//Randomly simulate different amounts of time elapsed to spread particles
+		double simPassed = elapsed * randD(0, 1);
+		if (particles[i].age > 0.0) {
+			particles[i].age -= simPassed;
+		}
+		if (emitting && toAdd > 0 && particles[i].age < 0.0) {
+			newParticle(i);
+			toAdd--;
+		}
+		//Add particle to the buffers
+		if (particles[i].age > 0.0) {
+			//Update particle
+			particles[i].vel.addTo(grav.multiply(simPassed));
+			particles[i].pos.addTo(particles[i].vel.multiply(simPassed));
+		}
+	}
+}
+
 // Draws the particle system elapsed seconds after the last draw
 void ParticleSystem::draw(double elapsed) {
 	lastAddedParticle += elapsed;

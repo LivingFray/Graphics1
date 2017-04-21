@@ -21,6 +21,7 @@ Explosion::Explosion() {
 	ps.setMaxVelocity(3 * (width / age) / 2);
 	ps.setMinSize(0.05);
 	ps.setMaxSize(0.1);
+	warmed = false;
 }
 
 
@@ -107,6 +108,10 @@ void Explosion::setMaxAge(double age) {
 
 void Explosion::draw(double ex) {
 	ps.setPosition(pos);
+	if (!warmed) {
+		ps.preWarm(0.5);
+		warmed = true;
+	}
 	time += ex;
 	if (time > EXPLOSION_NEW_PARTICLES_DURATION) {
 		ps.setEmitting(false);

@@ -25,5 +25,6 @@ protected:
 	double time;
 	double lastTime;
 	ParticleSystem ps;
+	bool warmed;
 };
 

@@ -10,6 +10,8 @@ public:
 	void setTexture(string textureString);
 	// Sets the start position of the particles
 	void setPosition(Vec2D pos);
+	// Updates the particle system to appear to have already been running
+	void preWarm(double elapsed);
 	// Draws the particle system elapsed seconds after the last draw
 	void draw(double elapsed);
 	// Sets the minimum angle the particles travel in
