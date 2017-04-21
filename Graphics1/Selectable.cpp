@@ -3,7 +3,7 @@
 
 
 Selectable::Selectable() {
-	options = OptionMenu();
+	options = new OptionMenu();
 }
 
 
@@ -68,7 +68,7 @@ bool Selectable::isInBoundingBox(double x, double y) {
 
 // Gets the options screen for this selectable
 OptionMenu* Selectable::getOptions() {
-	return &options;
+	return options;
 }
 
 
@@ -98,17 +98,18 @@ void Selectable::setOptions(OptionMenu* menu) {
 // Creates an option menu using the current values as defaults
 void Selectable::createOptions() {
 	//Clear out options
-	options = OptionMenu();
+	delete options;
+	options = new OptionMenu();
 	//Add default options
 	if (canMove()) {
-		options.addOption("X Position", true, to_string(getPos().getX()));
-		options.addOption("Y Position", true, to_string(getPos().getY()));
+		options->addOption("X Position", true, to_string(getPos().getX()));
+		options->addOption("Y Position", true, to_string(getPos().getY()));
 	}
 	if (canResize()) {
-		options.addOption("Width", true, to_string(getWidth()));
-		options.addOption("Height", true, to_string(getHeight()));
+		options->addOption("Width", true, to_string(getWidth()));
+		options->addOption("Height", true, to_string(getHeight()));
 	}
 	if (canRotate()) {
-		options.addOption("Angle", true, to_string(getAngle()));
+		options->addOption("Angle", true, to_string(getAngle()));
 	}
 }

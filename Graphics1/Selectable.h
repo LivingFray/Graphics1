@@ -23,6 +23,6 @@ public:
 	// Sets the options for this selectable
 	virtual void setOptions(OptionMenu* menu);
 protected:
-	OptionMenu options;
+	OptionMenu* options;
 };
 

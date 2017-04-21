@@ -8,6 +8,7 @@
 #include "ShieldGiver.h"
 #include "Spike.h"
 #include "StompableEntity.h"
+#include "MovingPlatform.h"
 #define EDITOR_MOVE_SPEED 1.00
 #define EDITOR_ROTATE_SPEED 30
 #define MOVE_SIZE 0.5
@@ -30,6 +31,7 @@ LevelEditor::LevelEditor() {
 	resizing = 0;
 	levelName = "Untitled";
 	defaultGravity = 0;
+	optMenu = NULL;
 	scaleDir = Vec2D(0, 0);
 	saveButton = Button();
 	saveButton.setLabel("Save level");
@@ -151,6 +153,21 @@ LevelEditor::LevelEditor() {
 		l->setMenu(0);
 	};
 	menuItems.push_back(item);
+	item = MenuItem();
+	item.name = "Moving Platform";
+	item.create = [](BaseState* s) {
+		LevelEditor* l = (LevelEditor*)s;
+		MovingPlatform* p = new MovingPlatform();
+		p->setPos(l->getCameraPos());
+		p->setAngle(l->getCameraAngleAt(0));
+		p->setWidth(1);
+		p->setHeight(1);
+		p->setFirstNode(l->getCameraPos());
+		p->setLastNode(l->getCameraPos());
+		l->addPlatform(p);
+		l->setMenu(0);
+	};
+	menuItems.push_back(item);
 	//Create buttons for menu
 	for (MenuItem i : menuItems) {
 		Button* b = new Button();
@@ -192,10 +209,6 @@ LevelEditor::LevelEditor() {
 
 LevelEditor::~LevelEditor() {
 	glDeleteLists(rotateCall, 1);
-	//Clear up any lingering options menus
-	if (optMenu) {
-		delete optMenu;
-	}
 	for (Button* b : buttons) {
 		delete b;
 	}
@@ -411,6 +424,10 @@ void LevelEditor::keyEvent(GLFWwindow * window, int key, int scan, int action, i
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
 		if (currentMenu != Menu::NONE) {
 			currentMenu = Menu::NONE;
+			if (optMenu) {
+				delete optMenu;
+				optMenu = NULL;
+			}
 		} else {
 			currentMenu = Menu::SAVE;
 			selected = NULL;
@@ -965,7 +982,7 @@ void LevelEditor::drawTextBox(string label, TextBox &box, int y) {
 void LevelEditor::drawSmallTextBox(string label, TextBox &box, bool left, int y) {
 	int textWidth = freetype::getLength(fontSmall, (label + " ").c_str());
 	glColor3ub(0, 0, 0);
-	freetype::print(fontSmall, (left ? 4: 21) * sWidth / 40, y - fontSmall.h * 0.325f, label.c_str());
+	freetype::print(fontSmall, (left ? 4: 21) * sWidth / 40.0f, y - fontSmall.h * 0.325f, label.c_str());
 	box.setWidth((15 * sWidth) / 40 - textWidth);
 	box.setHeight((int)(fontSmall.h * 1.5f));
 	if (left) {

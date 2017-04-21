@@ -5,6 +5,7 @@
 #include "ShieldGiver.h"
 #include "Spike.h"
 #include "StompableEntity.h"
+#include "MovingPlatform.h"
 
 #define NUM_PANELS 8
 #define PARALLAX 0.5
@@ -366,6 +367,10 @@ void LevelRenderer::loadLevel(string filePath) {
 				StompableEntity* s = new StompableEntity();
 				s->load(item);
 				entities.push_back(s);
+			} else if (id == "movingplatform") {
+				MovingPlatform* m = new MovingPlatform();
+				m->load(item);
+				platforms.push_back(m);
 			}
 		}
 		//Get next item

@@ -4,12 +4,9 @@
 #include "MainMenu.h"
 /*
 Task list intergration:
-TODO: Debug mode
 TODO: Cleanup code (auto generated classes, import orders, etc)
-TODO: Level editor
-TODO: --Snapping
+TODO: --Refactor monolithic code (LevelRenderer, Level, LevelEditor)
 TODO: Every stupid thing on the mark sheet
-TODO: --Moving platforms
 TODO: --Sound
 TODO: --"Additional game information"
 TODO: Buttons/Levers/etc
@@ -17,6 +14,7 @@ TODO: Build demo levels
 TODO: Distinguish between spawn and goal
 TODO: Death animations
 TODO: Multiple animations (player walk, player jump, etc)
+TODO: Tutorial text
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;

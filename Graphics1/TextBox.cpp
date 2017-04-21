@@ -20,8 +20,8 @@ TextBox::~TextBox() {
 
 void TextBox::setText(string text) {
 	//Remove trailing zeros
-	if(numeric){
-		text.erase(text.find_last_not_of('0') + 1, std::string::npos);
+	if(numeric && text.find_first_of('.')!=string::npos){
+		text.erase(text.find_last_not_of('0') + 1, string::npos);
 		if (text.size()>0 && text.at(text.size() - 1) == '.') {
 			text.erase(text.size() - 1);
 		}

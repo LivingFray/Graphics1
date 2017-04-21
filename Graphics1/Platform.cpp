@@ -205,9 +205,9 @@ void Platform::setOptions(OptionMenu* menu) {
 // Creates an option menu using the current values as defaults
 void Platform::createOptions() {
 	Selectable::createOptions();
-	options.addOption("Texture", false, textureString);
-	options.addOption("Texture Scale X", true, to_string(texX));
-	options.addOption("Texture Scale Y", true, to_string(texY));
+	options->addOption("Texture", false, textureString);
+	options->addOption("Texture Scale X", true, to_string(texX));
+	options->addOption("Texture Scale Y", true, to_string(texY));
 }
 
 

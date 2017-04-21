@@ -111,7 +111,7 @@ void Collision::handle(Level* l, Entity* a, Platform* b, bool &onGround) {
 			//Arrest velocity
 			Vec2D grav;
 			l->getGravityAtPos(a->getPos(), &grav);
-			Vec2D vel = a->getVel().subtract(b->getVel());
+			Vec2D vel = a->getVel();
 			//TODO: Fix properly, current implementation is a long winded route to set vel to 0
 			if (vel.magnitudeSquare() > FLOAT_ZERO) {
 				//Only remove in direction of response

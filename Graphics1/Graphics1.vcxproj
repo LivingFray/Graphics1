@@ -146,6 +146,7 @@
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="DataObject.cpp" />
+    <ClCompile Include="MovingPlatform.cpp" />
     <ClCompile Include="SettingsMenu.cpp" />
     <ClCompile Include="Spike.cpp" />
     <ClCompile Include="Entity.cpp" />
@@ -188,6 +189,7 @@
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="DataObject.h" />
+    <ClInclude Include="MovingPlatform.h" />
     <ClInclude Include="SettingsMenu.h" />
     <ClInclude Include="Spike.h" />
     <ClInclude Include="Entity.h" />

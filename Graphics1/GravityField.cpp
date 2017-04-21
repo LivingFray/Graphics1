@@ -109,5 +109,5 @@ void GravityField::setOptions(OptionMenu* menu) {
 // Creates an option menu using the current values as defaults
 void GravityField::createOptions() {
 	Selectable::createOptions();
-	options.addOption("Strength", true, to_string(strength));
+	options->addOption("Strength", true, to_string(strength));
 }
