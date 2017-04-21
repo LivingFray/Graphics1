@@ -19,6 +19,13 @@ TextBox::~TextBox() {
 
 
 void TextBox::setText(string text) {
+	//Remove trailing zeros
+	if(numeric){
+		text.erase(text.find_last_not_of('0') + 1, std::string::npos);
+		if (text.size()>0 && text.at(text.size() - 1) == '.') {
+			text.erase(text.size() - 1);
+		}
+	}
 	this->text = text;
 }
 
@@ -126,6 +133,8 @@ void TextBox::validate() {
 		//If it cannot be converted
 		if (*end) {
 			text = oldText;
+		} else {
+			setText(text);
 		}
 	}
 	oldText = text;

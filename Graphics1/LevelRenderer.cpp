@@ -104,16 +104,6 @@ void LevelRenderer::draw(double ex) {
 	//To Prevent edges unloading too soon
 	minX--;
 	minY--;
-	/*
-	Tile pattern:
-	CEEEEECWW
-	EMMMMMEWW
-	EMMMMMEWW
-	CEEEEECWW
-	WWWWWWWWW
-	WWWWWWWWW
-	*/
-	//min = tile at parX - pHeight / 2
 	//For tiles min to max draw tile
 	glPushMatrix();
 	glTranslated(parX + minX * size, parY + minY * size, 0.0);
