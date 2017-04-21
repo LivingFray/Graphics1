@@ -29,12 +29,6 @@ Player::~Player() {
 
 // Updates the player
 void Player::update() {
-	//Get direction of gravity
-	Vec2D g;
-	Level* level = (Level*)state;
-	level->getGravityAtPos(pos, &g);
-	//The velocity in the frame of the current gravity
-	double vX = getVelRelX(angle);
 	double dX = 0.0;
 	if (KeyConfig::isDown("moveLeft")) {
 		dX -= PLAYER_ACCELERATION;
@@ -46,27 +40,24 @@ void Player::update() {
 	}
 	//Set whether the player is moving
 	moving = abs(dX) > FLOAT_ZERO;
-	//Rotate the vector through 90 degrees
-	Vec2D move = Vec2D(-g.getY(), g.getX());
-	//Normalise the value
-	if (move.magnitudeSquare() > FLOAT_ZERO) {
-		move.toUnit();
-	} else {
-		move.set(cos(DEG_TO_RAD * angle), sin(DEG_TO_RAD * angle));
-	}
+	//Set direction of movement
+	Vec2D move = Vec2D(cos(DEG_TO_RAD * visAngle), sin(DEG_TO_RAD * visAngle));
 	//Scale it to the movement
 	move.multiplyBy(dX);
 	//Add the movement
 	vel.addTo(move);
 	//Handle jumping
 	if (KeyConfig::isDown("jump") && onGround) {
-		Vec2D jump = g;
+		Vec2D jump;
+		//Get direction of gravity
+		Level* level = (Level*)state;
+		level->getGravityAtPos(pos, &jump);
 		//Normalise vector
 		//We appear to be floating in an area of 0 gravity
 		if (jump.magnitudeSquare() > FLOAT_ZERO) {
 			jump.toUnit();
 		} else {
-			jump.set(0.0, -1.0); //Just pretend that gravity is normal
+			jump.set(cos(DEG_TO_RAD * angle), sin(DEG_TO_RAD * angle)); //Use current angle
 		}
 		jump.multiplyBy(PLAYER_JUMP);
 		vel.subtractFrom(jump);
