@@ -95,6 +95,7 @@ void Platform::draw(double ex) {
 	//Draw velocity
 	glRotated(-angle, 0.0, 0.0, 1.0);
 	glColor3ub(0, 0, 255);
+	glLineWidth(2);
 	glBegin(GL_LINES);
 	glVertex2d(0.0, 0.0);
 	glVertex2d(vel.getX(), vel.getY());
@@ -105,7 +106,7 @@ void Platform::draw(double ex) {
 	//the game is drawn
 	glTranslated(-pos.getX() - vel.getX()*ex, -pos.getY() - vel.getY()*ex, 0.0);
 	glColor3ub(255, 127, 0);
-	glLineWidth(1);
+	glLineWidth(2);
 	int n;
 	Vec2D* vecs = getVertices(&n);
 	glBegin(GL_LINE_LOOP);

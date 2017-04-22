@@ -6,7 +6,7 @@
 #include "Spike.h"
 #include "StompableEntity.h"
 #include "MovingPlatform.h"
-
+#include "TextItem.h"
 #define NUM_PANELS 8
 #define PARALLAX 0.5
 #define PANELS_X 9
@@ -25,7 +25,7 @@ LevelRenderer::LevelRenderer() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	//Set default values for variables
 	spawn = Vec2D(0.0, 0.0);
-	goal = Vec2D(0.0, 0.0);
+	goal = Vec2D(1.0, 0.0);
 	spawnAngle = 0;
 	goalAngle = 0;
 	defaultGravity = 0;
@@ -297,7 +297,7 @@ void LevelRenderer::loadLevel(string filePath) {
 	goal.setX(lvl.getDouble("goalX", exists));
 	if (!exists) {
 		printf("Error loading level: No goal x coordinate found\n");
-		goal.setX(0.0);
+		goal.setX(1.0);
 	}
 	goal.setY(lvl.getDouble("goalY", exists));
 	if (!exists) {
@@ -371,6 +371,10 @@ void LevelRenderer::loadLevel(string filePath) {
 				MovingPlatform* m = new MovingPlatform();
 				m->load(item);
 				platforms.push_back(m);
+			} else if (id == "text") {
+				TextItem* t = new TextItem();
+				t->load(item);
+				platforms.push_back(t);
 			}
 		}
 		//Get next item
@@ -395,12 +399,13 @@ double LevelRenderer::getCameraAngleAt(double ex) {
 
 // Gets the world coordinates from the screen coordinates
 Vec2D LevelRenderer::getWorldCoordinates(Vec2D screen) {
-	double scale = WORLD_SIZE / (double)(sWidth < sHeight ? sWidth : sHeight);
 	//Offset from the centre of the screen
 	Vec2D world = Vec2D(screen.getX(), screen.getY());
 	world.subtractFrom(Vec2D(sWidth * 0.5, sHeight * 0.5));
+	//Scale coordinates
+	double scale = WORLD_SIZE / (double)(sWidth < sHeight ? sWidth : sHeight);
 	world.multiplyBy(scale);
-	//Offset from the centre of the screen (inc rotation)
+	//Rotate coordinates
 	double cTheta = cos(getCameraAngleAt(0) * DEG_TO_RAD);
 	double sTheta = sin(getCameraAngleAt(0) * DEG_TO_RAD);
 	double tX = world.getX();
@@ -409,6 +414,40 @@ Vec2D LevelRenderer::getWorldCoordinates(Vec2D screen) {
 	//Offset from the world origin
 	world.addTo(getCameraAt(0));
 	return world;
+}
+
+/*
+Translate by -width/2 -height/2
+Scale by WorldSize/smallestDimension
+Rotate by cameraAngle
+Translate by cameraPosition
+  |
+  |
+ \ /
+  v
+Translate by -cameraPosition
+Rotate by -cameraAngle
+Scale by smallestDimension/WorldSize
+Translate by width/2 height/2
+*/
+
+
+// Gets the screen coordinates from the world coordinates
+Vec2D LevelRenderer::getScreenCoordinates(Vec2D world) {
+	//Offset from world origin
+	Vec2D screen = world.subtract(getCameraAt(0));
+	//Rotate coordinates
+	double cTheta = cos(-getCameraAngleAt(0) * DEG_TO_RAD);
+	double sTheta = sin(-getCameraAngleAt(0) * DEG_TO_RAD);
+	double tX = screen.getX();
+	screen.setX(screen.getX() * cTheta - screen.getY() * sTheta);
+	screen.setY(screen.getY() * cTheta + tX * sTheta);
+	//Scale coordinates
+	double scale = (double)(sWidth < sHeight ? sWidth : sHeight) / WORLD_SIZE;
+	screen.multiplyBy(scale);
+	//Offset from the centre of the screen
+	screen.addTo(Vec2D(sWidth * 0.5, sHeight * 0.5));
+	return screen;
 }
 
 

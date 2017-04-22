@@ -8,6 +8,7 @@ Selectable::Selectable() {
 
 
 Selectable::~Selectable() {
+	delete options;
 }
 
 

@@ -125,7 +125,7 @@ void Explosion::draw(double ex) {
 	//and is made to appear smoother by extrapolating graphical positions when
 	//the game is drawn
 	glColor3ub(onGround ? 0 : 255, 127, 0);
-	glLineWidth(1);
+	glLineWidth(2);
 	int n;
 	Vec2D* vecs = getVertices(&n);
 	glBegin(GL_LINE_LOOP);

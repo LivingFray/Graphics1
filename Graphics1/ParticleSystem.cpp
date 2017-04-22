@@ -155,6 +155,7 @@ void ParticleSystem::draw(double elapsed) {
 #ifdef DEBUG
 	if (totalAlive > 0) {
 		glColor3ub(255, 127, 0);
+		glLineWidth(2);
 		glBegin(GL_LINE_LOOP);
 		glVertex2d(pos.getX() - 0.1, pos.getY() - 0.1);
 		glVertex2d(pos.getX() + 0.1, pos.getY() - 0.1);

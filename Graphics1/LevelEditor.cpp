@@ -9,6 +9,7 @@
 #include "Spike.h"
 #include "StompableEntity.h"
 #include "MovingPlatform.h"
+#include "TextItem.h"
 #define EDITOR_MOVE_SPEED 1.00
 #define EDITOR_ROTATE_SPEED 30
 #define MOVE_SIZE 0.5
@@ -164,6 +165,18 @@ LevelEditor::LevelEditor() {
 		p->setHeight(1);
 		p->setFirstNode(l->getCameraPos());
 		p->setLastNode(l->getCameraPos());
+		l->addPlatform(p);
+		l->setMenu(0);
+	};
+	menuItems.push_back(item);
+	item.name = "Text";
+	item.create = [](BaseState* s) {
+		LevelEditor* l = (LevelEditor*)s;
+		TextItem* p = new TextItem();
+		p->setPos(l->getCameraPos());
+		p->setAngle(l->getCameraAngleAt(0));
+		p->setWidth(1);
+		p->setHeight(1);
 		l->addPlatform(p);
 		l->setMenu(0);
 	};
@@ -425,7 +438,6 @@ void LevelEditor::keyEvent(GLFWwindow * window, int key, int scan, int action, i
 		if (currentMenu != Menu::NONE) {
 			currentMenu = Menu::NONE;
 			if (optMenu) {
-				delete optMenu;
 				optMenu = NULL;
 			}
 		} else {

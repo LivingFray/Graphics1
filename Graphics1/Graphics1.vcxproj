@@ -176,6 +176,7 @@
     <ClCompile Include="StompableEntity.cpp" />
     <ClCompile Include="Storable.cpp" />
     <ClCompile Include="TextBox.cpp" />
+    <ClCompile Include="TextItem.cpp" />
     <ClCompile Include="Vec2D.cpp" />
     <ClCompile Include="WorldObject.cpp" />
   </ItemGroup>
@@ -219,6 +220,7 @@
     <ClInclude Include="StompableEntity.h" />
     <ClInclude Include="Storable.h" />
     <ClInclude Include="TextBox.h" />
+    <ClInclude Include="TextItem.h" />
     <ClInclude Include="Vec2D.h" />
     <ClInclude Include="WorldObject.h" />
   </ItemGroup>
