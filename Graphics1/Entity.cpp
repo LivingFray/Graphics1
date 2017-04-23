@@ -77,7 +77,7 @@ void Entity::update() {
 	//Track how far the entity has visually rotated
 	visAngle = updatedVisAngle(TICKRATE);
 	//Increment animation
-	currentAnim.addTime(TICKRATE);
+	currentAnim->addTime(TICKRATE);
 }
 
 
@@ -88,8 +88,8 @@ void Entity::draw(double ex) {
 	glPushMatrix();
 	glTranslated(pos.getX() + vel.getX()*ex, pos.getY() + vel.getY()*ex, 0.0);
 	glRotated(visAngle, 0.0, 0.0, 1.0);
-	currentAnim.setWidth(abs(currentAnim.getWidth()) * f);
-	currentAnim.draw(ex);
+	currentAnim->setWidth(abs(currentAnim->getWidth()) * f);
+	currentAnim->draw(ex);
 #ifdef DEBUG
 	//Draw velocity
 	glRotated(-visAngle, 0.0, 0.0, 1.0);

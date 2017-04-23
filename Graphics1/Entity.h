@@ -65,6 +65,6 @@ protected:
 	double maxSpeed;
 	bool flip = false;
 	bool moving;
-	Animation currentAnim;
+	Animation* currentAnim;
 };
 

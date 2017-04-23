@@ -22,5 +22,6 @@ protected:
 	double lastTime;
 	bool dead;
 	ParticleSystem sparks;
+	Animation anim;
 };
 

@@ -9,13 +9,14 @@
 
 BombEntity::BombEntity() {
 	id = "bomb";
-	currentAnim = Animation();
-	currentAnim.setSpriteSheet("Resources\\entities\\bomb.png");
-	currentAnim.setSpritesheetSize(2, 1);
-	currentAnim.setSize(0.5, 0.5);
-	currentAnim.setRepeat(true);
-	currentAnim.addFrame(0, 0.5);
-	currentAnim.addFrame(1, 0.5);
+	idleAnim = Animation();
+	idleAnim.setSpriteSheet("Resources\\entities\\bomb.png");
+	idleAnim.setSpritesheetSize(2, 1);
+	idleAnim.setSize(0.5, 0.5);
+	idleAnim.setRepeat(true);
+	idleAnim.addFrame(0, 0.5);
+	idleAnim.addFrame(1, 0.5);
+	currentAnim = &idleAnim;
 	width = 0.5;
 	height = 0.5;
 	explodeAnim = Animation();
@@ -49,7 +50,7 @@ void BombEntity::update() {
 		double d = player->getPos().subtract(pos).magnitudeSquare();
 		if (d < TRIGGER_RADIUS * TRIGGER_RADIUS) {
 			triggered = true;
-			currentAnim = explodeAnim;
+			currentAnim = &explodeAnim;
 			explodeAnim.setTime(0);
 		}
 	} else if (triggered) {

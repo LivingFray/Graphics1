@@ -8,5 +8,7 @@ public:
 	void onCollide(Collider* other);
 	// Updates the entity
 	void update();
+protected:
+	Animation anim;
 };
 

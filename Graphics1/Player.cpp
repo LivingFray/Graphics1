@@ -7,19 +7,26 @@ Player::Player() {
 	width = PLAYER_WIDTH;
 	height = PLAYER_HEIGHT;
 	flip = false;
-	//idle = ImageLoader::getImage("Resources\\playerIdle.png");
 	//TODO: Different frames for different actions
-	currentAnim = Animation();
-	currentAnim.setPos(Vec2D(0.0, 0.0));
-	currentAnim.setRepeat(true);
-	currentAnim.setSize(1.0, 2.0);
-	currentAnim.addFrame(0, 1.0);
-	currentAnim.addFrame(1, 0.5);
-	currentAnim.setSpriteSheet("Resources\\playerSprite.png");
-	//TEMP, make correct size when I have textures
-	currentAnim.setSpritesheetSize(2, 2);
+	walkAnim = Animation();
+	walkAnim.setPos(Vec2D(0.0, 0.0));
+	walkAnim.setRepeat(true);
+	walkAnim.setSize(1.0, 2.0);
+	walkAnim.setSpriteSheet("Resources\\entities\\playerWalk.png");
+	for (int i = 0; i < 8; i++) {
+		walkAnim.addFrame(i, 0.125);
+	}
+	walkAnim.setSpritesheetSize(4, 2);
+	idleAnim = Animation();
+	idleAnim.setPos(Vec2D(0.0, 0.0));
+	idleAnim.setRepeat(false);
+	idleAnim.setSize(1.0, 2.0);
+	idleAnim.setSpriteSheet("Resources\\entities\\playerIdle.png");
+	idleAnim.addFrame(0, 1);
+	idleAnim.setSpritesheetSize(1, 1);
 	shield = ImageLoader::getImage("Resources\\entities\\shield.png");
 	immuneTime = 0;
+	currentAnim = &idleAnim;
 }
 
 
@@ -40,6 +47,17 @@ void Player::update() {
 	}
 	//Set whether the player is moving
 	moving = abs(dX) > FLOAT_ZERO;
+	if (moving) {
+		currentAnim = &walkAnim;
+		if (!wasMoving) {
+			currentAnim->setTime(0);
+			wasMoving = true;
+		}
+	} else {
+		wasMoving = false;
+		currentAnim = &idleAnim;
+		currentAnim->setTime(0);
+	}
 	//Set direction of movement
 	Vec2D move = Vec2D(cos(DEG_TO_RAD * visAngle), sin(DEG_TO_RAD * visAngle));
 	//Scale it to the movement

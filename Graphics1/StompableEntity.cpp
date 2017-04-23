@@ -6,12 +6,13 @@ StompableEntity::StompableEntity() {
 	id = "stomp";
 	width = 0.5;
 	height = 0.5;
-	currentAnim = Animation();
-	currentAnim.setSpriteSheet("Resources\\entities\\stomp.png");
-	currentAnim.setSpritesheetSize(1, 1);
-	currentAnim.setSize(0.5, 0.5);
-	currentAnim.addFrame(0, 1);
-	currentAnim.setRepeat(true);
+	idleAnim = Animation();
+	idleAnim.setSpriteSheet("Resources\\entities\\stomp.png");
+	idleAnim.setSpritesheetSize(1, 1);
+	idleAnim.setSize(0.5, 0.5);
+	idleAnim.addFrame(0, 1);
+	idleAnim.setRepeat(true);
+	currentAnim = &idleAnim;
 }
 
 

@@ -18,5 +18,8 @@ protected:
 	vector<Entity*> shields;
 	GLuint shield;
 	double immuneTime;
+	Animation walkAnim;
+	Animation idleAnim;
+	bool wasMoving;
 };
 

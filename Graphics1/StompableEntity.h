@@ -9,5 +9,7 @@ public:
 	void onDamage(Damage d);
 	// Called when a collision occurs
 	void onCollide(Collider * other);
+protected:
+	Animation idleAnim;
 };
 

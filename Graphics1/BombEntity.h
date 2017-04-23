@@ -13,6 +13,7 @@ protected:
 	double fuse;
 	bool triggered;
 	Animation explodeAnim;
+	Animation idleAnim;
 	void explode();
 };
 
