@@ -20,6 +20,8 @@ protected:
 	double immuneTime;
 	Animation walkAnim;
 	Animation idleAnim;
+	Animation jumpAnim;
 	bool wasMoving;
+	char offCount;
 };
 

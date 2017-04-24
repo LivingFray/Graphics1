@@ -7,7 +7,6 @@ Player::Player() {
 	width = PLAYER_WIDTH;
 	height = PLAYER_HEIGHT;
 	flip = false;
-	//TODO: Different frames for different actions
 	walkAnim = Animation();
 	walkAnim.setPos(Vec2D(0.0, 0.0));
 	walkAnim.setRepeat(true);
@@ -24,9 +23,18 @@ Player::Player() {
 	idleAnim.setSpriteSheet("Resources\\entities\\playerIdle.png");
 	idleAnim.addFrame(0, 1);
 	idleAnim.setSpritesheetSize(1, 1);
+	jumpAnim = Animation();
+	jumpAnim.setPos(Vec2D(0.0, 0.0));
+	jumpAnim.setRepeat(false);
+	jumpAnim.setSize(1.0, 2.0);
+	jumpAnim.setSpriteSheet("Resources\\entities\\playerJump.png");
+	jumpAnim.addFrame(0, 1);
+	jumpAnim.setSpritesheetSize(1, 1);
 	shield = ImageLoader::getImage("Resources\\entities\\shield.png");
 	immuneTime = 0;
 	currentAnim = &idleAnim;
+	wasMoving = false;
+	offCount = 0;
 }
 
 
@@ -57,6 +65,14 @@ void Player::update() {
 		wasMoving = false;
 		currentAnim = &idleAnim;
 		currentAnim->setTime(0);
+	}
+	if (!onGround) {
+		offCount++;
+		if (offCount > 5) {
+			currentAnim = &jumpAnim;
+		}
+	} else {
+		offCount = 0;
 	}
 	//Set direction of movement
 	Vec2D move = Vec2D(cos(DEG_TO_RAD * visAngle), sin(DEG_TO_RAD * visAngle));
