@@ -12,7 +12,6 @@ TODO: Buttons/Levers/etc
 TODO: Build demo levels
 TODO: Distinguish between spawn and goal
 TODO: Death animations
-TODO: Multiple animations (player walk, player jump, etc)
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;

@@ -13,9 +13,8 @@ BombEntity::BombEntity() {
 	idleAnim.setSpriteSheet("Resources\\entities\\bomb.png");
 	idleAnim.setSpritesheetSize(2, 1);
 	idleAnim.setSize(0.5, 0.5);
-	idleAnim.setRepeat(true);
-	idleAnim.addFrame(0, 0.5);
-	idleAnim.addFrame(1, 0.5);
+	idleAnim.setRepeat(false);
+	idleAnim.addFrame(0, 1);
 	currentAnim = &idleAnim;
 	width = 0.5;
 	height = 0.5;
