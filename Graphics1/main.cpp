@@ -12,6 +12,7 @@ TODO: Buttons/Levers/etc
 TODO: Build demo levels
 TODO: Distinguish between spawn and goal
 TODO: Death animations
+TODO: Fix Shield Giver following
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;

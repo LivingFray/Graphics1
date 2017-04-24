@@ -41,7 +41,7 @@ void GravityField::draw(double ex) {
 	glVertex2d(-1 * w, h);
 	glEnd();
 	//Draw particles
-	p.setPosition(Vec2D(0, height / 2));
+	p.setPosition(Vec2D(0, (strength<0?-1:1)*height / 2));
 	p.setAngle(-90);
 	p.setMinAngle(-90);
 	p.setMaxAngle(-90);

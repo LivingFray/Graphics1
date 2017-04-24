@@ -4,15 +4,14 @@
 
 PointGiver::PointGiver() {
 	id = "points";
-	width = 0.2;
-	height = 0.2;
+	width = 0.5;
+	height = 0.5;
 	anim = Animation();
 	anim.setSpriteSheet("Resources\\entities\\pointGiver.png");
-	anim.setSpritesheetSize(2, 2);
-	anim.setSize(0.2, 0.2);
-	//Temp
+	anim.setSpritesheetSize(1, 1);
+	anim.setSize(0.5, 0.5);
+	anim.setRepeat(false);
 	anim.addFrame(0, 1);
-	anim.addFrame(1, 1);
 	currentAnim = &anim;
 }
 
