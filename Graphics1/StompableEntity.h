@@ -9,7 +9,11 @@ public:
 	void onDamage(Damage d);
 	// Called when a collision occurs
 	void onCollide(Collider * other);
+	// Updates the entity
+	void update();
 protected:
 	Animation idleAnim;
+	Animation deadAnim;
+	double deadTime;
 };
 

@@ -82,6 +82,8 @@ using std::vector;
 #define SPAWN_ANIM_DOORS 1.5
 //The time after which the spawn animation is complete
 #define SPAWN_ANIM_END 2.0
+//How long a dead entity lingers for before being cleaned up
+#define ENTITY_DEAD_TIME 10.0
 //Debug mode
 #define DEBUG
 extern GLFWwindow* gameWindow;

@@ -70,6 +70,7 @@ void Player::update() {
 		offCount++;
 		if (offCount > 5) {
 			currentAnim = &jumpAnim;
+			offCount = 5; //Prevent overflows
 		}
 	} else {
 		offCount = 0;

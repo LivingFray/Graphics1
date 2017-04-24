@@ -39,8 +39,10 @@ void EntityAI::update() {
 			}
 			if (det < 0) {
 				move.multiplyBy(ENTITY_ACCELERATION);
+				flip = false;
 			} else {
 				move.multiplyBy(-ENTITY_ACCELERATION);
+				flip = true;
 			}
 			vel.addTo(move);
 			moving = true;
