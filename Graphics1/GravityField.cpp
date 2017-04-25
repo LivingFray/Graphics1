@@ -49,10 +49,10 @@ void GravityField::draw(double ex) {
 	p.setHeight(width - 0.125);
 	p.setMinVelocity(strength * 0.125);
 	p.setMaxVelocity(strength * 0.175);
-	p.setMinLife(height / (strength * 0.175));
-	p.setMaxLife(height / (strength * 0.175));
+	p.setMinLife(height / (abs(strength) * 0.175));
+	p.setMaxLife(height / (abs(strength) * 0.175));
 	if (!warmed) {
-		p.preWarm(1);
+		p.preWarm(height / (abs(strength) * 0.175));
 		warmed = true;
 	}
 	time += ex;

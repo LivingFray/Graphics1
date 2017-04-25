@@ -416,21 +416,6 @@ Vec2D LevelRenderer::getWorldCoordinates(Vec2D screen) {
 	return world;
 }
 
-/*
-Translate by -width/2 -height/2
-Scale by WorldSize/smallestDimension
-Rotate by cameraAngle
-Translate by cameraPosition
-  |
-  |
- \ /
-  v
-Translate by -cameraPosition
-Rotate by -cameraAngle
-Scale by smallestDimension/WorldSize
-Translate by width/2 height/2
-*/
-
 
 // Gets the screen coordinates from the world coordinates
 Vec2D LevelRenderer::getScreenCoordinates(Vec2D world) {
