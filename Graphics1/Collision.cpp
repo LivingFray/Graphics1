@@ -131,7 +131,7 @@ void Collision::handle(Level* l, Entity* a, Platform* b, bool &onGround) {
 				////vel.subtractFrom(vel.unit().multiply(GROUND_FRICTION * TICKRATE * grav.magnitude()));
 				if (!a->isMoving()) {
 					vel.multiplyBy(1 - GROUND_FRICTION);
-					if (vel.magnitudeSquare() < FLOAT_ZERO) {
+					if (vel.magnitudeSquare() < STOP_VELOCITY * STOP_VELOCITY) {
 						vel = Vec2D(0, 0);
 					}
 				}

@@ -57,7 +57,12 @@ void GravityField::draw(double ex) {
 		warmed = true;
 	}
 	time += ex;
-	p.draw(time - lastTime);
+	//Prevents a rare bug where pausing at just the right time spawns hundreds of particles
+	if (ex == 0) {
+		p.draw(0);
+	} else {
+		p.draw(time - lastTime);
+	}
 	lastTime = time;
 	time -= ex;
 	glPopMatrix();
