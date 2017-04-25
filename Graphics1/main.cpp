@@ -8,10 +8,14 @@ TODO: Cleanup code (auto generated classes, import orders, etc)
 TODO: --Refactor monolithic code (LevelRenderer, Level, LevelEditor)
 TODO: Every stupid thing on the mark sheet
 TODO: --Sound
+TODO: --Space partioning for collision
+TODO: Better AI?
 TODO: Buttons/Levers/etc
 TODO: Build demo levels
 TODO: Distinguish between spawn and goal
 TODO: Fix Shield Giver following
+TODO: Threaded startup?
+TODO: --Preload most resources
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;
@@ -48,6 +52,8 @@ void init() {
 	KeyConfig::win = gameWindow;
 	//Initialise the texture loader
 	ImageLoader::makeMissingTexture();
+	//Initialse the sound loader
+	SoundLoader::init();
 	//Create the font
 	fontLarge.init(FONT_NAME, FONT_SIZE_LARGE);
 	fontSmall.init(FONT_NAME, FONT_SIZE_SMALL);
@@ -157,6 +163,8 @@ int main() {
 		glfwSwapBuffers(gameWindow);
 	}
 	//Shutdown properly
+	ImageLoader::cleanup();
+	SoundLoader::cleanup();
 	glfwDestroyWindow(gameWindow);
 	glfwTerminate();
 }

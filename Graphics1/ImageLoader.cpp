@@ -8,6 +8,8 @@ imageMap ImageLoader::images;
 
 GLuint ImageLoader::missing;
 
+
+// Returns an opengl image context, loading image from file if need be
 GLuint ImageLoader::getImage(string filePath) {
 	if (images[filePath] != NULL) {
 		return images[filePath];
@@ -30,6 +32,8 @@ GLuint ImageLoader::getImage(string filePath) {
 	return missing;
 }
 
+
+// Dynamically generate the classic missing texture checkerboard to fall back on
 void ImageLoader::makeMissingTexture() {
 	GLubyte missingImage[4][4][4];
 	for (int i = 0; i < 4; i++) {
@@ -50,4 +54,18 @@ void ImageLoader::makeMissingTexture() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 4, 4, 0, GL_RGBA, GL_UNSIGNED_BYTE, missingImage);
+}
+
+
+//Frees every image stored
+void ImageLoader::cleanup() {
+	GLuint* textures = new GLuint[images.size()];
+	int p = 0;
+	for (auto i : images) {
+		textures[p] = i.second;
+		p++;
+	}
+	glDeleteTextures(images.size(), textures);
+	delete textures;
+	images.clear();
 }

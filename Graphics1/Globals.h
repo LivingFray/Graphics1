@@ -9,12 +9,13 @@ using std::vector;
 #include "FreeType.h"
 #include "DataObject.h"
 #include "ImageLoader.h"
+#include "SoundLoader.h"
 #include "KeyConfig.h"
 #include "Vec2D.h"
 //The time in seconds between updates
 #define TICKRATE 0.05
 //The games title
-#define TITLE "Gravitate (Title WIP)"
+#define TITLE "Gravitate"
 //The width of the game window on launch
 #define DEFAULT_WIDTH 800
 //The height of the game window on launch
@@ -77,11 +78,11 @@ using std::vector;
 //Maximum number of particles per particle system
 #define MAX_PARTICLES 1000
 //How long before the spawn beam begins to fade
-#define SPAWN_ANIM_BEGIN 1.0
+#define SPAWN_ANIM_BEGIN 0.5
 //How long before the spawn doors open
-#define SPAWN_ANIM_DOORS 1.5
+#define SPAWN_ANIM_DOORS 1.0
 //The time after which the spawn animation is complete
-#define SPAWN_ANIM_END 2.0
+#define SPAWN_ANIM_END 1.5
 //How long a dead entity lingers for before being cleaned up
 #define ENTITY_DEAD_TIME 10.0
 //Debug mode

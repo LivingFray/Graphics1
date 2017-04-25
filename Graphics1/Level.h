@@ -68,5 +68,6 @@ protected:
 	vector<Entity*> toAddE;
 	vector<Entity*> toRemoveE;
 	Animation spawnAnim;
+	ALuint spawnSound;
 };
 

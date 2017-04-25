@@ -91,17 +91,23 @@ void TextItem::draw(double ex) {
 		glPopMatrix();
 	}
 	glPushMatrix();
+	glLoadIdentity();
 	Level* l = (Level*)state;
-	Vec2D screen = l->getScreenCoordinates(pos);
-	glTranslated(screen.getX(), screen.getY(), 0);
-	glRotated(angle, 0, 0, 1);
-	glColor4ub(r, g, b, a);
+	Vec2D offset;
 	freetype::font_data f = largeFont ? fontLarge : fontSmall;
-	printCentre(f, 0, -f.h * 0.625, text.c_str());
+	int len = freetype::getLength(f, text.c_str());
+	offset.setX(-len / 2.0);
+	offset.setY(-f.h * 0.625);
+	offset.multiplyBy(WORLD_SIZE / (double)(sWidth < sHeight ? sWidth : sHeight));
+	Vec2D screen = l->getScreenCoordinates(pos.add(offset));
+	glTranslated(screen.getX(), screen.getY(), 0);
+	glRotated(angle - l->getCameraAngleAt(0), 0, 0, 1);
+	glColor4ub(r, g, b, a);
+	freetype::print(f, 0, 0, text.c_str());
 	glPopMatrix();
 }
 
-//TODO: Casting issue??
+
 // Returns a DataObject representing the storable object
 DataObject TextItem::save() {
 	DataObject platform = Storable::save();

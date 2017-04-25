@@ -436,15 +436,15 @@ Translate by width/2 height/2
 Vec2D LevelRenderer::getScreenCoordinates(Vec2D world) {
 	//Offset from world origin
 	Vec2D screen = world.subtract(getCameraAt(0));
+	//Scale coordinates
+	double scale = (double)(sWidth < sHeight ? sWidth : sHeight) / WORLD_SIZE;
+	screen.multiplyBy(scale);
 	//Rotate coordinates
 	double cTheta = cos(-getCameraAngleAt(0) * DEG_TO_RAD);
 	double sTheta = sin(-getCameraAngleAt(0) * DEG_TO_RAD);
 	double tX = screen.getX();
 	screen.setX(screen.getX() * cTheta - screen.getY() * sTheta);
 	screen.setY(screen.getY() * cTheta + tX * sTheta);
-	//Scale coordinates
-	double scale = (double)(sWidth < sHeight ? sWidth : sHeight) / WORLD_SIZE;
-	screen.multiplyBy(scale);
 	//Offset from the centre of the screen
 	screen.addTo(Vec2D(sWidth * 0.5, sHeight * 0.5));
 	return screen;

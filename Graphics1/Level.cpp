@@ -60,6 +60,8 @@ Level::Level() {
 	gradRetry = GradButton();
 	gradRetry.setLabel("Restart Level");
 	gradRetry.setCallback(callRetry);
+	//Load audio
+	spawnSound = SoundLoader::getSound("Resources\\sounds\\spawn.wav");
 }
 
 
@@ -72,6 +74,9 @@ void Level::update() {
 	//Don't update in menus
 	if (reachedGoal || paused || failed) {
 		return;
+	}
+	if (levelTime == 0) {
+		alSourcePlay(spawnSound);
 	}
 	//Add player if finished spawning
 	if (!player && levelTime >= SPAWN_ANIM_BEGIN) {

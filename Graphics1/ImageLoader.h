@@ -9,5 +9,8 @@ namespace ImageLoader {
 	extern GLuint missing;
 	// Returns an opengl image context, loading image from file if need be
 	GLuint getImage(string path);
+	// Dynamically generate the classic missing texture checkerboard to fall back on
 	void makeMissingTexture();
+	//Frees every image stored
+	void cleanup();
 }
