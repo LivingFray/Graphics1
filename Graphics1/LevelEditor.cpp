@@ -240,7 +240,7 @@ void LevelEditor::draw(double ex) {
 	//Move camera (extrapolation only)
 	updateCamera(ex);
 	//Draw the level thus far 
-	LevelRenderer::draw(ex);
+	LevelRenderer::draw(0);
 	//Draw movement arrows/resize arrows
 	if (selected) {
 		//Draw point showing centre of object

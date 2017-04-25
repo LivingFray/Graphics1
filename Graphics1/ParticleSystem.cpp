@@ -53,15 +53,15 @@ void ParticleSystem::preWarm(double elapsed) {
 	if (toAdd > 0) {
 		lastAddedParticle = 0;
 	}
-	for (unsigned int i = 0; i < MAX_PARTICLES; i++) {
+	if (toAdd > MAX_PARTICLES) {
+		toAdd = MAX_PARTICLES;
+	}
+	for (unsigned int i = 0; i < toAdd; i++) {
 		//Randomly simulate different amounts of time elapsed to spread particles
-		double simPassed = elapsed * randD(0, 1);
-		if (particles[i].age > 0.0) {
-			particles[i].age -= simPassed;
-		}
-		if (emitting && toAdd > 0 && particles[i].age < 0.0) {
+		double simPassed = i / (double)particlesPerSecond;
+		if (emitting && particles[i].age < 0.0) {
 			newParticle(i);
-			toAdd--;
+			particles[i].age -= simPassed;
 		}
 		//Add particle to the buffers
 		if (particles[i].age > 0.0) {
