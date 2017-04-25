@@ -53,7 +53,7 @@ using std::vector;
 //How many points are given for picking up an item
 #define ITEM_SCORE_VALUE 100
 //Default speed cap for an entity
-#define DEFAULT_MAXSPEED 2.00
+#define DEFAULT_ENTITY_MAXSPEED 2.00
 //The width of an entity if none is provided
 #define DEFAULT_ENTITY_WIDTH 0.10
 //The height of an entity if none is provided
@@ -63,7 +63,7 @@ using std::vector;
 //The maximum angle between the player anf goal to count as in
 #define GOAL_ANGLE_DIF 5
 //The coefficient of friction for platforms (mu)
-#define GROUND_FRICTION 1
+#define GROUND_FRICTION 0.75
 //How fast the player accelerates when pressing a direction key
 #define PLAYER_ACCELERATION 0.30
 //How fast the player jumps

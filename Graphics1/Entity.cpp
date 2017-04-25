@@ -4,7 +4,7 @@
 #include <math.h>
 
 Entity::Entity() {
-	maxSpeed = DEFAULT_MAXSPEED;
+	maxSpeed = DEFAULT_ENTITY_MAXSPEED;
 	onGround = false;
 	moving = false;
 	visAngle = 0.0;

@@ -4,10 +4,11 @@
 
 #define ENTITY_ACCELERATION 0.10
 #define ENTITY_FOLLOW_RANGE 6.0
+#define ENTITY_SLOWEST_SPEED 1.00
 
 EntityAI::EntityAI() {
 	id = "AI";
-	maxSpeed = DEFAULT_MAXSPEED * 0.75;
+	maxSpeed = DEFAULT_ENTITY_MAXSPEED * 0.75;
 }
 
 
@@ -21,7 +22,10 @@ void EntityAI::update() {
 	Entity* player = l->getPlayer();
 	if (player != NULL) {
 		//If the player is in range
-		if (player->getPos().subtract(pos).magnitudeSquare() < ENTITY_FOLLOW_RANGE * ENTITY_FOLLOW_RANGE) {
+		double distance = player->getPos().subtract(pos).magnitudeSquare();
+		if (distance < ENTITY_FOLLOW_RANGE * ENTITY_FOLLOW_RANGE) {
+			double speed = vel.magnitudeSquare();
+			double stoppingDistance = (ENTITY_SLOWEST_SPEED * ENTITY_SLOWEST_SPEED - speed)/(2 * ENTITY_ACCELERATION);
 			//Calculate desired direction to travel
 			Vec2D move = player->getPos().subtract(pos);
 			//Get direction possible to walk in
@@ -38,6 +42,7 @@ void EntityAI::update() {
 			} else {
 				move.set(cos(DEG_TO_RAD * angle), sin(DEG_TO_RAD * angle));
 			}
+			//Move in correct direction
 			if (det < 0) {
 				move.multiplyBy(ENTITY_ACCELERATION);
 				flip = false;
@@ -45,8 +50,12 @@ void EntityAI::update() {
 				move.multiplyBy(-ENTITY_ACCELERATION);
 				flip = true;
 			}
-			vel.addTo(move);
-			moving = true;
+			if (distance > stoppingDistance * stoppingDistance || speed<ENTITY_SLOWEST_SPEED * ENTITY_SLOWEST_SPEED) {
+				vel.addTo(move);
+				moving = true;
+			} else {
+				moving = false;
+			}
 		} else {
 			moving = false;
 		}
