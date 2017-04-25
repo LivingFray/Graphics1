@@ -57,9 +57,9 @@ void ParticleSystem::preWarm(double elapsed) {
 		toAdd = MAX_PARTICLES;
 	}
 	for (unsigned int i = 0; i < toAdd; i++) {
-		//Randomly simulate different amounts of time elapsed to spread particles
+		//Simulate passage of time
 		double simPassed = i / (double)particlesPerSecond;
-		if (emitting && particles[i].age < 0.0) {
+		if (emitting) {
 			newParticle(i);
 			particles[i].age -= simPassed;
 		}

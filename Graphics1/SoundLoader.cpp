@@ -12,22 +12,33 @@ void SoundLoader::init() {
 	if (alGetError() != AL_NO_ERROR) {
 		printf("Error Initialising sound");
 	}
+	//Pre load sounds to prevent game hanging before playing sounds
+	getSound("Resources\\sounds\\spawn.wav", true);
+	getSound("Resources\\sounds\\tick.wav", true);
+	getSound("Resources\\sounds\\explode.wav", true);
 }
 
 
 // Returns an openal sound, loading from file if need be
-ALuint SoundLoader::getSound(string path) {
+ALuint SoundLoader::getSound(string path, bool preload) {
 	if (sounds[path] != NULL) {
-		return sounds[path];
+		ALuint source;
+		alGenSources(1, &source);
+		alSourcei(source, AL_BUFFER, sounds[path]);
+		return source;
 	}
 	ALuint buffer = alutCreateBufferFromFile(path.c_str());
 	if (buffer == AL_NONE) {
 		return NULL;
 	}
+	sounds[path] = buffer;
+	if (preload) {
+		printf(("Preloaded " + path + "\n").c_str());
+		return NULL;
+	}
 	ALuint source;
 	alGenSources(1, &source);
 	alSourcei(source, AL_BUFFER, buffer);
-	sounds[path] = source;
 	return source;
 }
 
@@ -37,12 +48,10 @@ void SoundLoader::cleanup() {
 	ALuint* sources = new ALuint[sounds.size()];
 	int p = 0;
 	for (auto i : sounds) {
-		//Stop any playing sounds
-		alSourceStop(i.second);
 		sources[p] = i.second;
 		p++;
 	}
-	glDeleteTextures(sounds.size(), sources);
+	alDeleteBuffers(sounds.size(), sources);
 	delete sources;
 	sounds.clear();
 	alutExit();

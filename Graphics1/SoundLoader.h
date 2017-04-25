@@ -11,7 +11,7 @@ namespace SoundLoader {
 	// Initialises OpenAL and handles any setup
 	void init();
 	// Returns an openal sound, loading from file if need be
-	ALuint getSound(string path);
+	ALuint getSound(string path, bool preload = false);
 	//Frees every sound stored
 	void cleanup();
 }

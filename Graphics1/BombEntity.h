@@ -15,5 +15,8 @@ protected:
 	Animation explodeAnim;
 	Animation idleAnim;
 	void explode();
+	ALuint tickSound;
+	double tickTime;
+	double maxTick;
 };
 

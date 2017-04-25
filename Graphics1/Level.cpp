@@ -66,6 +66,7 @@ Level::Level() {
 
 
 Level::~Level() {
+	alDeleteSources(1, &spawnSound);
 }
 
 

@@ -10,7 +10,7 @@ Explosion::Explosion() {
 	lastTime = 0;
 	time = 0;
 	ps.setTexture("Resources\\particles\\explosion.png");
-	ps.setParticlesPerSecond((int)(EXPLOSION_NEW_PARTICLES / EXPLOSION_NEW_PARTICLES_DURATION));
+	ps.setParticlesPerSecond(1000);
 	ps.addColor(255, 0, 0, 255, 255, 0, 0, 0);
 	ps.addColor(255, 127, 0, 255, 255, 127, 0, 0);
 	ps.addColor(255, 255, 0, 255, 255, 255, 0, 0);
@@ -21,11 +21,14 @@ Explosion::Explosion() {
 	ps.setMaxVelocity(3 * (width / age) / 2);
 	ps.setMinSize(0.05);
 	ps.setMaxSize(0.1);
+	ps.setEmitting(true);
 	warmed = false;
+	explodeSound = SoundLoader::getSound("Resources\\sounds\\explode.wav");
 }
 
 
 Explosion::~Explosion() {
+	alDeleteSources(1, &explodeSound);
 }
 
 
@@ -81,6 +84,9 @@ Vec2D* Explosion::getVertices(int* numVertices) {
 
 //Updates the entity
 void Explosion::update() {
+	if (time == 0) {
+		alSourcePlay(explodeSound);
+	}
 	time += TICKRATE;
 	if (time >= age) {
 		Level* l = (Level*)state;
@@ -91,7 +97,9 @@ void Explosion::update() {
 
 // Called when a collision occurs
 void Explosion::onCollide(Collider* other) {
-	other->onDamage(Damage::EXPLOSION);
+	if (time < TICKRATE) {
+		other->onDamage(Damage::EXPLOSION);
+	}
 }
 
 
@@ -109,7 +117,7 @@ void Explosion::setMaxAge(double age) {
 void Explosion::draw(double ex) {
 	ps.setPosition(pos);
 	if (!warmed) {
-		ps.preWarm(0.5);
+		ps.preWarm(1);
 		warmed = true;
 	}
 	time += ex;

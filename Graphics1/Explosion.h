@@ -26,5 +26,6 @@ protected:
 	double lastTime;
 	ParticleSystem ps;
 	bool warmed;
+	ALuint explodeSound;
 };
 

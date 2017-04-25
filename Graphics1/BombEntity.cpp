@@ -6,6 +6,7 @@
 #define TRIGGER_RADIUS 2.0
 #define FUSE_TIME 4.0
 #define BOMB_FLASHES 5
+#define TICK_DECREASE 0.75
 
 BombEntity::BombEntity() {
 	id = "bomb";
@@ -23,8 +24,9 @@ BombEntity::BombEntity() {
 	explodeAnim.setSpritesheetSize(2, 1);
 	explodeAnim.setSize(0.5, 0.5);
 	explodeAnim.setRepeat(false);
-	//Each frame lasts half as long as the last
-	double time = 0.5 * (FUSE_TIME / 2.0);
+	//Each frame lasts 75% as long as the last
+	double time = TICK_DECREASE * (FUSE_TIME / 2.0);
+	maxTick = time * 2;
 	for (int i = 0; i < BOMB_FLASHES; i++) {
 		explodeAnim.addFrame(0, time);
 		explodeAnim.addFrame(1, time);
@@ -32,10 +34,13 @@ BombEntity::BombEntity() {
 	}
 	triggered = false;
 	fuse = FUSE_TIME;
+	tickSound = SoundLoader::getSound("Resources\\sounds\\tick.wav");
+	tickTime = 0;
 }
 
 
 BombEntity::~BombEntity() {
+	alDeleteSources(1, &tickSound);
 }
 
 
@@ -54,8 +59,13 @@ void BombEntity::update() {
 		}
 	} else if (triggered) {
 		fuse -= TICKRATE;
+		tickTime -= TICKRATE;
 		if (fuse <= 0) {
 			explode();
+		} else if (tickTime <= 0) {
+			alSourcePlay(tickSound);
+			maxTick *= TICK_DECREASE;
+			tickTime = maxTick;
 		}
 	}
 	EntityAI::update();
@@ -70,6 +80,7 @@ void BombEntity::explode() {
 	exp->setPos(pos);
 	exp->setMaxAge(1);
 	l->safeAdd(exp);
+	tickTime = maxTick;
 }
 
 

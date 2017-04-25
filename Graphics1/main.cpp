@@ -9,7 +9,7 @@ TODO: --Refactor monolithic code (LevelRenderer, Level, LevelEditor)
 TODO: Every stupid thing on the mark sheet
 TODO: --Sound
 TODO: --Space partioning for collision
-TODO: Better AI?
+TODO: --Better AI?
 TODO: Buttons/Levers/etc
 TODO: Build demo levels
 TODO: Distinguish between spawn and goal
@@ -52,8 +52,6 @@ void init() {
 	KeyConfig::win = gameWindow;
 	//Initialise the texture loader
 	ImageLoader::makeMissingTexture();
-	//Initialse the sound loader
-	SoundLoader::init();
 	//Create the font
 	fontLarge.init(FONT_NAME, FONT_SIZE_LARGE);
 	fontSmall.init(FONT_NAME, FONT_SIZE_SMALL);
@@ -103,6 +101,8 @@ void resize(GLFWwindow* window, int width, int height) {
 }
 //-----------------------Window creation and game loop-----------------------//
 int main() {
+	//Load sounds first, to avoid noticable pause as resources load
+	SoundLoader::init();
 	if (!glfwInit()) {
 		std::cerr << "Failed to initialise GLFW";
 		exit(EXIT_FAILURE);
