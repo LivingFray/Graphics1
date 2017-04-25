@@ -85,8 +85,6 @@ using std::vector;
 #define SPAWN_ANIM_DOORS 1.0
 //The time after which the spawn animation is complete
 #define SPAWN_ANIM_END 1.5
-//How long a dead entity lingers for before being cleaned up
-#define ENTITY_DEAD_TIME 10.0
 //Debug mode
 #define DEBUG
 extern GLFWwindow* gameWindow;
@@ -102,9 +100,9 @@ extern GLFWcursor* cursorPan;
 enum class Damage {EXPLOSION, SPIKE, ENEMYCOLLISION, INSTAKILL};
 
 //Macro function to print centred text
-#define printCentre(font,x,y,text, ...)	do {																	\
-									int l = freetype::getLength((font), (text));								\
-									freetype::print((font), (float)(x) - l * 0.5f, (float)(y), (text), ##__VA_ARGS__);	\
+#define printCentre(font,x,y,text, ...)	do { \
+									int l = freetype::getLength((font), (text)); \
+									freetype::print((font), (float)(x) - l * 0.5f, (float)(y), (text), ##__VA_ARGS__); \
 								} while(0)
 //Macro function to generate a random double
 #define randD(min, max) (min) + (((max) - (min)) * (((double)rand()) / (double)RAND_MAX))

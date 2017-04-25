@@ -1,8 +1,7 @@
 #include "ShieldGiver.h"
 #include "Level.h"
 
-#define FOLLOW_SPEED 1
-#define MAX_FOLLOW_SPEED 2
+#define FOLLOW_SPEED 2
 
 ShieldGiver::ShieldGiver() {
 	id = "shieldgiver";
@@ -36,6 +35,7 @@ ShieldGiver::ShieldGiver() {
 	sparks.setParticlesPerSecond(2000);
 	sparks.addColor(255, 255, 255, 255, 255, 255, 255, 0);
 	sparks.addColor(125, 249, 255, 255, 125, 249, 255, 0);
+	sparkSound = SoundLoader::getSound("Resources\\sounds\\spark.wav");
 }
 
 
@@ -58,11 +58,13 @@ void ShieldGiver::update() {
 		Vec2D g;
 		l->getGravityAtPos(following->getPos(), &g);
 		dir.addTo(g.unit().multiply(-1.5));
-		double d = dir.magnitudeSquare();
-		vel.addTo(dir.unit().multiply(FOLLOW_SPEED));
-		if (vel.magnitudeSquare() > MAX_FOLLOW_SPEED * MAX_FOLLOW_SPEED) {
-			vel.toUnit();
-			vel.multiplyBy(MAX_FOLLOW_SPEED);
+		double d = dir.magnitude();
+		if (d == 0) {
+			vel = Vec2D(0.0, 0.0);
+		} else if(d>FOLLOW_SPEED * TICKRATE) {
+			vel = dir.unit().multiply(FOLLOW_SPEED);
+		} else {
+			vel = dir.unit().multiply(d);
 		}
 		pos.addTo(vel.multiply(TICKRATE));
 	}
@@ -107,8 +109,11 @@ void ShieldGiver::onDamage(Damage d) {
 		//Make sparks "floaty"
 		g.multiplyBy(0.1);
 		sparks.setGravity(g);
+		//Play sound
+		alSourcePlay(sparkSound);
 	}
 }
+
 
 // Returns whether the object is solid
 bool ShieldGiver::isSolid() {

@@ -14,7 +14,6 @@ TODO: Buttons/Levers/etc
 TODO: Build demo levels
 TODO: Distinguish between spawn and goal
 TODO: Fix Shield Giver following
-TODO: Fix ENTITY following
 TODO: Threaded startup?
 TODO: --Preload most resources
 TODO: Spinny blade

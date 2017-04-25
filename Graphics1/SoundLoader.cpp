@@ -16,6 +16,7 @@ void SoundLoader::init() {
 	getSound("Resources\\sounds\\spawn.wav", true);
 	getSound("Resources\\sounds\\tick.wav", true);
 	getSound("Resources\\sounds\\explode.wav", true);
+	getSound("Resources\\sounds\\spark.wav", true);
 }
 
 

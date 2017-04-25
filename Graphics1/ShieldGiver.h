@@ -23,5 +23,6 @@ protected:
 	bool dead;
 	ParticleSystem sparks;
 	Animation anim;
+	ALuint sparkSound;
 };
 

@@ -19,7 +19,7 @@ StompableEntity::StompableEntity() {
 	deadAnim.setSize(1.0, 1.0);
 	deadAnim.addFrame(0, 1);
 	deadAnim.setRepeat(false);
-	deadTime = 0;
+	dead = false;
 }
 
 
@@ -29,7 +29,7 @@ StompableEntity::~StompableEntity() {
 
 // Called when damage is inflicted on the object
 void StompableEntity::onDamage(Damage d) {
-	deadTime = ENTITY_DEAD_TIME;
+	dead = true;
 	currentAnim = &deadAnim;
 }
 
@@ -37,7 +37,7 @@ void StompableEntity::onDamage(Damage d) {
 // Called when a collision occurs
 void StompableEntity::onCollide(Collider* other) {
 	//No corpses murdering players
-	if (deadTime != 0) {
+	if (dead) {
 		return;
 	}
 	if (other->getId() == "player") {
@@ -51,7 +51,7 @@ void StompableEntity::onCollide(Collider* other) {
 		//If player is moving down
 		stomped = stomped && (other->getVel().dot(grav) / (grav.magnitude() * other->getVel().magnitude()))>0;
 		if (stomped) {
-			deadTime = ENTITY_DEAD_TIME;
+			dead = true;
 			currentAnim = &deadAnim;
 		} else {
 			other->onDamage(Damage::ENEMYCOLLISION);
@@ -62,12 +62,7 @@ void StompableEntity::onCollide(Collider* other) {
 
 // Updates the entity
 void StompableEntity::update() {
-	if (deadTime > 0) {
-		deadTime -= TICKRATE;
-		if (deadTime <= 0) {
-			Level* l = (Level*)state;
-			l->safeDelete(this);
-		}
+	if (dead) {
 		//Just handle moving/falling, no AI
 		moving = false;
 		Entity::update();

@@ -14,6 +14,6 @@ public:
 protected:
 	Animation idleAnim;
 	Animation deadAnim;
-	double deadTime;
+	bool dead;
 };
 
