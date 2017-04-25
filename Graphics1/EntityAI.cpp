@@ -7,6 +7,7 @@
 
 EntityAI::EntityAI() {
 	id = "AI";
+	maxSpeed = DEFAULT_MAXSPEED * 0.75;
 }
 
 

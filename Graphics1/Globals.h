@@ -76,7 +76,7 @@ using std::vector;
 //How long explosions emit particles for after being created
 #define EXPLOSION_NEW_PARTICLES_DURATION 0.05
 //Maximum number of particles per particle system
-#define MAX_PARTICLES 1000
+#define MAX_PARTICLES 5000
 //How long before the spawn beam begins to fade
 #define SPAWN_ANIM_BEGIN 0.5
 //How long before the spawn doors open

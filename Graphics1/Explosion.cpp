@@ -10,7 +10,7 @@ Explosion::Explosion() {
 	lastTime = 0;
 	time = 0;
 	ps.setTexture("Resources\\particles\\explosion.png");
-	ps.setParticlesPerSecond(1000);
+	ps.setParticlesPerSecond(MAX_PARTICLES);
 	ps.addColor(255, 0, 0, 255, 255, 0, 0, 0);
 	ps.addColor(255, 127, 0, 255, 255, 127, 0, 0);
 	ps.addColor(255, 255, 0, 255, 255, 255, 0, 0);
