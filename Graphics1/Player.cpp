@@ -47,10 +47,16 @@ void Player::update() {
 	double dX = 0.0;
 	if (KeyConfig::isDown("moveLeft")) {
 		dX -= PLAYER_ACCELERATION;
+		if (!flip) {
+			updateShields();
+		}
 		flip = true;
 	}
 	if (KeyConfig::isDown("moveRight")) {
 		dX += PLAYER_ACCELERATION;
+		if (flip) {
+			updateShields();
+		}
 		flip = false;
 	}
 	//Set whether the player is moving
@@ -112,6 +118,7 @@ void Player::update() {
 // Draws the player, ex seconds from last update
 void Player::draw(double ex) {
 	Entity::draw(ex);
+	//Draw any shields the player may have
 	if (shields.size() > 0 || immuneTime > 0) {
 		Vec2D p = pos.add(vel.multiply(ex));
 		glEnable(GL_TEXTURE_2D);
@@ -142,9 +149,10 @@ void Player::onDamage(Damage d) {
 		return;
 	}
 	if (shields.size() > 0) {
-		shields.back()->onDamage(Damage::INSTAKILL);
-		shields.pop_back();
+		shields.front()->onDamage(Damage::INSTAKILL);
+		shields.pop_front();
 		immuneTime = 1;
+		updateShields();
 	} else {
 		Level* l = (Level*)state;
 		l->failLevel();
@@ -153,6 +161,17 @@ void Player::onDamage(Damage d) {
 
 
 // Gives the player a shield granting immunity to 1 attack
-void Player::giveShield(Entity* giver) {
+void Player::giveShield(ShieldGiver* giver) {
 	shields.push_back(giver);
+	giver->setDesiredPos(Vec2D(shields.size(), 1.5));
+}
+
+
+//Updates the desired locations of the shields
+void Player::updateShields() {
+	int i = 0;
+	for (ShieldGiver* s : shields) {
+		s->setDesiredPos(Vec2D(i * (flip?-1:1),1.5));
+		i++;
+	}
 }

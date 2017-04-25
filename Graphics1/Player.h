@@ -1,5 +1,7 @@
 #pragma once
 #include "Entity.h"
+#include "ShieldGiver.h"
+#include <list>
 
 class Player:
 	public Entity {
@@ -13,9 +15,9 @@ public:
 	// Called when damage is inflicted on the object
 	void onDamage(Damage d);
 	// Gives the player a shield granting immunity to 1 attack
-	void giveShield(Entity* giver);
+	void giveShield(ShieldGiver* giver);
 protected:
-	vector<Entity*> shields;
+	std::list<ShieldGiver*> shields;
 	GLuint shield;
 	double immuneTime;
 	Animation walkAnim;
@@ -23,5 +25,6 @@ protected:
 	Animation jumpAnim;
 	bool wasMoving;
 	char offCount;
+	void updateShields();
 };
 

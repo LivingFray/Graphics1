@@ -36,6 +36,7 @@ ShieldGiver::ShieldGiver() {
 	sparks.addColor(255, 255, 255, 255, 255, 255, 255, 0);
 	sparks.addColor(125, 249, 255, 255, 125, 249, 255, 0);
 	sparkSound = SoundLoader::getSound("Resources\\sounds\\spark.wav");
+	desiredPos = Vec2D(0, 0);
 }
 
 
@@ -57,7 +58,10 @@ void ShieldGiver::update() {
 		Level* l = (Level*)state;
 		Vec2D g;
 		l->getGravityAtPos(following->getPos(), &g);
-		dir.addTo(g.unit().multiply(-1.5));
+		g.toUnit();
+		Vec2D g2 = Vec2D(g.getY(), -g.getX());
+		dir.addTo(g.multiply(-desiredPos.getY()));
+		dir.addTo(g2.multiply(-desiredPos.getX()));
 		double d = dir.magnitude();
 		if (d == 0) {
 			vel = Vec2D(0.0, 0.0);
@@ -118,4 +122,10 @@ void ShieldGiver::onDamage(Damage d) {
 // Returns whether the object is solid
 bool ShieldGiver::isSolid() {
 	return false;
+}
+
+
+// Sets the desired position to occupy relative to the player
+void ShieldGiver::setDesiredPos(Vec2D pos) {
+	desiredPos = pos;
 }

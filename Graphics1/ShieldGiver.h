@@ -16,6 +16,8 @@ public:
 	void onCollide(Collider* other);
 	// Returns whether the object is solid
 	bool isSolid();
+	// Sets the desired position to occupy relative to the player
+	void setDesiredPos(Vec2D pos);
 protected:
 	Entity* following;
 	double deathTime;
@@ -24,5 +26,6 @@ protected:
 	ParticleSystem sparks;
 	Animation anim;
 	ALuint sparkSound;
+	Vec2D desiredPos;
 };
 
