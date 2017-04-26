@@ -255,7 +255,7 @@ void Level::draw(double ex) {
 		}
 	} else if (paused) {
 		//Darken the screen to show the game is paused
-		glColor4ub(0, 0, 0, 200);
+		glColor4ub(0, 0, 0, 150);
 		glBegin(GL_QUADS);
 		glVertex2i(0, 0);
 		glVertex2i(sWidth, 0);
@@ -266,7 +266,7 @@ void Level::draw(double ex) {
 		int y = (int)(fontLarge.h * 2.1);
 		int w = sWidth / 2;
 		int h = (int)fontLarge.h * 2;
-		int top = sHeight / 2 + y + h / 2;
+		int top = h * 3;
 		gradResume.setY(top);
 		gradRetry.setY(top - y);
 		gradMenu.setY(top - 2 * y);
