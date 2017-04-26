@@ -16,7 +16,8 @@ TODO: Distinguish between spawn and goal
 TODO: Threaded startup?
 TODO: --Preload most resources
 TODO: Spinny blade
-TODO: Slope
+TODO: Fix TextBox formatting
+TODO: --Custom TextBox Validation?
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;

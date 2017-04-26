@@ -10,6 +10,7 @@
 #include "StompableEntity.h"
 #include "MovingPlatform.h"
 #include "TextItem.h"
+#include "Slope.h"
 #define EDITOR_MOVE_SPEED 1.00
 #define EDITOR_ROTATE_SPEED 30
 #define MOVE_SIZE 0.5
@@ -112,10 +113,10 @@ LevelEditor::LevelEditor() {
 	item.name = "Bomb";
 	item.create = [](BaseState* s) {
 		LevelEditor* l = (LevelEditor*)s;
-		BombEntity* p = new BombEntity();
-		p->setPos(l->getCameraPos());
-		p->setAngle(l->getCameraAngleAt(0));
-		l->addEntity(p);
+		BombEntity* b = new BombEntity();
+		b->setPos(l->getCameraPos());
+		b->setAngle(l->getCameraAngleAt(0));
+		l->addEntity(b);
 		l->setMenu(0);
 	};
 	menuItems.push_back(item);
@@ -123,10 +124,10 @@ LevelEditor::LevelEditor() {
 	item.name = "Stompable Enemy";
 	item.create = [](BaseState* s) {
 		LevelEditor* l = (LevelEditor*)s;
-		StompableEntity* p = new StompableEntity();
-		p->setPos(l->getCameraPos());
-		p->setAngle(l->getCameraAngleAt(0));
-		l->addEntity(p);
+		StompableEntity* e = new StompableEntity();
+		e->setPos(l->getCameraPos());
+		e->setAngle(l->getCameraAngleAt(0));
+		l->addEntity(e);
 		l->setMenu(0);
 	};
 	menuItems.push_back(item);
@@ -134,10 +135,10 @@ LevelEditor::LevelEditor() {
 	item.name = "Shield Giver";
 	item.create = [](BaseState* s) {
 		LevelEditor* l = (LevelEditor*)s;
-		ShieldGiver* p = new ShieldGiver();
-		p->setPos(l->getCameraPos());
-		p->setAngle(l->getCameraAngleAt(0));
-		l->addEntity(p);
+		ShieldGiver* e = new ShieldGiver();
+		e->setPos(l->getCameraPos());
+		e->setAngle(l->getCameraAngleAt(0));
+		l->addEntity(e);
 		l->setMenu(0);
 	};
 	menuItems.push_back(item);
@@ -173,6 +174,18 @@ LevelEditor::LevelEditor() {
 	item.create = [](BaseState* s) {
 		LevelEditor* l = (LevelEditor*)s;
 		TextItem* p = new TextItem();
+		p->setPos(l->getCameraPos());
+		p->setAngle(l->getCameraAngleAt(0));
+		p->setWidth(1);
+		p->setHeight(1);
+		l->addPlatform(p);
+		l->setMenu(0);
+	};
+	menuItems.push_back(item);
+	item.name = "Slope";
+	item.create = [](BaseState* s) {
+		LevelEditor* l = (LevelEditor*)s;
+		Slope* p = new Slope();
 		p->setPos(l->getCameraPos());
 		p->setAngle(l->getCameraAngleAt(0));
 		p->setWidth(1);

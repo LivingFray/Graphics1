@@ -7,6 +7,7 @@
 #include "StompableEntity.h"
 #include "MovingPlatform.h"
 #include "TextItem.h"
+#include "Slope.h"
 #define NUM_PANELS 8
 #define PARALLAX 0.5
 #define PANELS_X 9
@@ -375,6 +376,10 @@ void LevelRenderer::loadLevel(string filePath) {
 				TextItem* t = new TextItem();
 				t->load(item);
 				platforms.push_back(t);
+			} else if (id == "slope") {
+				Slope* s = new Slope();
+				s->load(item);
+				platforms.push_back(s);
 			}
 		}
 		//Get next item

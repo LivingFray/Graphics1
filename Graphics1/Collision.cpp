@@ -17,10 +17,12 @@ bool Collision::intersects(Collider* a, Collider* b, Vec2D* res) {
 	//Check each normal for intersection
 	double smallestMag = HUGE;
 	for (Vec2D n : normals) {
+		//Normalise vectors
 		n.toUnit();
 		double aMin, aMax, bMin, bMax;
 		project(a, n, &aMin, &aMax);
 		project(b, n, &bMin, &bMax);
+		//If vectors don't overlap
 		if (aMax < bMin || bMax < aMin) {
 			return false;
 		}
@@ -37,6 +39,7 @@ bool Collision::intersects(Collider* a, Collider* b, Vec2D* res) {
 			*res = n;
 		}
 	}
+	//Calculate the resolution vector
 	res->multiplyBy(smallestMag);
 	return true;
 }
@@ -46,8 +49,10 @@ bool Collision::intersects(Collider* a, Collider* b, Vec2D* res) {
 void Collision::project(Collider* c, Vec2D vec, double* min, double* max) {
 	int n;
 	Vec2D* vertices = c->getVertices(&n);
+	//Set min and max to projection of vertex 0
 	*min = vertices[0].dot(vec);
 	*max = *min;
+	//Project each vertex onto vec and update the min and max values
 	for (int i = 1; i < n; i++) {
 		double p = vertices[i].dot(vec);
 		if (p < *min) {
@@ -112,23 +117,16 @@ void Collision::handle(Level* l, Entity* a, Platform* b, bool &onGround) {
 			Vec2D grav;
 			l->getGravityAtPos(a->getPos(), &grav);
 			Vec2D vel = a->getVel();
-			//TODO: Fix properly, current implementation is a long winded route to set vel to 0
 			if (vel.magnitudeSquare() > FLOAT_ZERO) {
-				//Only remove in direction of response
-				//cos(theta) = (res).(-vel) / (|res||vel|)
-				//newResponse = unit(response) * |vel|cos(theta)
-				//scaledResponse = oldVel * cos(theta)
-				//newVel = oldVel - scaledResponse
 				double cTheta = (res.dot(vel.multiply(-1))) / (res.magnitude() * vel.magnitude());
 				vel.addTo(res.unit().multiply(vel.magnitude() * cTheta));
+				//Some very questionable maths to determine friction:
 				//Apply friction (|F| = u|R|, R = mA -> |F| = u|A|m -> ma = u|A|m -> |a| = u|A|
 				//-> dv/dt = u|A| -> dv = u|A| * TICKRATE
 				//A = vel / dt
 				//|vel| = |vel| - u|vel / TICKRATE|*TICKRATE
 				//|vel| = |vel| - u|vel|
 				//|vel| = (1-u)|vel|
-				////vel = vel - unit(vel) * u * |g| * tickrate
-				////vel.subtractFrom(vel.unit().multiply(GROUND_FRICTION * TICKRATE * grav.magnitude()));
 				if (!a->isMoving()) {
 					vel.multiplyBy(1 - GROUND_FRICTION);
 					if (vel.magnitudeSquare() < STOP_VELOCITY * STOP_VELOCITY) {

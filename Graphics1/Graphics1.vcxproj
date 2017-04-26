@@ -148,6 +148,7 @@
     <ClCompile Include="DataObject.cpp" />
     <ClCompile Include="MovingPlatform.cpp" />
     <ClCompile Include="SettingsMenu.cpp" />
+    <ClCompile Include="Slope.cpp" />
     <ClCompile Include="SoundLoader.cpp" />
     <ClCompile Include="Spike.cpp" />
     <ClCompile Include="Entity.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="DataObject.h" />
     <ClInclude Include="MovingPlatform.h" />
     <ClInclude Include="SettingsMenu.h" />
+    <ClInclude Include="Slope.h" />
     <ClInclude Include="SoundLoader.h" />
     <ClInclude Include="Spike.h" />
     <ClInclude Include="Entity.h" />

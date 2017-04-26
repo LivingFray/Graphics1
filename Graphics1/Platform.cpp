@@ -39,7 +39,7 @@ void Platform::setHeight(double height) {
 Vec2D* Platform::getNormals(int* numNormals) {
 	*numNormals = 2;
 	Vec2D* r = new Vec2D[2];
-	//Calculate the angle of one of the nromals
+	//Calculate the angle of one of the normals
 	r[0].set(cos(DEG_TO_RAD * angle), sin(DEG_TO_RAD * angle));
 	//Rotate the other by 90 degrees to get the second normal
 	r[1].set(-r[0].getY(), r[0].getX());
@@ -113,6 +113,17 @@ void Platform::draw(double ex) {
 	for (int i = 0; i < n; i++) {
 		glVertex2d(vecs[i].getX(), vecs[i].getY());
 	}
+	delete[] vecs;
+	glEnd();
+	//Draw Normals
+	Vec2D* norms = getNormals(&n);
+	glColor3ub(0, 255, 255);
+	glBegin(GL_LINES);
+	for (int i = 0; i < n; i++) {
+		glVertex2d(pos.getX(), pos.getY());
+		glVertex2d(pos.getX() + norms[i].getX(), pos.getY() + norms[i].getY());
+	}
+	delete[] norms;
 	glEnd();
 #endif
 	glPopMatrix();
