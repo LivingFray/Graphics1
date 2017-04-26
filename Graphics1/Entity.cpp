@@ -9,6 +9,7 @@ Entity::Entity() {
 	moving = false;
 	visAngle = 0.0;
 	id = "entity";
+	grav = 1.0;
 }
 
 
@@ -45,7 +46,7 @@ void Entity::update() {
 	Level* level = (Level*)state;
 	level->getGravityAtPos(pos, &g);
 	if (!onGround) {
-		vel.addTo(g.multiply(TICKRATE));
+		vel.addTo(g.multiply(TICKRATE * grav));
 	}
 	//Rotation
 	if (abs(g.getX()) > FLOAT_ZERO || abs(g.getY()) > FLOAT_ZERO) {

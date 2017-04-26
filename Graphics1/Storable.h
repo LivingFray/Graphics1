@@ -5,7 +5,7 @@ class Storable:
 	virtual public WorldObject {
 public:
 	Storable();
-	~Storable();
+	virtual ~Storable();
 	// Returns a DataObject representing the storable object
 	virtual DataObject save();
 	// Loads the storable object from the DataObject

@@ -8,6 +8,7 @@
 #include "MovingPlatform.h"
 #include "TextItem.h"
 #include "Slope.h"
+#include "Turret.h"
 #define NUM_PANELS 8
 #define PARALLAX 0.5
 #define PANELS_X 9
@@ -383,6 +384,10 @@ void LevelRenderer::loadLevel(string filePath) {
 				Slope* s = new Slope();
 				s->load(item);
 				platforms.push_back(s);
+			} else if (id == "turret") {
+				Turret* t = new Turret();
+				t->load(item);
+				entities.push_back(t);
 			}
 		}
 		//Get next item

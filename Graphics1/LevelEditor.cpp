@@ -11,6 +11,7 @@
 #include "MovingPlatform.h"
 #include "TextItem.h"
 #include "Slope.h"
+#include "Turret.h"
 #define EDITOR_MOVE_SPEED 1.00
 #define EDITOR_ROTATE_SPEED 30
 #define MOVE_SIZE 0.5
@@ -176,8 +177,8 @@ LevelEditor::LevelEditor() {
 		TextItem* p = new TextItem();
 		p->setPos(l->getCameraPos());
 		p->setAngle(l->getCameraAngleAt(0));
-		p->setWidth(1);
-		p->setHeight(1);
+		p->setWidth(0.25);
+		p->setHeight(0.25);
 		l->addPlatform(p);
 		l->setMenu(0);
 	};
@@ -191,6 +192,16 @@ LevelEditor::LevelEditor() {
 		p->setWidth(1);
 		p->setHeight(1);
 		l->addPlatform(p);
+		l->setMenu(0);
+	};
+	menuItems.push_back(item);
+	item.name = "Turret";
+	item.create = [](BaseState* s) {
+		LevelEditor* l = (LevelEditor*)s;
+		Turret* t = new Turret();
+		t->setPos(l->getCameraPos());
+		t->setAngle(l->getCameraAngleAt(0));
+		l->addEntity(t);
 		l->setMenu(0);
 	};
 	menuItems.push_back(item);

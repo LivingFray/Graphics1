@@ -24,7 +24,7 @@ PointGiver::~PointGiver() {
 void PointGiver::onCollide(Collider* other) {
 	if (other->getId() == "player") {
 		Level* l = (Level*)state;
-		l->addScore(ITEM_SCORE_VALUE);
+		l->addScore(SCORE_POINTGIVER);
 		l->safeDelete(this);
 	}
 }

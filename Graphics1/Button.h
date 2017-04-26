@@ -3,7 +3,7 @@
 class Button {
 public:
 	Button();
-	~Button();
+	virtual ~Button();
 	// Sets the x-position of the button
 	void setX(int x);
 	// Gets the x-position of the button

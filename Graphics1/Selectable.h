@@ -5,7 +5,7 @@ class Selectable:
 	virtual public WorldObject {
 public:
 	Selectable();
-	~Selectable();
+	virtual ~Selectable();
 	// Called when the selectable is moved
 	virtual bool onMove(double dX, double dY);
 	// Called when the selectable is resized

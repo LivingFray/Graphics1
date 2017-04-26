@@ -9,7 +9,7 @@ class Platform:
 	public Storable {
 public:
 	Platform();
-	~Platform();
+	virtual ~Platform();
 	// Sets the width of the platform
 	void setWidth(double width);
 	// Sets the height of the platform

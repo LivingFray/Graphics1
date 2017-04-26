@@ -164,3 +164,9 @@ void TextItem::createOptions() {
 bool TextItem::isSolid() {
 	return false;
 }
+
+
+// Returns if the world object can be rotated
+bool TextItem::canResize() {
+	return false;
+}

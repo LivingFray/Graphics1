@@ -66,5 +66,6 @@ protected:
 	bool flip = false;
 	bool moving;
 	Animation* currentAnim;
+	double grav;
 };
 

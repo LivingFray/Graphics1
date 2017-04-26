@@ -4,7 +4,7 @@ class LevelButton:
 	public Button {
 public:
 	LevelButton();
-	~LevelButton();
+	virtual ~LevelButton();
 protected:
 	string path;
 public:

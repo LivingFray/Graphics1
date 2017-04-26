@@ -29,8 +29,12 @@ StompableEntity::~StompableEntity() {
 
 // Called when damage is inflicted on the object
 void StompableEntity::onDamage(Damage d) {
-	dead = true;
-	currentAnim = &deadAnim;
+	if (!dead) {
+		Level* l = (Level*)state;
+		l->addScore(SCORE_KILL);
+		dead = true;
+		currentAnim = &deadAnim;
+	}
 }
 
 
@@ -51,6 +55,7 @@ void StompableEntity::onCollide(Collider* other) {
 		//If player is moving down
 		stomped = stomped && (other->getVel().dot(grav) / (grav.magnitude() * other->getVel().magnitude()))>0;
 		if (stomped) {
+			l->addScore(SCORE_KILL);
 			dead = true;
 			currentAnim = &deadAnim;
 		} else {

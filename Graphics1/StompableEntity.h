@@ -4,7 +4,7 @@ class StompableEntity :
 	public EntityAI {
 public:
 	StompableEntity();
-	~StompableEntity();
+	virtual ~StompableEntity();
 	// Called when damage is inflicted on the object
 	void onDamage(Damage d);
 	// Called when a collision occurs

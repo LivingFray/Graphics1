@@ -62,6 +62,7 @@ Level::Level() {
 	gradRetry.setCallback(callRetry);
 	//Load audio
 	spawnSound = SoundLoader::getSound("Resources\\sounds\\spawn.wav");
+	goalSound = SoundLoader::getSound("Resources\\sounds\\goal.wav");
 }
 
 
@@ -136,9 +137,11 @@ void Level::update() {
 		//TODO: Buttons and things to enable exit
 		if (player->getPos().subtract(goal).magnitudeSquare() < GOAL_DISTANCE_SQR) {
 			reachedGoal = true;
+			//Give points for remaining time
 			if (targetTime > levelTime) {
-				addScore(10 * (int)(targetTime - levelTime));
+				addScore(TIME_MULTIPLIER * (int)(targetTime - levelTime));
 			}
+			alSourcePlay(goalSound);
 		}
 	}
 	//Safely handle anything that was added this update

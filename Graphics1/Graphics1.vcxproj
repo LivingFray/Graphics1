@@ -147,7 +147,9 @@
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="DataObject.cpp" />
     <ClCompile Include="MovingPlatform.cpp" />
+    <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="SettingsMenu.cpp" />
+    <ClCompile Include="Turret.cpp" />
     <ClCompile Include="Slope.cpp" />
     <ClCompile Include="SoundLoader.cpp" />
     <ClCompile Include="Spike.cpp" />
@@ -193,7 +195,9 @@
     <ClInclude Include="Collision.h" />
     <ClInclude Include="DataObject.h" />
     <ClInclude Include="MovingPlatform.h" />
+    <ClInclude Include="Projectile.h" />
     <ClInclude Include="SettingsMenu.h" />
+    <ClInclude Include="Turret.h" />
     <ClInclude Include="Slope.h" />
     <ClInclude Include="SoundLoader.h" />
     <ClInclude Include="Spike.h" />

@@ -5,7 +5,7 @@ class BaseMenu:
 	public BaseState {
 public:
 	BaseMenu();
-	~BaseMenu();
+	virtual ~BaseMenu();
 	// Draws the menu ex seconds after last update
 	virtual void draw(double ex);
 	// Updates the menu

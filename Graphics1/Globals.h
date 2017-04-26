@@ -50,8 +50,12 @@ using std::vector;
 //How large the spawn and goal are
 #define SPAWN_WIDTH 1.00
 #define SPAWN_HEIGHT 2.00
-//How many points are given for picking up an item
-#define ITEM_SCORE_VALUE 100
+//How many points are given for touching a point giver
+#define SCORE_POINTGIVER 100
+//How many points are given for killing an enemy
+#define SCORE_KILL 50
+//The value of each second on the clock when the player reaches the goal
+#define TIME_MULTIPLIER 10
 //Default speed cap for an entity
 #define DEFAULT_ENTITY_MAXSPEED 2.00
 //The width of an entity if none is provided
@@ -85,6 +89,12 @@ using std::vector;
 #define SPAWN_ANIM_DOORS 1.0
 //The time after which the spawn animation is complete
 #define SPAWN_ANIM_END 1.5
+//The cooldown between shooting entities releasing a projectile
+#define SHOOTING_COOLDOWN 3
+//The distance from which a shooting entity can see the player
+#define SHOOTING_VISION 5.0
+//The velocity of projectiles
+#define PROJECTILE_SPEED 3.0
 //Debug mode
 #define DEBUG
 extern GLFWwindow* gameWindow;
@@ -97,7 +107,7 @@ extern BaseState* state;
 extern BaseState* newState;
 extern GLFWcursor* cursorNormal;
 extern GLFWcursor* cursorPan;
-enum class Damage {EXPLOSION, SPIKE, ENEMYCOLLISION, INSTAKILL};
+enum class Damage {EXPLOSION, SPIKE, ENEMYCOLLISION, PROJECTILE, INSTAKILL};
 
 //Macro function to print centred text
 #define printCentre(font,x,y,text, ...)	do { \

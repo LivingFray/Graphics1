@@ -6,8 +6,8 @@
 Task list intergration:
 TODO: Cleanup code (auto generated classes, import orders, etc)
 TODO: --Refactor monolithic code (LevelRenderer, Level, LevelEditor)
+TODO: ----Change entities using level to levelrenderer/levelbase/whatever
 TODO: Every stupid thing on the mark sheet
-TODO: --Sound
 TODO: --Space partioning for collision
 TODO: --Better AI?
 TODO: Buttons/Levers/etc
@@ -15,7 +15,9 @@ TODO: Build demo levels
 TODO: Threaded startup?
 TODO: --Preload most resources
 TODO: Custom TextBox Validation?
-TODO: Projectile firing enemy
+TODO: Breakable platform
+TODO: Player weapon?
+TODO: Goal animation
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;

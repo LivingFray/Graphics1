@@ -37,6 +37,8 @@ public:
 	void createOptions();
 	// Returns whether the object is solid
 	bool isSolid();
+	// Returns if the world object can be rotated
+	bool canResize();
 protected:
 	string text;
 	bool largeFont;

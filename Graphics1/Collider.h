@@ -5,7 +5,7 @@ class Collider:
 	virtual public WorldObject {
 public:
 	Collider();
-	~Collider();
+	virtual ~Collider();
 	// Gets the normal vectors needed to check collision
 	virtual Vec2D* getNormals(int* numNormals);
 	// Gets the vertices of the bounding box

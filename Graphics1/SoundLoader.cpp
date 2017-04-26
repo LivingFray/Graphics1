@@ -14,9 +14,11 @@ void SoundLoader::init() {
 	}
 	//Pre load sounds to prevent game hanging before playing sounds
 	getSound("Resources\\sounds\\spawn.wav", true);
+	getSound("Resources\\sounds\\goal.wav", true);
 	getSound("Resources\\sounds\\tick.wav", true);
 	getSound("Resources\\sounds\\explode.wav", true);
 	getSound("Resources\\sounds\\spark.wav", true);
+	getSound("Resources\\sounds\\fire.wav", true);
 }
 
 
