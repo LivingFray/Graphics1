@@ -132,7 +132,7 @@ void Level::update() {
 		e->setOnGround(onGround);
 	}
 	//Bespoke collision detection for goal (other checks need to be met)
-	if (player && abs(player->getAngle() - goalAngle) < GOAL_ANGLE_DIF) {
+	if (goalOpen && player && abs(player->getAngle() - goalAngle) < GOAL_ANGLE_DIF) {
 		//TODO: Buttons and things to enable exit
 		if (player->getPos().subtract(goal).magnitudeSquare() < GOAL_DISTANCE_SQR) {
 			reachedGoal = true;

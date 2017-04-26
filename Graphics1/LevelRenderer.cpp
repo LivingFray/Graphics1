@@ -19,6 +19,8 @@ LevelRenderer::LevelRenderer() {
 	stars = ImageLoader::getImage("Resources\\stars.png");
 	backing = ImageLoader::getImage("Resources\\backing.png");
 	spawnBack = ImageLoader::getImage("Resources\\spawnBack.png");
+	goalActive = ImageLoader::getImage("Resources\\goalActive.png");
+	goalInactive = ImageLoader::getImage("Resources\\goalInactive.png");
 	glBindTexture(GL_TEXTURE_2D, backing);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -31,6 +33,7 @@ LevelRenderer::LevelRenderer() {
 	goalAngle = 0;
 	defaultGravity = 0;
 	targetTime = 0;
+	goalOpen = true;
 }
 
 
@@ -179,7 +182,6 @@ void LevelRenderer::draw(double ex) {
 		p->draw(ex);
 	}
 	//Draw the spawn and goal
-	//TODO: The textures (different spawn/goal, doors)
 	//Spawn
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, spawnBack);
@@ -199,6 +201,7 @@ void LevelRenderer::draw(double ex) {
 	glEnd();
 	glPopMatrix();
 	//Goal
+	glBindTexture(GL_TEXTURE_2D, goalOpen ? goalActive : goalInactive);
 	glPushMatrix();
 	glTranslated(goal.getX(), goal.getY(), 0.0);
 	glRotated(goalAngle, 0.0, 0.0, 1.0);

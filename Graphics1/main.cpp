@@ -12,11 +12,10 @@ TODO: --Space partioning for collision
 TODO: --Better AI?
 TODO: Buttons/Levers/etc
 TODO: Build demo levels
-TODO: Distinguish between spawn and goal
 TODO: Threaded startup?
 TODO: --Preload most resources
-TODO: Spinny blade
 TODO: Custom TextBox Validation?
+TODO: Projectile firing enemy
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;

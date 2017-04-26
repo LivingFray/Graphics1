@@ -49,6 +49,8 @@ protected:
 	GLuint stars;
 	GLuint backing;
 	GLuint spawnBack;
+	GLuint goalActive;
+	GLuint goalInactive;
 	string levelName;
 	string nextLevelPath;
 	string levelPath;
@@ -58,6 +60,7 @@ protected:
 	Vec2D goal;
 	double goalAngle;
 	double targetTime;
+	bool goalOpen;
 public:
 	// Adds an entity to the level
 	void addEntity(Entity* entity);
