@@ -143,6 +143,9 @@ void TextBox::validate() {
 // Sets whether the text box only accepts numerical values
 void TextBox::setNumeric(bool n) {
 	numeric = n;
+	if (n) {
+		validate();
+	}
 }
 
 
