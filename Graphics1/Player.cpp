@@ -13,7 +13,7 @@ Player::Player() {
 	walkAnim.setSize(1.0, 2.0);
 	walkAnim.setSpriteSheet("Resources\\entities\\playerWalk.png");
 	for (int i = 0; i < 8; i++) {
-		walkAnim.addFrame(i, 0.125);
+		walkAnim.addFrame(i, (36/(32.0*DEFAULT_ENTITY_MAXSPEED*8)));
 	}
 	walkAnim.setSpritesheetSize(4, 2);
 	idleAnim = Animation();
