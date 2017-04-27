@@ -15,7 +15,6 @@ TODO: Build demo levels
 TODO: Threaded startup?
 TODO: --Preload most resources
 TODO: Custom TextBox Validation?
-TODO: Breakable platform
 TODO: Player weapon?
 TODO: Goal animation
 */

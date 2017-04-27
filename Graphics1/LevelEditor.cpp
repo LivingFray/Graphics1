@@ -12,6 +12,7 @@
 #include "TextItem.h"
 #include "Slope.h"
 #include "Turret.h"
+#include "BreakablePlatform.h"
 #define EDITOR_MOVE_SPEED 1.00
 #define EDITOR_ROTATE_SPEED 30
 #define MOVE_SIZE 0.5
@@ -202,6 +203,18 @@ LevelEditor::LevelEditor() {
 		t->setPos(l->getCameraPos());
 		t->setAngle(l->getCameraAngleAt(0));
 		l->addEntity(t);
+		l->setMenu(0);
+	};
+	menuItems.push_back(item);
+	item.name = "Breakable Platform";
+	item.create = [](BaseState* s) {
+		LevelEditor* l = (LevelEditor*)s;
+		BreakablePlatform* p = new BreakablePlatform();
+		p->setPos(l->getCameraPos());
+		p->setAngle(l->getCameraAngleAt(0));
+		p->setWidth(1);
+		p->setHeight(1);
+		l->addPlatform(p);
 		l->setMenu(0);
 	};
 	menuItems.push_back(item);

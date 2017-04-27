@@ -48,9 +48,13 @@ public:
 	// Adds to the current score
 	void addScore(int score);
 	// Safely add an entity during an update call
-	void safeAdd(Entity * e);
+	void safeAdd(Entity* e);
 	// Safely remove an entity during an update call
 	void safeDelete(Entity* e);
+	// Safely add a platform during an update call
+	void safeAdd(Platform* p);
+	// Safely remove a platform during an update call
+	void safeDelete(Platform* e);
 protected:
 	Player* player;
 	GLuint spawnBeam;
@@ -67,6 +71,8 @@ protected:
 	GradButton gradResume;
 	vector<Entity*> toAddE;
 	vector<Entity*> toRemoveE;
+	vector<Platform*> toAddP;
+	vector<Platform*> toRemoveP;
 	Animation spawnAnim;
 	ALuint spawnSound;
 	ALuint goalSound;

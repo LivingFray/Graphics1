@@ -41,6 +41,14 @@ public:
 	virtual void setGoalAngle(double a);
 	// Gets the angle of the goal
 	virtual double getGoalAngle();
+	// Adds an entity to the level
+	void addEntity(Entity* entity);
+	// Removes the entity from the level if it exists
+	void removeEntity(Entity* entity);
+	// Adds an platform to the level
+	void addPlatform(Platform* platform);
+	// Removes the platform from the level if it exists
+	void removePlatform(Platform* platform);
 protected:
 	vector<Entity*> entities;
 	vector<Platform*> platforms;
@@ -61,10 +69,5 @@ protected:
 	double goalAngle;
 	double targetTime;
 	bool goalOpen;
-public:
-	// Adds an entity to the level
-	void addEntity(Entity* entity);
-	// Removes the entity from the level if it exists
-	void removeEntity(Entity* entity);
 };
 

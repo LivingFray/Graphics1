@@ -154,6 +154,15 @@ void Level::update() {
 		removeEntity(e);
 	}
 	toRemoveE.clear();
+	for (Platform* p : toAddP) {
+		addPlatform(p);
+	}
+	toAddE.clear();
+	//Safely handle anything that was removed this update
+	for (Platform* p : toRemoveP) {
+		removePlatform(p);
+	}
+	toRemoveE.clear();
 	//Level timer
 	levelTime += TICKRATE;
 }
@@ -450,4 +459,16 @@ void Level::safeAdd(Entity* e) {
 // Safely remove an entity during an update call
 void Level::safeDelete(Entity* e) {
 	toRemoveE.push_back(e);
+}
+
+
+// Safely add a platform during an update call
+void Level::safeAdd(Platform* p) {
+	toAddP.push_back(p);
+}
+
+
+// Safely remove a platform during an update call
+void Level::safeDelete(Platform* p) {
+	toRemoveP.push_back(p);
 }

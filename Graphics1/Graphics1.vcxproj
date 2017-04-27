@@ -142,6 +142,7 @@
     <ClCompile Include="BaseState.cpp" />
     <ClCompile Include="BindingButton.cpp" />
     <ClCompile Include="BombEntity.cpp" />
+    <ClCompile Include="BreakablePlatform.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Collision.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="BaseState.h" />
     <ClInclude Include="BindingButton.h" />
     <ClInclude Include="BombEntity.h" />
+    <ClInclude Include="BreakablePlatform.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Collision.h" />

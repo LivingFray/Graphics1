@@ -9,6 +9,7 @@
 #include "TextItem.h"
 #include "Slope.h"
 #include "Turret.h"
+#include "BreakablePlatform.h"
 #define NUM_PANELS 8
 #define PARALLAX 0.5
 #define PANELS_X 9
@@ -388,6 +389,10 @@ void LevelRenderer::loadLevel(string filePath) {
 				Turret* t = new Turret();
 				t->load(item);
 				entities.push_back(t);
+			} else if (id == "breakable") {
+				BreakablePlatform* b = new BreakablePlatform();
+				b->load(item);
+				platforms.push_back(b);
 			}
 		}
 		//Get next item
@@ -509,10 +514,31 @@ void LevelRenderer::removeEntity(Entity* entity) {
 	while (ptr != entities.end()) {
 		if (*ptr == entity) {
 			ptr = entities.erase(ptr);
+			delete entity;
+			break;
 		} else {
 			ptr++;
 		}
 	}
-	//Remove it either way
-	delete entity;
+}
+
+
+// Adds an entity to the level
+void LevelRenderer::addPlatform(Platform* platform) {
+	platforms.push_back(platform);
+}
+
+
+// Removes the entity from the level if it exists
+void LevelRenderer::removePlatform(Platform* platform) {
+	auto ptr = platforms.begin();
+	while (ptr != platforms.end()) {
+		if (*ptr == platform) {
+			ptr = platforms.erase(ptr);
+			delete platform;
+			break;
+		} else {
+			ptr++;
+		}
+	}
 }
