@@ -74,6 +74,9 @@ Level::~Level() {
 // Updates the level
 void Level::update() {
 	//Don't update in menus
+	if (reachedGoal) {
+		goalTime += TICKRATE;
+	}
 	if (reachedGoal || paused || failed) {
 		return;
 	}
@@ -81,7 +84,7 @@ void Level::update() {
 		alSourcePlay(spawnSound);
 	}
 	//Add player if finished spawning
-	if (!player && levelTime >= SPAWN_ANIM_BEGIN) {
+	if (!player && levelTime >= SPAWN_ANIM_BEGIN && !reachedGoal) {
 		player = new Player();
 		entities.push_back(player);
 		player->setPos(spawn);
@@ -93,10 +96,10 @@ void Level::update() {
 		spawnAnim.addTime(TICKRATE);
 	}
 	//Don't update if the spawn animation is still ongoing
-	//if (levelTime <= SPAWN_ANIM_END) {
-	//	levelTime += TICKRATE;
-	//	return;
-	//}
+	if (levelTime <= SPAWN_ANIM_END) {
+		levelTime += TICKRATE;
+		return;
+	}
 	//Update gravity fields
 	for (GravityField* g : gravFields) {
 		g->update();
@@ -134,9 +137,10 @@ void Level::update() {
 	}
 	//Bespoke collision detection for goal (other checks need to be met)
 	if (goalOpen && player && abs(player->getAngle() - goalAngle) < GOAL_ANGLE_DIF) {
-		//TODO: Buttons and things to enable exit
 		if (player->getPos().subtract(goal).magnitudeSquare() < GOAL_DISTANCE_SQR) {
 			reachedGoal = true;
+			removeEntity(player);
+			player = NULL;
 			//Give points for remaining time
 			if (targetTime > levelTime) {
 				addScore(TIME_MULTIPLIER * (int)(targetTime - levelTime));
@@ -174,6 +178,7 @@ void Level::loadLevel(string filePath) {
 	levelTime = 0;
 	spawnAnim.setTime(0);
 	reachedGoal = false;
+	goalTime = 0;
 	paused = false;
 	failed = false;
 	score = 0;
@@ -182,11 +187,12 @@ void Level::loadLevel(string filePath) {
 
 // Draws the level
 void Level::draw(double ex) {
-	if (reachedGoal || paused || failed) {
+	if (reachedGoal || paused || failed || levelTime<SPAWN_ANIM_END) {
 		//Don't extrapolate if the game is paused
-		ex = 0;
+		LevelRenderer::draw(0);
+	} else {
+		LevelRenderer::draw(ex);
 	}
-	LevelRenderer::draw(ex);
 	//Spawn animation
 	glPushMatrix();
 	glTranslated(spawn.getX(), spawn.getY(), 0.0);
@@ -216,6 +222,27 @@ void Level::draw(double ex) {
 	//Draw doors
 	spawnAnim.draw(ex);
 	glPopMatrix();
+	//Goal animation
+	if (reachedGoal && goalTime < GOAL_ANIM_END) {
+		glPushMatrix();
+		glColor4d(1.0, 1.0, 1.0, 1.25 * (1.0 - pow(2.25 * (goalTime) / GOAL_ANIM_END, 0.5)) - 0.25);
+		glTranslated(goal.getX(), goal.getY(), 0.0);
+		glRotated(goalAngle, 0.0, 0.0, 1.0);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, spawnBeam);
+		glBegin(GL_QUADS);
+		glTexCoord2d(0.0, 0.0);
+		glVertex2d(-SPAWN_WIDTH * 0.5, -SPAWN_HEIGHT * 0.5);
+		glTexCoord2d(0.0, 1.0);
+		glVertex2d(-SPAWN_WIDTH * 0.5, SPAWN_HEIGHT * 0.5);
+		glTexCoord2d(1.0, 1.0);
+		glVertex2d(SPAWN_WIDTH * 0.5, SPAWN_HEIGHT * 0.5);
+		glTexCoord2d(1.0, 0.0);
+		glVertex2d(SPAWN_WIDTH * 0.5, -SPAWN_HEIGHT * 0.5);
+		glEnd();
+		glDisable(GL_TEXTURE_2D);
+		glPopMatrix();
+	}
 	//Reset viewport
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -223,7 +250,7 @@ void Level::draw(double ex) {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	//Level complete screen
-	if (reachedGoal || failed) {
+	if ((reachedGoal && goalTime >= GOAL_ANIM_END) || failed) {
 		//Background
 		glColor4ub(0, 127, 255, 63);
 		glBegin(GL_QUADS);
@@ -347,7 +374,7 @@ Player* Level::getPlayer() {
 // Gets the camera position ex seconds after last update
 Vec2D Level::getCameraAt(double ex) {
 	if (!player) {
-		return spawn;
+		return reachedGoal ? goal : spawn;
 	}
 	//Extrapolate the position
 	return player->getPos().add(player->getVel().multiply(ex));

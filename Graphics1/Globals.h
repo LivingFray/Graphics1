@@ -89,6 +89,8 @@ using std::vector;
 #define SPAWN_ANIM_DOORS 1.0
 //The time after which the spawn animation is complete
 #define SPAWN_ANIM_END 1.5
+//The time after which the goal animation is complete
+#define GOAL_ANIM_END 1.0
 //The cooldown between shooting entities releasing a projectile
 #define SHOOTING_COOLDOWN 3
 //The distance from which a shooting entity can see the player

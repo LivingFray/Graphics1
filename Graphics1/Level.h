@@ -60,6 +60,7 @@ protected:
 	GLuint spawnBeam;
 	double levelTime;
 	bool reachedGoal;
+	double goalTime;
 	bool paused;
 	bool failed;
 	int score;

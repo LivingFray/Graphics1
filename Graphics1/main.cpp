@@ -12,11 +12,7 @@ TODO: --Space partioning for collision
 TODO: --Better AI?
 TODO: Buttons/Levers/etc
 TODO: Build demo levels
-TODO: Threaded startup?
-TODO: --Preload most resources
 TODO: Custom TextBox Validation?
-TODO: Player weapon?
-TODO: Goal animation
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;
