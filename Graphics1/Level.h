@@ -77,5 +77,11 @@ protected:
 	Animation spawnAnim;
 	ALuint spawnSound;
 	ALuint goalSound;
+	void drawBeam();
+	void drawCompletedScreen();
+	void drawPauseScreen();
+	void drawIngameUI();
+	void handleChangedObjects();
+	void checkPlayerReachedGoal();
 };
 

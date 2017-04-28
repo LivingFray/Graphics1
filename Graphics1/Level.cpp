@@ -128,26 +128,199 @@ void Level::update() {
 			}
 			start++;
 		}
-		//TODO: Handle moving platforms once implemented
 		//Perform collision detection + resolution
 		for (Platform* p : platforms) {
 			Collision::handle(this, e, p, onGround);
 		}
 		e->setOnGround(onGround);
 	}
-	//Bespoke collision detection for goal (other checks need to be met)
-	if (goalOpen && player && abs(player->getAngle() - goalAngle) < GOAL_ANGLE_DIF) {
-		if (player->getPos().subtract(goal).magnitudeSquare() < GOAL_DISTANCE_SQR) {
-			reachedGoal = true;
-			removeEntity(player);
-			player = NULL;
-			//Give points for remaining time
-			if (targetTime > levelTime) {
-				addScore(TIME_MULTIPLIER * (int)(targetTime - levelTime));
-			}
-			alSourcePlay(goalSound);
-		}
+	checkPlayerReachedGoal();
+	handleChangedObjects();
+	//Level timer
+	levelTime += TICKRATE;
+}
+
+
+// Loads a level from the given file
+void Level::loadLevel(string filePath) {
+	LevelRenderer::loadLevel(filePath);
+	levelTime = 0;
+	spawnAnim.setTime(0);
+	reachedGoal = false;
+	goalTime = 0;
+	paused = false;
+	failed = false;
+	score = 0;
+	player = NULL;
+}
+
+
+// Draws the level
+void Level::draw(double ex) {
+	if (reachedGoal || paused || failed || levelTime < SPAWN_ANIM_END) {
+		//Don't extrapolate if the game is paused
+		LevelRenderer::draw(0);
+	} else {
+		LevelRenderer::draw(ex);
 	}
+	//Spawn animation
+	glPushMatrix();
+	glTranslated(spawn.getX(), spawn.getY(), 0.0);
+	glRotated(spawnAngle, 0.0, 0.0, 1.0);
+	if (levelTime <= SPAWN_ANIM_END) {
+		//Set opacity of spawn beam
+		if (levelTime >= SPAWN_ANIM_BEGIN) {
+			glColor4d(1.0, 1.0, 1.0, 1.25 * (1.0 - pow(2.25 * (levelTime - SPAWN_ANIM_BEGIN) / (SPAWN_ANIM_END - SPAWN_ANIM_BEGIN), 0.5)) - 0.25);
+		} else {
+			glColor4d(1.0, 1.0, 1.0, 1.0);
+		}
+		drawBeam();
+	}
+	//Draw doors
+	spawnAnim.draw(ex);
+	glPopMatrix();
+	//Goal animation
+	if (reachedGoal && goalTime < GOAL_ANIM_END) {
+		glPushMatrix();
+		//Set opacity for goal beam
+		glColor4d(1.0, 1.0, 1.0, 1.25 * (1.0 - pow(2.25 * (goalTime) / GOAL_ANIM_END, 0.5)) - 0.25);
+		glTranslated(goal.getX(), goal.getY(), 0.0);
+		glRotated(goalAngle, 0.0, 0.0, 1.0);
+		drawBeam();
+		glPopMatrix();
+	}
+	//Reset viewport
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0.0, sWidth, 0.0, sHeight, -1.0, 1.0);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	//Different possible UIs
+	if ((reachedGoal && goalTime >= GOAL_ANIM_END) || failed) {
+		drawCompletedScreen();
+	} else if (paused) {
+		drawPauseScreen();
+	} else {
+		drawIngameUI();
+	}
+}
+
+
+void inline Level::drawBeam() {
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, spawnBeam);
+	glBegin(GL_QUADS);
+	glTexCoord2d(0.0, 0.0);
+	glVertex2d(-SPAWN_WIDTH * 0.5, -SPAWN_HEIGHT * 0.5);
+	glTexCoord2d(0.0, 1.0);
+	glVertex2d(-SPAWN_WIDTH * 0.5, SPAWN_HEIGHT * 0.5);
+	glTexCoord2d(1.0, 1.0);
+	glVertex2d(SPAWN_WIDTH * 0.5, SPAWN_HEIGHT * 0.5);
+	glTexCoord2d(1.0, 0.0);
+	glVertex2d(SPAWN_WIDTH * 0.5, -SPAWN_HEIGHT * 0.5);
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+}
+
+
+void inline Level::drawCompletedScreen() {
+	//Background
+	glColor4ub(0, 127, 255, 63);
+	glBegin(GL_QUADS);
+	glVertex2d(sWidth * 0.125, sHeight * 0.375);
+	glVertex2d(sWidth * 0.875, sHeight * 0.375);
+	glVertex2d(sWidth * 0.875, sHeight * 0.625);
+	glVertex2d(sWidth * 0.125, sHeight * 0.625);
+	glEnd();
+	//Title
+	glColor3ub(255, 255, 255);
+	if (reachedGoal) {
+		printCentre(fontLarge, sWidth * 0.5, sHeight * 0.625 - fontLarge.h * 1.5, "Level Complete");
+	} else {
+		printCentre(fontLarge, sWidth * 0.5, sHeight * 0.625 - fontLarge.h * 1.5, "Level failed");
+	}
+	//Score
+	string scoreLabel = "Score: ";
+	scoreLabel += to_string(score);
+	printCentre(fontLarge, sWidth * 0.5, sHeight * 0.625 - fontLarge.h * 3, scoreLabel.c_str());
+	//Buttons
+	int y = (int)(sHeight * 0.375) + (int)fontLarge.h;
+	int h = (int)fontLarge.h * 2;
+	//Make buttons take up whole of the window
+	float move = failed ? (1 / 3.0f) : 0.25f;
+	int w = (int)(sWidth * move);
+	//Set position of retry and menu buttons
+	buttonRetry.setX((int)(sWidth * move));
+	buttonRetry.setY(y);
+	buttonRetry.setWidth(w);
+	buttonRetry.setHeight(h);
+	buttonRetry.draw();
+	buttonMenu.setX((int)(sWidth * move * 2));
+	buttonMenu.setY(y);
+	buttonMenu.setWidth(w);
+	buttonMenu.setHeight(h);
+	buttonMenu.draw();
+	if (reachedGoal) {
+		//Set position of next level button
+		buttonNext.setX((int)(sWidth * move * 3));
+		buttonNext.setY(y);
+		buttonNext.setWidth(w);
+		buttonNext.setHeight(h);
+		buttonNext.draw();
+	}
+}
+
+
+void inline Level::drawPauseScreen() {
+	//Darken the screen to show the game is paused
+	glColor4ub(0, 0, 0, 150);
+	glBegin(GL_QUADS);
+	glVertex2i(0, 0);
+	glVertex2i(sWidth, 0);
+	glVertex2i(sWidth, sHeight);
+	glVertex2i(0, sHeight);
+	glEnd();
+	//Draw the buttons
+	int y = (int)(fontLarge.h * 2.1);
+	int w = sWidth / 2;
+	int h = (int)fontLarge.h * 2;
+	int top = h * 3;
+	//Set position of buttons
+	gradResume.setY(top);
+	gradRetry.setY(top - y);
+	gradMenu.setY(top - 2 * y);
+	gradResume.setHeight(h);
+	gradRetry.setHeight(h);
+	gradMenu.setHeight(h);
+	gradResume.setWidth(w - 2 * y);
+	gradRetry.setWidth(w - y);
+	gradMenu.setWidth(w);
+	gradResume.draw(0);
+	gradRetry.draw(0);
+	gradMenu.draw(0);
+}
+
+
+void inline Level::drawIngameUI() {
+	glColor3ub(0, 0, 0);
+	double remaining = targetTime - levelTime;
+	//Switch score colour to show time is up
+	if (remaining <= 0) {
+		glColor3ub(255, 0, 0);
+		remaining *= -1;
+	}
+	freetype::print(fontSmall, 10.0f, sHeight - fontSmall.h, "Score: %d Time: %d:%02d", score, (int)remaining / 60, (int)remaining % 60);
+#ifdef DEBUG
+	//Display player position
+	glColor3ub(0, 0, 0);
+	if (player) {
+		freetype::print(fontSmall, 10.0f, sHeight - fontSmall.h * 3, "Position: %2.2f, %2.2f", player->getPos().getX(), player->getPos().getY());
+	}
+#endif
+}
+
+
+void inline Level::handleChangedObjects() {
 	//Safely handle anything that was added this update
 	for (Entity* e : toAddE) {
 		addEntity(e);
@@ -167,172 +340,21 @@ void Level::update() {
 		removePlatform(p);
 	}
 	toRemoveE.clear();
-	//Level timer
-	levelTime += TICKRATE;
 }
 
 
-// Loads a level from the given file
-void Level::loadLevel(string filePath) {
-	LevelRenderer::loadLevel(filePath);
-	levelTime = 0;
-	spawnAnim.setTime(0);
-	reachedGoal = false;
-	goalTime = 0;
-	paused = false;
-	failed = false;
-	score = 0;
-	player = NULL;
-}
-
-// Draws the level
-void Level::draw(double ex) {
-	if (reachedGoal || paused || failed || levelTime<SPAWN_ANIM_END) {
-		//Don't extrapolate if the game is paused
-		LevelRenderer::draw(0);
-	} else {
-		LevelRenderer::draw(ex);
-	}
-	//Spawn animation
-	glPushMatrix();
-	glTranslated(spawn.getX(), spawn.getY(), 0.0);
-	glRotated(spawnAngle, 0.0, 0.0, 1.0);
-	if (levelTime <= SPAWN_ANIM_END) {
-		//Set opacity of spawn beam
-		if (levelTime >= SPAWN_ANIM_BEGIN) {
-			glColor4d(1.0, 1.0, 1.0, 1.25 * (1.0 - pow(2.25 * (levelTime - SPAWN_ANIM_BEGIN) / (SPAWN_ANIM_END - SPAWN_ANIM_BEGIN), 0.5)) - 0.25);
-		} else {
-			glColor4d(1.0, 1.0, 1.0, 1.0);
+void inline Level::checkPlayerReachedGoal() {
+	//Bespoke collision detection for goal (other checks need to be met)
+	if (goalOpen && player && abs(player->getAngle() - goalAngle) < GOAL_ANGLE_DIF &&
+		player->getPos().subtract(goal).magnitudeSquare() < GOAL_DISTANCE_SQR) {
+		reachedGoal = true;
+		removeEntity(player);
+		player = NULL;
+		//Give points for remaining time
+		if (targetTime > levelTime - SPAWN_ANIM_END) {
+			addScore(TIME_MULTIPLIER * (int)(targetTime - floor(levelTime - SPAWN_ANIM_END)));
 		}
-		//Draw spawn beam
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, spawnBeam);
-		glBegin(GL_QUADS);
-		glTexCoord2d(0.0, 0.0);
-		glVertex2d(-SPAWN_WIDTH * 0.5, -SPAWN_HEIGHT * 0.5);
-		glTexCoord2d(0.0, 1.0);
-		glVertex2d(-SPAWN_WIDTH * 0.5, SPAWN_HEIGHT * 0.5);
-		glTexCoord2d(1.0, 1.0);
-		glVertex2d(SPAWN_WIDTH * 0.5, SPAWN_HEIGHT * 0.5);
-		glTexCoord2d(1.0, 0.0);
-		glVertex2d(SPAWN_WIDTH * 0.5, -SPAWN_HEIGHT * 0.5);
-		glEnd();
-		glDisable(GL_TEXTURE_2D);
-	}
-	//Draw doors
-	spawnAnim.draw(ex);
-	glPopMatrix();
-	//Goal animation
-	if (reachedGoal && goalTime < GOAL_ANIM_END) {
-		glPushMatrix();
-		glColor4d(1.0, 1.0, 1.0, 1.25 * (1.0 - pow(2.25 * (goalTime) / GOAL_ANIM_END, 0.5)) - 0.25);
-		glTranslated(goal.getX(), goal.getY(), 0.0);
-		glRotated(goalAngle, 0.0, 0.0, 1.0);
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, spawnBeam);
-		glBegin(GL_QUADS);
-		glTexCoord2d(0.0, 0.0);
-		glVertex2d(-SPAWN_WIDTH * 0.5, -SPAWN_HEIGHT * 0.5);
-		glTexCoord2d(0.0, 1.0);
-		glVertex2d(-SPAWN_WIDTH * 0.5, SPAWN_HEIGHT * 0.5);
-		glTexCoord2d(1.0, 1.0);
-		glVertex2d(SPAWN_WIDTH * 0.5, SPAWN_HEIGHT * 0.5);
-		glTexCoord2d(1.0, 0.0);
-		glVertex2d(SPAWN_WIDTH * 0.5, -SPAWN_HEIGHT * 0.5);
-		glEnd();
-		glDisable(GL_TEXTURE_2D);
-		glPopMatrix();
-	}
-	//Reset viewport
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0.0, sWidth, 0.0, sHeight, -1.0, 1.0);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	//Level complete screen
-	if ((reachedGoal && goalTime >= GOAL_ANIM_END) || failed) {
-		//Background
-		glColor4ub(0, 127, 255, 63);
-		glBegin(GL_QUADS);
-		glVertex2d(sWidth * 0.125, sHeight * 0.375);
-		glVertex2d(sWidth * 0.875, sHeight * 0.375);
-		glVertex2d(sWidth * 0.875, sHeight * 0.625);
-		glVertex2d(sWidth * 0.125, sHeight * 0.625);
-		glEnd();
-		//Title
-		glColor3ub(255, 255, 255);
-		if (reachedGoal) {
-			printCentre(fontLarge, sWidth * 0.5, sHeight * 0.625 - fontLarge.h * 1.5, "Level Complete");
-		} else {
-			printCentre(fontLarge, sWidth * 0.5, sHeight * 0.625 - fontLarge.h * 1.5, "Level failed");
-		}
-		//Score
-		string scoreLabel = "Score: ";
-		scoreLabel += to_string(score);
-		printCentre(fontLarge, sWidth * 0.5, sHeight * 0.625 - fontLarge.h * 3, scoreLabel.c_str());
-		//Buttons
-		int y = (int)(sHeight * 0.375) + (int)fontLarge.h;
-		int h = (int)fontLarge.h * 2;
-		float move = failed ? (1 / 3.0f) : 0.25f;
-		int w = (int)(sWidth * move);
-		buttonRetry.setX((int)(sWidth * move));
-		buttonRetry.setY(y);
-		buttonRetry.setWidth(w);
-		buttonRetry.setHeight(h);
-		buttonRetry.draw();
-		buttonMenu.setX((int)(sWidth * move * 2));
-		buttonMenu.setY(y);
-		buttonMenu.setWidth(w);
-		buttonMenu.setHeight(h);
-		buttonMenu.draw();
-		if (reachedGoal) {
-			buttonNext.setX((int)(sWidth * move * 3));
-			buttonNext.setY(y);
-			buttonNext.setWidth(w);
-			buttonNext.setHeight(h);
-			buttonNext.draw();
-		}
-	} else if (paused) {
-		//Darken the screen to show the game is paused
-		glColor4ub(0, 0, 0, 150);
-		glBegin(GL_QUADS);
-		glVertex2i(0, 0);
-		glVertex2i(sWidth, 0);
-		glVertex2i(sWidth, sHeight);
-		glVertex2i(0, sHeight);
-		glEnd();
-		//Draw the buttons
-		int y = (int)(fontLarge.h * 2.1);
-		int w = sWidth / 2;
-		int h = (int)fontLarge.h * 2;
-		int top = h * 3;
-		gradResume.setY(top);
-		gradRetry.setY(top - y);
-		gradMenu.setY(top - 2 * y);
-		gradResume.setHeight(h);
-		gradRetry.setHeight(h);
-		gradMenu.setHeight(h);
-		gradResume.setWidth(w - 2 * y);
-		gradRetry.setWidth(w - y);
-		gradMenu.setWidth(w);
-		gradResume.draw(0);
-		gradRetry.draw(0);
-		gradMenu.draw(0);
-	} else {
-		//Draw in game UI
-		glColor3ub(0, 0, 0);
-		double remaining = targetTime - levelTime;
-		if (remaining <= 0) {
-			glColor3ub(255, 0, 0);
-			remaining *= -1;
-		}
-		freetype::print(fontSmall, 10.0f, sHeight - fontSmall.h, "Score: %d Time: %d:%02d", score, (int)remaining / 60, (int)remaining % 60);
-#ifdef DEBUG
-		glColor3ub(0, 0, 0);
-		if (player) {
-			freetype::print(fontSmall, 10.0f, sHeight - fontSmall.h * 3, "Position: %2.2f, %2.2f", player->getPos().getX(), player->getPos().getY());
-		}
-#endif
+		alSourcePlay(goalSound);
 	}
 }
 
