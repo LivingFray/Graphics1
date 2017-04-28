@@ -5,6 +5,8 @@
 TextItem::TextItem() {
 	id = "text";
 	a = 255;
+	width = 0.25;
+	height = 0.25;
 }
 
 

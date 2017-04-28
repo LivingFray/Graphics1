@@ -74,8 +74,21 @@ private:
 	GradButton exitButton;
 	GradButton returnButton;
 	OptionMenu* optMenu;
+	vector<TextBox*> textBoxes;
 	void drawTextBox(string label, TextBox &box, int y);
 	void drawSmallTextBox(string label, TextBox & box, bool left, int y);
 	void drawHandle(double x, double y);
+	void drawMovingHandles(Vec2D pos);
+	void drawResizingHandles(Vec2D pos);
+	void drawRotatingHandles(Vec2D pos);
+	void drawItemMenu(double ex);
+	void drawSaveMenu(double ex);
+	void drawOptionsMenu(double ex);
+	void drawIngameUI(double ex);
+	void clickHandles(double x, double y, int action);
+	void moveClicked(Vec2D world, int action);
+	void resizeClicked(Vec2D world, int action);
+	void rotateClicked(Vec2D world, int action);
+	void deleteClicked(Vec2D world, int action);
 };
 
