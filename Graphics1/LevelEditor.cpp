@@ -190,7 +190,7 @@ void LevelEditor::draw(double ex) {
 	//Move camera (extrapolation only)
 	updateCamera(ex);
 	//Draw the level thus far 
-	LevelRenderer::draw(0);
+	LevelBase::draw(0);
 	//Draw movement arrows/resize arrows
 	if (selected) {
 		//Draw point showing centre of object
@@ -479,7 +479,7 @@ void LevelEditor::saveLevel(string filePath) {
 	defaultGravity = atof(gravBox.getText().c_str());
 	targetTime = atof(targetBox.getText().c_str());
 	nextLevelPath = nextBox.getText();
-	LevelRenderer::saveLevel(filePath);
+	LevelBase::saveLevel(filePath);
 	//Close menu
 	currentMenu = Menu::NONE;
 	//Re-add spawn+goal objects
@@ -498,7 +498,7 @@ void LevelEditor::saveLevel(string filePath) {
 // Loads a level from the given file
 void LevelEditor::loadLevel(string filePath) {
 	//TODO: Checks for valid path
-	LevelRenderer::loadLevel(filePath);
+	LevelBase::loadLevel(filePath);
 	//Close menu
 	currentMenu = Menu::NONE;
 	SpawnPoint* spawnObj = new SpawnPoint();
@@ -1005,16 +1005,4 @@ void inline LevelEditor::deleteClicked(Vec2D world, int action) {
 			platIt++;
 		}
 	}
-}
-
-
-// Adds a platform to the level
-void LevelEditor::addPlatform(Platform* platform) {
-	platforms.push_back(platform);
-}
-
-
-// Adds a platform to the level
-void LevelEditor::addGravityField(GravityField* field) {
-	gravFields.push_back(field);
 }

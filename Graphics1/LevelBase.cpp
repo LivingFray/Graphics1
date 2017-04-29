@@ -1,4 +1,4 @@
-#include "LevelRenderer.h"
+#include "LevelBase.h"
 #include "Globals.h"
 #include "PointGiver.h"
 #include "BombEntity.h"
@@ -15,7 +15,7 @@
 #define PANELS_X 9
 #define PANELS_Y 6
 
-LevelRenderer::LevelRenderer() {
+LevelBase::LevelBase() {
 	//Load background textures
 	planet = ImageLoader::getImage("Resources\\planet.png");
 	stars = ImageLoader::getImage("Resources\\stars.png");
@@ -39,7 +39,7 @@ LevelRenderer::LevelRenderer() {
 }
 
 
-LevelRenderer::~LevelRenderer() {
+LevelBase::~LevelBase() {
 	for (Entity* e: entities) {
 		delete e;
 	}
@@ -53,12 +53,12 @@ LevelRenderer::~LevelRenderer() {
 
 
 // Draws the level
-void LevelRenderer::draw(double ex) {
+void LevelBase::draw(double ex) {
 	Vec2D p = getCameraAt(ex);
 	double pX = p.getX();
 	double pY = p.getY();
 	/*
-	Camera displays a box of fixed world size (to be determined)
+	Camera displays a box of fixed world size
 	If screen is larger then box is scaled to fit
 	If resolution is wrong (most likely the case) the smallest dimension is box size
 	*/
@@ -118,16 +118,19 @@ void LevelRenderer::draw(double ex) {
 	glBindTexture(GL_TEXTURE_2D, backing);
 	double u, v;
 	int tX = minX, tY = minY;
+	//Keep panels in range of [0-PANELS_X]
 	if (tX < 0) {
 		tX *= -1;
 		tX %= PANELS_X;
 		tX = PANELS_X - tX;
 	}
+	//Keep panels in range of [0-PANELS_Y]
 	if (tY < 0) {
 		tY *= -1;
 		tY %= PANELS_Y;
 		tY = PANELS_Y - tY;
 	}
+	//For each visible panel on the screen determine texture and draw
 	for (int y = 0; y < NUM_PANELS + 2; y++) {
 		tY++;
 		tY %= PANELS_Y;
@@ -138,6 +141,7 @@ void LevelRenderer::draw(double ex) {
 				u = 0.0;
 				v = 0.75;
 			} else {
+				//Set texture coord based on position
 				if (tY == 0) {
 					v = 0.25;
 				} else if (tY < 4) {
@@ -153,6 +157,7 @@ void LevelRenderer::draw(double ex) {
 					u = 0.75;
 				}
 			}
+			//Draw individual panel
 			glBegin(GL_QUADS);
 			glTexCoord2d(u, v);
 			glVertex2d(0.0, 0.0);
@@ -228,7 +233,7 @@ void LevelRenderer::draw(double ex) {
 
 
 // Saves the level to the given file
-void LevelRenderer::saveLevel(string filePath) {
+void LevelBase::saveLevel(string filePath) {
 	DataObject lvl = DataObject();
 	//General level information
 	lvl.add("name", levelName);
@@ -264,7 +269,7 @@ void LevelRenderer::saveLevel(string filePath) {
 
 
 // Loads a level from the given file
-void LevelRenderer::loadLevel(string filePath) {
+void LevelBase::loadLevel(string filePath) {
 	//Load the level from file
 	DataObject lvl = DataObject();
 	lvl.loadFromFile(filePath);
@@ -320,6 +325,7 @@ void LevelRenderer::loadLevel(string filePath) {
 		printf("Error loading level: No target time found\n");
 		targetTime = 0;
 	}
+	//Get list of platforms/entities/gravity fields
 	DataObject objs = lvl.getDataObject("objects", exists);
 	if (!exists) {
 		objs = DataObject();
@@ -404,19 +410,19 @@ void LevelRenderer::loadLevel(string filePath) {
 
 
 // Gets the camera position ex seconds after last update
-Vec2D LevelRenderer::getCameraAt(double ex) {
+Vec2D LevelBase::getCameraAt(double ex) {
 	return Vec2D(0.0, 0.0);
 }
 
 
 // Gets the angle of the camera ex seconds after last update
-double LevelRenderer::getCameraAngleAt(double ex) {
+double LevelBase::getCameraAngleAt(double ex) {
 	return 0.0;
 }
 
 
 // Gets the world coordinates from the screen coordinates
-Vec2D LevelRenderer::getWorldCoordinates(Vec2D screen) {
+Vec2D LevelBase::getWorldCoordinates(Vec2D screen) {
 	//Offset from the centre of the screen
 	Vec2D world = Vec2D(screen.getX(), screen.getY());
 	world.subtractFrom(Vec2D(sWidth * 0.5, sHeight * 0.5));
@@ -436,7 +442,7 @@ Vec2D LevelRenderer::getWorldCoordinates(Vec2D screen) {
 
 
 // Gets the screen coordinates from the world coordinates
-Vec2D LevelRenderer::getScreenCoordinates(Vec2D world) {
+Vec2D LevelBase::getScreenCoordinates(Vec2D world) {
 	//Offset from world origin
 	Vec2D screen = world.subtract(getCameraAt(0));
 	//Scale coordinates
@@ -455,61 +461,61 @@ Vec2D LevelRenderer::getScreenCoordinates(Vec2D world) {
 
 
 // Sets the position of the spawn point
-void LevelRenderer::setSpawn(Vec2D pos) {
+void LevelBase::setSpawn(Vec2D pos) {
 	spawn = pos;
 }
 
 
 // Gets the position of the spawn point
-Vec2D LevelRenderer::getSpawn() {
+Vec2D LevelBase::getSpawn() {
 	return spawn;
 }
 
 
 // Sets the position of the goal
-void LevelRenderer::setGoal(Vec2D pos) {
+void LevelBase::setGoal(Vec2D pos) {
 	goal = pos;
 }
 
 
 // Gets the position of the goal
-Vec2D LevelRenderer::getGoal() {
+Vec2D LevelBase::getGoal() {
 	return goal;
 }
 
 
 // Sets the angle of the spawn point
-void LevelRenderer::setSpawnAngle(double a) {
+void LevelBase::setSpawnAngle(double a) {
 	spawnAngle = a;
 }
 
 
 // Gets the angle of the spawn point
-double LevelRenderer::getSpawnAngle() {
+double LevelBase::getSpawnAngle() {
 	return spawnAngle;
 }
 
 
 // Sets the angle of the goal
-void LevelRenderer::setGoalAngle(double a) {
+void LevelBase::setGoalAngle(double a) {
 	goalAngle = a;
 }
 
 
 // Gets the angle of the goal
-double LevelRenderer::getGoalAngle() {
+double LevelBase::getGoalAngle() {
 	return goalAngle;
 }
 
 
 // Adds an entity to the level
-void LevelRenderer::addEntity(Entity* entity) {
+void LevelBase::addEntity(Entity* entity) {
 	entities.push_back(entity);
 }
 
 
 // Removes the entity from the level if it exists
-void LevelRenderer::removeEntity(Entity* entity) {
+void LevelBase::removeEntity(Entity* entity) {
 	auto ptr = entities.begin();
 	while (ptr != entities.end()) {
 		if (*ptr == entity) {
@@ -524,18 +530,40 @@ void LevelRenderer::removeEntity(Entity* entity) {
 
 
 // Adds an entity to the level
-void LevelRenderer::addPlatform(Platform* platform) {
+void LevelBase::addPlatform(Platform* platform) {
 	platforms.push_back(platform);
 }
 
 
 // Removes the entity from the level if it exists
-void LevelRenderer::removePlatform(Platform* platform) {
+void LevelBase::removePlatform(Platform* platform) {
 	auto ptr = platforms.begin();
 	while (ptr != platforms.end()) {
 		if (*ptr == platform) {
 			ptr = platforms.erase(ptr);
 			delete platform;
+			break;
+		} else {
+			ptr++;
+		}
+	}
+}
+
+
+// Adds a gravity field to the level
+void LevelBase::addGravityField(GravityField* field) {
+	gravFields.push_back(field);
+}
+
+
+
+// Removes the gravity field from the level if it exists
+void LevelBase::removeGravityField(GravityField* field) {
+	auto ptr = gravFields.begin();
+	while (ptr != gravFields.end()) {
+		if (*ptr == field) {
+			ptr = gravFields.erase(ptr);
+			delete field;
 			break;
 		} else {
 			ptr++;

@@ -7,10 +7,10 @@
 #include "BaseState.h"
 #include "GravityField.h"
 
-class LevelRenderer {
+class LevelBase {
 public:
-	LevelRenderer();
-	virtual ~LevelRenderer();
+	LevelBase();
+	virtual ~LevelBase();
 	// Draws the level
 	virtual void draw(double ex);
 	// Saves the level to the given file
@@ -49,6 +49,10 @@ public:
 	void addPlatform(Platform* platform);
 	// Removes the platform from the level if it exists
 	void removePlatform(Platform* platform);
+	// Adds a gravity field to the level
+	void addGravityField(GravityField* field);
+	// Removes the gravity field from the level if it exists
+	void removeGravityField(GravityField* field);
 protected:
 	vector<Entity*> entities;
 	vector<Platform*> platforms;

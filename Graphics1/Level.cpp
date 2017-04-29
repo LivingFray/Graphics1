@@ -143,7 +143,7 @@ void Level::update() {
 
 // Loads a level from the given file
 void Level::loadLevel(string filePath) {
-	LevelRenderer::loadLevel(filePath);
+	LevelBase::loadLevel(filePath);
 	levelTime = 0;
 	spawnAnim.setTime(0);
 	reachedGoal = false;
@@ -159,9 +159,9 @@ void Level::loadLevel(string filePath) {
 void Level::draw(double ex) {
 	if (reachedGoal || paused || failed || levelTime < SPAWN_ANIM_END) {
 		//Don't extrapolate if the game is paused
-		LevelRenderer::draw(0);
+		LevelBase::draw(0);
 	} else {
-		LevelRenderer::draw(ex);
+		LevelBase::draw(ex);
 	}
 	//Spawn animation
 	glPushMatrix();
@@ -504,6 +504,7 @@ void Level::addScore(int score) {
 void Level::safeAdd(Entity* e) {
 	toAddE.push_back(e);
 }
+
 
 // Safely remove an entity during an update call
 void Level::safeDelete(Entity* e) {

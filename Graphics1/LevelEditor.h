@@ -1,5 +1,5 @@
 #pragma once
-#include "LevelRenderer.h"
+#include "LevelBase.h"
 #include "BaseState.h"
 #include "GradButton.h"
 #include "TextBox.h"
@@ -7,7 +7,7 @@
 #define EDITOR_BAR_BUTTONS 6
 class LevelEditor:
 	public BaseState, 
-	public LevelRenderer {
+	public LevelBase {
 public:
 	LevelEditor();
 	~LevelEditor();
@@ -34,10 +34,6 @@ public:
 	void saveLevel(string filePath);
 	// Loads a level from the given file
 	void loadLevel(string filePath);
-	// Adds a platform to the level
-	void addPlatform(Platform* platform);
-	// Adds a gravity field to the level
-	void addGravityField(GravityField* field);
 private:
 	enum class Menu {NONE, ITEM, SAVE, OPTIONS};
 	Menu currentMenu;

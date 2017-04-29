@@ -4,7 +4,7 @@
 #include "Entity.h"
 #include "Player.h"
 #include "BaseState.h"
-#include "LevelRenderer.h"
+#include "LevelBase.h"
 #include "GradButton.h"
 
 
@@ -13,7 +13,7 @@ class Player;
 
 class Level: 
 	public BaseState, 
-	public LevelRenderer {
+	public LevelBase {
 public:
 	Level();
 	~Level();

@@ -166,7 +166,7 @@
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelButton.cpp" />
     <ClCompile Include="LevelEditor.cpp" />
-    <ClCompile Include="LevelRenderer.cpp" />
+    <ClCompile Include="LevelBase.cpp" />
     <ClCompile Include="LevelSelect.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainMenu.cpp" />
@@ -216,7 +216,7 @@
     <ClInclude Include="Level.h" />
     <ClInclude Include="LevelButton.h" />
     <ClInclude Include="LevelEditor.h" />
-    <ClInclude Include="LevelRenderer.h" />
+    <ClInclude Include="LevelBase.h" />
     <ClInclude Include="LevelSelect.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="OptionMenu.h" />
