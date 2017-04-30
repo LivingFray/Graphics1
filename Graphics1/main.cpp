@@ -12,6 +12,7 @@ TODO: --Better AI?
 TODO: Buttons/Levers/etc
 TODO: Build demo levels
 TODO: Custom TextBox Validation?
+TODO: Refactor some objects (text, levers, etc) to be own type of object
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;

@@ -34,6 +34,7 @@ Lever::Lever() {
 	//Disable gravity
 	grav = 0;
 	channel = 0;
+	clickSound = SoundLoader::getSound("Resources\\sounds\\beep.wav");
 }
 
 
@@ -48,6 +49,7 @@ void Lever::update() {
 	if (KeyConfig::isDown("interact")) {
 		if (!wasDown) {
 			active = !active;
+			alSourcePlay(clickSound);
 		}
 		wasDown = true;
 	} else {
@@ -72,4 +74,36 @@ void Lever::update() {
 		Level* l = (Level*)state;
 		l->setChannel(channel);
 	}
+}
+
+
+// Sets the options for this selectable
+void Lever::setOptions(OptionMenu* menu) {
+	Entity::setOptions(menu);
+	std::map<string, string> values = menu->getValues();
+	string v;
+	v = values["Channel"];
+	channel = atoi(v.c_str());
+}
+
+
+// Creates an option menu using the current values as defaults
+void Lever::createOptions() {
+	Entity::createOptions();
+	options->addOption("Channel", true, to_string(channel));
+}
+
+
+// Returns a DataObject representing the storable object
+DataObject Lever::save() {
+	DataObject platform = Entity::save();
+	platform.add("channel", channel);
+	return platform;
+}
+
+
+// Loads the storable object from the DataObject
+void Lever::load(DataObject obj) {
+	Entity::load(obj);
+	channel = obj.getInt("channel");
 }

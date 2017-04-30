@@ -19,6 +19,7 @@ void SoundLoader::init() {
 	getSound("Resources\\sounds\\explode.wav", true);
 	getSound("Resources\\sounds\\spark.wav", true);
 	getSound("Resources\\sounds\\fire.wav", true);
+	getSound("Resources\\sounds\\beep.wav", true);
 }
 
 
