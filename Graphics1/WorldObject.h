@@ -48,6 +48,8 @@ public:
 	virtual void onDamage(Damage d);
 	// Updates the object
 	virtual void update();
+	// Puts the object in editor mode to help placement
+	virtual void setEditor();
 protected:
 	string id;
 	Vec2D pos;
@@ -55,5 +57,6 @@ protected:
 	double angle;
 	double width;
 	double height;
+	bool editorMode;
 };
 

@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ANDGate.cpp" />
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="BaseMenu.cpp" />
     <ClCompile Include="BaseState.cpp" />
@@ -149,7 +150,11 @@
     <ClCompile Include="DataObject.cpp" />
     <ClCompile Include="Interactive.cpp" />
     <ClCompile Include="Lever.cpp" />
+    <ClCompile Include="LogicGate.cpp" />
     <ClCompile Include="MovingPlatform.cpp" />
+    <ClCompile Include="NANDGate.cpp" />
+    <ClCompile Include="NORGate.cpp" />
+    <ClCompile Include="ORGate.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="Scenery.cpp" />
     <ClCompile Include="SettingsMenu.cpp" />
@@ -187,8 +192,11 @@
     <ClCompile Include="TextItem.cpp" />
     <ClCompile Include="Vec2D.cpp" />
     <ClCompile Include="WorldObject.cpp" />
+    <ClCompile Include="XNORGate.cpp" />
+    <ClCompile Include="XORGate.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ANDGate.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="BaseMenu.h" />
     <ClInclude Include="BaseState.h" />
@@ -201,7 +209,11 @@
     <ClInclude Include="DataObject.h" />
     <ClInclude Include="Interactive.h" />
     <ClInclude Include="Lever.h" />
+    <ClInclude Include="LogicGate.h" />
     <ClInclude Include="MovingPlatform.h" />
+    <ClInclude Include="NANDGate.h" />
+    <ClInclude Include="NORGate.h" />
+    <ClInclude Include="ORGate.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="Scenery.h" />
     <ClInclude Include="SettingsMenu.h" />
@@ -239,6 +251,8 @@
     <ClInclude Include="TextItem.h" />
     <ClInclude Include="Vec2D.h" />
     <ClInclude Include="WorldObject.h" />
+    <ClInclude Include="XNORGate.h" />
+    <ClInclude Include="XORGate.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

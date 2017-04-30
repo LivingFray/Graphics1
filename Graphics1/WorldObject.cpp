@@ -157,3 +157,10 @@ void WorldObject::onDamage(Damage d) {
 // Updates the object
 void WorldObject::update() {
 }
+
+
+// Puts the object in editor mode to help placement
+void WorldObject::setEditor() {
+	editorMode = true;
+}
+

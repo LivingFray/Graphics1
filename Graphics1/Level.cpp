@@ -332,6 +332,14 @@ void inline Level::drawIngameUI() {
 	if (player) {
 		freetype::print(fontSmall, 10.0f, sHeight - fontSmall.h * 3, "Position: %2.2f, %2.2f", player->getPos().getX(), player->getPos().getY());
 	}
+	//Display current channels
+#define display 32
+	char out[display + 1];
+	for (int i = 0; i < display; i++) {
+		out[i] = getChannel(i) ? '1':'0';
+	}
+	out[display] = '\0';
+	freetype::print(fontSmall, 10.0f, sHeight - fontSmall.h * 5, out);
 #endif
 }
 

@@ -7,25 +7,25 @@ Lever::Lever() {
 	width = 0.25;
 	height = 0.25;
 	nOffAnim = Animation();
-	nOffAnim.setSpriteSheet("Resources\\entities\\lever.png");
+	nOffAnim.setSpriteSheet("Resources\\scenery\\lever.png");
 	nOffAnim.setSize(0.25, 0.25);
 	nOffAnim.setSpritesheetSize(2, 2);
 	nOffAnim.setRepeat(false);
 	nOffAnim.addFrame(0, 1);
 	nOnAnim = Animation();
-	nOnAnim.setSpriteSheet("Resources\\entities\\lever.png");
+	nOnAnim.setSpriteSheet("Resources\\scenery\\lever.png");
 	nOnAnim.setSize(0.25, 0.25);
 	nOnAnim.setSpritesheetSize(2, 2);
 	nOnAnim.setRepeat(false);
 	nOnAnim.addFrame(1, 1);
 	sOffAnim = Animation();
-	sOffAnim.setSpriteSheet("Resources\\entities\\lever.png");
+	sOffAnim.setSpriteSheet("Resources\\scenery\\lever.png");
 	sOffAnim.setSize(0.25, 0.25);
 	sOffAnim.setSpritesheetSize(2, 2);
 	sOffAnim.setRepeat(false);
 	sOffAnim.addFrame(2, 1);
 	sOnAnim = Animation();
-	sOnAnim.setSpriteSheet("Resources\\entities\\lever.png");
+	sOnAnim.setSpriteSheet("Resources\\scenery\\lever.png");
 	sOnAnim.setSize(0.25, 0.25);
 	sOnAnim.setSpritesheetSize(2, 2);
 	sOnAnim.setRepeat(false);
@@ -46,7 +46,7 @@ void Lever::update() {
 	selected = getNear();
 	//Flip lever if key pressed
 	if (KeyConfig::isDown("interact")) {
-		if (!wasDown) {
+		if (!wasDown && selected) {
 			active = !active;
 			alSourcePlay(clickSound);
 		}
@@ -95,9 +95,9 @@ void Lever::createOptions() {
 
 // Returns a DataObject representing the storable object
 DataObject Lever::save() {
-	DataObject platform = Scenery::save();
-	platform.add("channel", channel);
-	return platform;
+	DataObject sc = Scenery::save();
+	sc.add("channel", channel);
+	return sc;
 }
 
 
@@ -105,4 +105,10 @@ DataObject Lever::save() {
 void Lever::load(DataObject obj) {
 	Scenery::load(obj);
 	channel = obj.getInt("channel");
+}
+
+
+// Returns if the selectable can be rotated
+bool Lever::canResize() {
+	return false;
 }

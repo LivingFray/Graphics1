@@ -15,6 +15,8 @@ public:
 	DataObject save();
 	// Loads the storable object from the DataObject
 	void load(DataObject obj);
+	// Returns if the selectable can be rotated
+	bool canResize();
 protected:
 	Animation sOffAnim;
 	Animation nOffAnim;

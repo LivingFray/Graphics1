@@ -5,8 +5,6 @@ class TextItem :
 public:
 	TextItem();
 	~TextItem();
-	// Puts the textbox in editor mode to help placement
-	void setEditor();
 	// Sets the text to be displayed
 	void setText(string text);
 	// Gets the text to be displayed
@@ -43,6 +41,5 @@ protected:
 	string text;
 	bool largeFont;
 	unsigned char r, g, b, a;
-	bool editorMode = true;
 };
 

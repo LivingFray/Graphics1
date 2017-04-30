@@ -10,9 +10,10 @@ TODO: Every stupid thing on the mark sheet
 TODO: --Space partioning for collision
 TODO: --Better AI?
 TODO: Buttons/Levers/etc
+TODO: --Entity touching button
+TODO: --Timed button
 TODO: Build demo levels
 TODO: Custom TextBox Validation?
-TODO: Refactor some objects (text, levers, etc) to be own type of object
 TODO: Phasing platforms (i.e. lever disables collisions)
 */
 //----------------------------------Globals----------------------------------//

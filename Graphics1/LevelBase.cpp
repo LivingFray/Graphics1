@@ -11,6 +11,12 @@
 #include "Turret.h"
 #include "BreakablePlatform.h"
 #include "Lever.h"
+#include "ANDGate.h"
+#include "ORGate.h"
+#include "XORGate.h"
+#include "NANDGate.h"
+#include "NORGate.h"
+#include "XNORGate.h"
 #define NUM_PANELS 8
 #define PARALLAX 0.5
 #define PANELS_X 9
@@ -426,6 +432,30 @@ void LevelBase::loadLevel(string filePath) {
 				Lever* l = new Lever();
 				l->load(item);
 				scenery.push_back(l);
+			} else if (id == "ANDGate") {
+				ANDGate* g = new ANDGate();
+				g->load(item);
+				scenery.push_back(g);
+			} else if (id == "NANDGate") {
+				NANDGate* g = new NANDGate();
+				g->load(item);
+				scenery.push_back(g);
+			} else if (id == "ORGate") {
+				ORGate* g = new ORGate();
+				g->load(item);
+				scenery.push_back(g);
+			} else if (id == "NORGate") {
+				NORGate* g = new NORGate();
+				g->load(item);
+				scenery.push_back(g);
+			} else if (id == "XORGate") {
+				XORGate* g = new XORGate();
+				g->load(item);
+				scenery.push_back(g);
+			} else if (id == "XNORGate") {
+				XNORGate* g = new XNORGate();
+				g->load(item);
+				scenery.push_back(g);
 			}
 		}
 		//Get next item

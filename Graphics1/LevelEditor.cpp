@@ -14,6 +14,12 @@
 #include "Turret.h"
 #include "BreakablePlatform.h"
 #include "Lever.h"
+#include "ANDGate.h"
+#include "NANDGate.h"
+#include "ORGate.h"
+#include "NORGate.h"
+#include "XORGate.h"
+#include "XNORGate.h"
 #define EDITOR_MOVE_SPEED 1.00
 #define EDITOR_ROTATE_SPEED 30
 #define MOVE_SIZE 0.5
@@ -31,6 +37,7 @@ item.create = [](BaseState* s) { \
 	type* e = new type(); \
 	e->setPos(l->getCameraPos()); \
 	e->setAngle(l->getCameraAngleAt(0)); \
+	e->setEditor(); \
 	l->addEntity(e); \
 	l->setMenu(0); \
 }; \
@@ -46,6 +53,7 @@ item.create = [](BaseState* s) { \
 		pl->setWidth(1.00); \
 		pl->setHeight(1.00); \
 	} \
+	pl->setEditor(); \
 	extra; \
 	pl->setAngle(l->getCameraAngleAt(0)); \
 	l->addPlatform(pl); \
@@ -64,6 +72,7 @@ item.create = [](BaseState* s) { \
 		sc->setHeight(1.00); \
 	} \
 	sc->setAngle(l->getCameraAngleAt(0)); \
+	sc->setEditor(); \
 	l->addScenery(sc); \
 	l->setMenu(0); \
 }; \
@@ -144,6 +153,12 @@ LevelEditor::LevelEditor() {
 	ADD_ENTITY(Turret, "Turret");
 	ADD_SCENERY(Lever, "Lever");
 	ADD_SCENERY(TextItem, "Text Box");
+	ADD_SCENERY(ANDGate, "AND Gate");
+	ADD_SCENERY(ORGate, "OR Gate");
+	ADD_SCENERY(XORGate, "XOR Gate");
+	ADD_SCENERY(NANDGate, "NAND Gate");
+	ADD_SCENERY(NORGate, "NOR Gate");
+	ADD_SCENERY(XNORGate, "XNOR Gate");
 	//Create buttons for menu
 	for (MenuItem i : menuItems) {
 		Button* b = new Button();
@@ -520,7 +535,6 @@ void LevelEditor::saveLevel(string filePath) {
 
 // Loads a level from the given file
 void LevelEditor::loadLevel(string filePath) {
-	//TODO: Checks for valid path
 	LevelBase::loadLevel(filePath);
 	//Close menu
 	currentMenu = Menu::NONE;
@@ -538,6 +552,18 @@ void LevelEditor::loadLevel(string filePath) {
 	gravBox.setText(to_string(defaultGravity));
 	targetBox.setText(to_string(targetTime));
 	goalBox.setText(to_string(goalChannel));
+	for (Entity* e : entities) {
+		e->setEditor();
+	}
+	for (Platform* p : platforms) {
+		p->setEditor();
+	}
+	for (Scenery* s : scenery) {
+		s->setEditor();
+	}
+	for (GravityField* g : gravFields) {
+		g->setEditor();
+	}
 }
 
 

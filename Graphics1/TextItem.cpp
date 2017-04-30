@@ -14,11 +14,6 @@ TextItem::~TextItem() {
 }
 
 
-// Puts the textbox in editor mode to help placement
-void TextItem::setEditor() {
-	editorMode = true;
-}
-
 // Sets the text to be displayed
 void TextItem::setText(string text) {
 	this->text = text;

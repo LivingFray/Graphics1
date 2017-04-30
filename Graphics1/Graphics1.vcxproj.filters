@@ -165,6 +165,27 @@
     <ClCompile Include="Scenery.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LogicGate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ANDGate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NANDGate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ORGate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NORGate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="XORGate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="XNORGate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataObject.h">
@@ -315,6 +336,27 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Scenery.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LogicGate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ANDGate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NANDGate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ORGate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NORGate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="XORGate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="XNORGate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
