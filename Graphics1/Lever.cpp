@@ -31,14 +31,13 @@ Lever::Lever() {
 	sOnAnim.setRepeat(false);
 	sOnAnim.addFrame(3, 1);
 	currentAnim = &nOffAnim;
-	//Disable gravity
-	grav = 0;
 	channel = 0;
 	clickSound = SoundLoader::getSound("Resources\\sounds\\beep.wav");
 }
 
 
 Lever::~Lever() {
+	alDeleteSources(1, &clickSound);
 }
 
 
@@ -79,7 +78,7 @@ void Lever::update() {
 
 // Sets the options for this selectable
 void Lever::setOptions(OptionMenu* menu) {
-	Entity::setOptions(menu);
+	Scenery::setOptions(menu);
 	std::map<string, string> values = menu->getValues();
 	string v;
 	v = values["Channel"];
@@ -89,14 +88,14 @@ void Lever::setOptions(OptionMenu* menu) {
 
 // Creates an option menu using the current values as defaults
 void Lever::createOptions() {
-	Entity::createOptions();
+	Scenery::createOptions();
 	options->addOption("Channel", true, to_string(channel));
 }
 
 
 // Returns a DataObject representing the storable object
 DataObject Lever::save() {
-	DataObject platform = Entity::save();
+	DataObject platform = Scenery::save();
 	platform.add("channel", channel);
 	return platform;
 }
@@ -104,6 +103,6 @@ DataObject Lever::save() {
 
 // Loads the storable object from the DataObject
 void Lever::load(DataObject obj) {
-	Entity::load(obj);
+	Scenery::load(obj);
 	channel = obj.getInt("channel");
 }

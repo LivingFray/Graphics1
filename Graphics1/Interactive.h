@@ -1,7 +1,7 @@
 #pragma once
-#include "Entity.h"
+#include "Scenery.h"
 class Interactive :
-	public Entity {
+	public Scenery {
 public:
 	Interactive();
 	virtual ~Interactive();

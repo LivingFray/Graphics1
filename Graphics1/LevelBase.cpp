@@ -51,6 +51,9 @@ LevelBase::~LevelBase() {
 	for (GravityField* f: gravFields) {
 		delete f;
 	}
+	for (Scenery* s : scenery) {
+		delete s;
+	}
 }
 
 
@@ -186,6 +189,10 @@ void LevelBase::draw(double ex) {
 	for (GravityField* f : gravFields) {
 		f->draw(ex);
 	}
+	//Draw the scenery
+	for (Scenery* s : scenery) {
+		s->draw(ex);
+	}
 	//Draw the platforms
 	for (Platform* p : platforms) {
 		p->draw(ex);
@@ -262,6 +269,10 @@ void LevelBase::saveLevel(string filePath) {
 	}
 	for (Platform* p : platforms) {
 		objs.add(to_string(i), p->save());
+		i++;
+	}
+	for (Scenery* s : scenery) {
+		objs.add(to_string(i), s->save());
 		i++;
 	}
 	lvl.add("objects", objs);
@@ -351,6 +362,10 @@ void LevelBase::loadLevel(string filePath) {
 		delete e;
 	}
 	entities.clear();
+	for (Scenery* s : scenery) {
+		delete s;
+	}
+	scenery.clear();
 	//Load data from DataObjects
 	int i = 0;
 	DataObject item = objs.getDataObject(to_string(i), exists);
@@ -394,7 +409,7 @@ void LevelBase::loadLevel(string filePath) {
 			} else if (id == "text") {
 				TextItem* t = new TextItem();
 				t->load(item);
-				platforms.push_back(t);
+				scenery.push_back(t);
 			} else if (id == "slope") {
 				Slope* s = new Slope();
 				s->load(item);
@@ -410,7 +425,7 @@ void LevelBase::loadLevel(string filePath) {
 			} else if (id == "lever") {
 				Lever* l = new Lever();
 				l->load(item);
-				entities.push_back(l);
+				scenery.push_back(l);
 			}
 		}
 		//Get next item
@@ -576,6 +591,28 @@ void LevelBase::removeGravityField(GravityField* field) {
 		if (*ptr == field) {
 			ptr = gravFields.erase(ptr);
 			delete field;
+			break;
+		} else {
+			ptr++;
+		}
+	}
+}
+
+
+// Adds scenery to the level
+void LevelBase::addScenery(Scenery* s) {
+	scenery.push_back(s);
+}
+
+
+
+// Removes the scenery from the level if it exists
+void LevelBase::removeScenery(Scenery* s) {
+	auto ptr = scenery.begin();
+	while (ptr != scenery.end()) {
+		if (*ptr == s) {
+			ptr = scenery.erase(ptr);
+			delete s;
 			break;
 		} else {
 			ptr++;

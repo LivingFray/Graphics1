@@ -53,6 +53,22 @@ item.create = [](BaseState* s) { \
 }; \
 menuItems.push_back(item);
 
+#define ADD_SCENERY(type, s_name)	item = MenuItem(); \
+item.name = s_name; \
+item.create = [](BaseState* s) { \
+	LevelEditor* l = (LevelEditor*)s; \
+	type* sc = new type(); \
+	sc->setPos(l->getCameraPos()); \
+	if (sc->canResize()){ \
+		sc->setWidth(1.00); \
+		sc->setHeight(1.00); \
+	} \
+	sc->setAngle(l->getCameraAngleAt(0)); \
+	l->addScenery(sc); \
+	l->setMenu(0); \
+}; \
+menuItems.push_back(item);
+
 LevelEditor::LevelEditor() {
 	//Initialise variables
 	currentMenu = Menu::NONE;
@@ -121,13 +137,13 @@ LevelEditor::LevelEditor() {
 	ADD_PLATFORM(BreakablePlatform, "Breakable Platform");
 	ADD_PLATFORM(MovingPlatform, "Moving Platform", pl->setFirstNode(l->getCameraPos()); pl->setLastNode(l->getCameraPos()));
 	ADD_PLATFORM(Slope, "Slope");
-	ADD_PLATFORM(TextItem, "Text Box");
 	ADD_ENTITY(PointGiver, "Point Giver");
 	ADD_ENTITY(BombEntity, "Bomb");
 	ADD_ENTITY(StompableEntity, "Stompable");
 	ADD_ENTITY(ShieldGiver, "Shield Giver");
 	ADD_ENTITY(Turret, "Turret");
-	ADD_ENTITY(Lever, "Lever");
+	ADD_SCENERY(Lever, "Lever");
+	ADD_SCENERY(TextItem, "Text Box");
 	//Create buttons for menu
 	for (MenuItem i : menuItems) {
 		Button* b = new Button();
@@ -593,7 +609,6 @@ void LevelEditor::updateCamera(double time) {
 void LevelEditor::select(Vec2D world) {
 	//By breaking after finding a match different types of object have different priorities
 	selected = NULL;
-	//TODO: Entities
 	for (Entity* e : entities) {
 		if (e->isInBoundingBox(world.getX(), world.getY())) {
 			selected = e;
@@ -603,6 +618,12 @@ void LevelEditor::select(Vec2D world) {
 	for (Platform* p : platforms) {
 		if (p->isInBoundingBox(world.getX(), world.getY())) {
 			selected = p;
+			return;
+		}
+	}
+	for (Scenery* s : scenery) {
+		if (s->isInBoundingBox(world.getX(), world.getY())) {
+			selected = s;
 			return;
 		}
 	}
@@ -1014,6 +1035,24 @@ void inline LevelEditor::deleteClicked(Vec2D world, int action) {
 			platIt = platforms.erase(platIt);
 		} else {
 			platIt++;
+		}
+	}
+	auto scenIt = scenery.begin();
+	while (scenIt != scenery.end()) {
+		if ((*scenIt)->isInBoundingBox(world.getX(), world.getY()) && (*scenIt)->canDelete()) {
+			delete *scenIt;
+			scenIt = scenery.erase(scenIt);
+		} else {
+			scenIt++;
+		}
+	}
+	auto entIt = entities.begin();
+	while (entIt != entities.end()) {
+		if ((*entIt)->isInBoundingBox(world.getX(), world.getY()) && (*entIt)->canDelete()) {
+			delete *entIt;
+			entIt = entities.erase(entIt);
+		} else {
+			entIt++;
 		}
 	}
 }

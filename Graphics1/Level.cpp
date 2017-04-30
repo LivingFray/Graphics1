@@ -112,6 +112,9 @@ void Level::update() {
 	for (GravityField* g : gravFields) {
 		g->update();
 	}
+	for (Scenery* s : scenery) {
+		s->update();
+	}
 	//Update the platforms
 	for (Platform* p : platforms) {
 		p->update();

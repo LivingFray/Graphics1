@@ -151,6 +151,7 @@
     <ClCompile Include="Lever.cpp" />
     <ClCompile Include="MovingPlatform.cpp" />
     <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="Scenery.cpp" />
     <ClCompile Include="SettingsMenu.cpp" />
     <ClCompile Include="Turret.cpp" />
     <ClCompile Include="Slope.cpp" />
@@ -202,6 +203,7 @@
     <ClInclude Include="Lever.h" />
     <ClInclude Include="MovingPlatform.h" />
     <ClInclude Include="Projectile.h" />
+    <ClInclude Include="Scenery.h" />
     <ClInclude Include="SettingsMenu.h" />
     <ClInclude Include="Turret.h" />
     <ClInclude Include="Slope.h" />

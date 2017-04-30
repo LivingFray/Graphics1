@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "BaseState.h"
 #include "GravityField.h"
+#include "Scenery.h"
 
 class LevelBase {
 public:
@@ -53,10 +54,15 @@ public:
 	void addGravityField(GravityField* field);
 	// Removes the gravity field from the level if it exists
 	void removeGravityField(GravityField* field);
+	// Adds scenery to the level
+	void addScenery(Scenery* s);
+	// Removes the scenery from the level if it exists
+	void removeScenery(Scenery* s);
 protected:
 	vector<Entity*> entities;
 	vector<Platform*> platforms;
 	vector<GravityField*> gravFields;
+	vector<Scenery*> scenery;
 	GLuint planet;
 	GLuint stars;
 	GLuint backing;

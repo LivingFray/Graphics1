@@ -1,7 +1,7 @@
 #pragma once
-#include "Platform.h"
+#include "Scenery.h"
 class TextItem :
-	public Platform {
+	public Scenery {
 public:
 	TextItem();
 	~TextItem();

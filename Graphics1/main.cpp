@@ -13,6 +13,7 @@ TODO: Buttons/Levers/etc
 TODO: Build demo levels
 TODO: Custom TextBox Validation?
 TODO: Refactor some objects (text, levers, etc) to be own type of object
+TODO: Phasing platforms (i.e. lever disables collisions)
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;
