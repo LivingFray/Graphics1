@@ -10,6 +10,7 @@
 #include "Slope.h"
 #include "Turret.h"
 #include "BreakablePlatform.h"
+#include "Lever.h"
 #define NUM_PANELS 8
 #define PARALLAX 0.5
 #define PANELS_X 9
@@ -36,6 +37,7 @@ LevelBase::LevelBase() {
 	defaultGravity = 0;
 	targetTime = 0;
 	goalOpen = true;
+	goalChannel = -1;
 }
 
 
@@ -246,6 +248,7 @@ void LevelBase::saveLevel(string filePath) {
 	lvl.add("goalY", goal.getY());
 	lvl.add("goalAngle", goalAngle);
 	lvl.add("targetTime", targetTime);
+	lvl.add("goalChannel", goalChannel);
 	//For each type of object create a DO listing them
 	DataObject objs = DataObject();
 	int i = 0;
@@ -325,6 +328,11 @@ void LevelBase::loadLevel(string filePath) {
 		printf("Error loading level: No target time found\n");
 		targetTime = 0;
 	}
+	goalChannel = lvl.getInt("goalChannel", exists);
+	if (!exists) {
+		printf("Error loading level: No goal channel found\n");
+		goalChannel = -1;
+	}
 	//Get list of platforms/entities/gravity fields
 	DataObject objs = lvl.getDataObject("objects", exists);
 	if (!exists) {
@@ -399,6 +407,10 @@ void LevelBase::loadLevel(string filePath) {
 				BreakablePlatform* b = new BreakablePlatform();
 				b->load(item);
 				platforms.push_back(b);
+			} else if (id == "lever") {
+				Lever* l = new Lever();
+				l->load(item);
+				entities.push_back(l);
 			}
 		}
 		//Get next item

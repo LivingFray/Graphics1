@@ -73,5 +73,6 @@ protected:
 	double goalAngle;
 	double targetTime;
 	bool goalOpen;
+	int goalChannel;
 };
 

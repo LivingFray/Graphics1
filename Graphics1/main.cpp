@@ -6,7 +6,6 @@
 Task list intergration:
 TODO: Cleanup code (auto generated classes, import orders, etc)
 TODO: --Refactor monolithic code (LevelBase, Level, LevelEditor)
-TODO: ----Change entities using level to LevelBase/levelbase/whatever
 TODO: Every stupid thing on the mark sheet
 TODO: --Space partioning for collision
 TODO: --Better AI?

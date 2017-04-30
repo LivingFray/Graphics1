@@ -31,6 +31,7 @@ void KeyConfig::loadBindings() {
 	bindControl("editorAntiClockwise", GLFW_KEY_RIGHT_CONTROL, "Rotate anti-clockwise (Editor)");
 	bindControl("editorClockwise", GLFW_KEY_RIGHT_SHIFT, "Rotate clockwise (Editor)");
 	bindControl("editorMenu", GLFW_KEY_ENTER, "Open editor menu");
+	bindControl("interact", GLFW_KEY_SPACE, "Interact with objects");
 	//Save the keybindings (some newer default bindings may have been missing)
 	bindings.saveToFile("keybindings.do");
 }

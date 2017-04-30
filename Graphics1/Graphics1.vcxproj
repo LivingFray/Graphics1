@@ -147,6 +147,8 @@
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="DataObject.cpp" />
+    <ClCompile Include="Interactive.cpp" />
+    <ClCompile Include="Lever.cpp" />
     <ClCompile Include="MovingPlatform.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="SettingsMenu.cpp" />
@@ -196,6 +198,8 @@
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="DataObject.h" />
+    <ClInclude Include="Interactive.h" />
+    <ClInclude Include="Lever.h" />
     <ClInclude Include="MovingPlatform.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="SettingsMenu.h" />

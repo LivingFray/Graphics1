@@ -63,11 +63,16 @@ Level::Level() {
 	//Load audio
 	spawnSound = SoundLoader::getSound("Resources\\sounds\\spawn.wav");
 	goalSound = SoundLoader::getSound("Resources\\sounds\\goal.wav");
+	//Create channels
+	channels = new char[MAX_CHANNELS / 8]();
+	newChannels = new char[MAX_CHANNELS / 8]();
 }
 
 
 Level::~Level() {
 	alDeleteSources(1, &spawnSound);
+	delete[] channels;
+	delete[] newChannels;
 }
 
 
@@ -100,6 +105,9 @@ void Level::update() {
 		levelTime += TICKRATE;
 		return;
 	}
+	//Reset new channel
+	delete[] newChannels;
+	newChannels = new char[MAX_CHANNELS / 8]();
 	//Update gravity fields
 	for (GravityField* g : gravFields) {
 		g->update();
@@ -134,8 +142,13 @@ void Level::update() {
 		}
 		e->setOnGround(onGround);
 	}
+	//Set whether the goal is active
+	goalOpen = getChannel(goalChannel);
 	checkPlayerReachedGoal();
+	//Add and delete objects that were requested to be added/deleted
 	handleChangedObjects();
+	//Reset channels
+	std::swap(newChannels, channels);
 	//Level timer
 	levelTime += TICKRATE;
 }
@@ -521,4 +534,30 @@ void Level::safeAdd(Platform* p) {
 // Safely remove a platform during an update call
 void Level::safeDelete(Platform* p) {
 	toRemoveP.push_back(p);
+}
+
+
+// Sets a channel to be active next update
+void Level::setChannel(int c) {
+	if (c < 0 || c >= MAX_CHANNELS) {
+		return;
+	}
+	int byte = c / 8;
+	char bits = 0x1 << (c%8);
+	newChannels[byte] = newChannels[byte] | bits;
+}
+
+
+// Gets whether a channel is active
+bool Level::getChannel(int c) {
+	//Negative channels represent TRUE
+	if (c < 0) {
+		return true;
+	}
+	if (c >= MAX_CHANNELS) {
+		return false;
+	}
+	int byte = c / 8;
+	char bits = 0x1 << (c % 8);
+	return (channels[byte] & bits)!=0;
 }

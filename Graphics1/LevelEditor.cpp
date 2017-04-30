@@ -13,6 +13,7 @@
 #include "Slope.h"
 #include "Turret.h"
 #include "BreakablePlatform.h"
+#include "Lever.h"
 #define EDITOR_MOVE_SPEED 1.00
 #define EDITOR_ROTATE_SPEED 30
 #define MOVE_SIZE 0.5
@@ -126,6 +127,7 @@ LevelEditor::LevelEditor() {
 	ADD_ENTITY(StompableEntity, "Stompable");
 	ADD_ENTITY(ShieldGiver, "Shield Giver");
 	ADD_ENTITY(Turret, "Turret");
+	ADD_ENTITY(Lever, "Lever");
 	//Create buttons for menu
 	for (MenuItem i : menuItems) {
 		Button* b = new Button();
@@ -152,6 +154,10 @@ LevelEditor::LevelEditor() {
 	targetBox.setText("");
 	targetBox.setNumeric(true);
 	textBoxes.push_back(&targetBox);
+	goalBox = TextBox();
+	goalBox.setText("");
+	goalBox.setNumeric(true);
+	textBoxes.push_back(&goalBox);
 	//Initialise menu buttons
 	exitButton = GradButton();
 	exitButton.setLabel("Exit to menu");
@@ -479,6 +485,7 @@ void LevelEditor::saveLevel(string filePath) {
 	defaultGravity = atof(gravBox.getText().c_str());
 	targetTime = atof(targetBox.getText().c_str());
 	nextLevelPath = nextBox.getText();
+	goalChannel = atoi(goalBox.getText().c_str());
 	LevelBase::saveLevel(filePath);
 	//Close menu
 	currentMenu = Menu::NONE;
@@ -514,6 +521,7 @@ void LevelEditor::loadLevel(string filePath) {
 	levelBox.setText(levelName);
 	gravBox.setText(to_string(defaultGravity));
 	targetBox.setText(to_string(targetTime));
+	goalBox.setText(to_string(goalChannel));
 }
 
 
@@ -742,6 +750,9 @@ void inline LevelEditor::drawSaveMenu(double ex) {
 	//Next level
 	y -= (int)fontSmall.h * 4;
 	drawTextBox("Next level", nextBox, y);
+	//Goal channel
+	y -= (int)fontSmall.h * 4;
+	drawSmallTextBox("Goal channel", goalBox, true, y);
 	//Exit button
 	exitButton.setY((int)(fontLarge.h * 2));
 	exitButton.setHeight((int)(fontLarge.h * 1.9));

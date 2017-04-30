@@ -67,6 +67,7 @@ private:
 	TextBox nextBox;
 	TextBox gravBox;
 	TextBox targetBox;
+	TextBox goalBox;
 	GradButton exitButton;
 	GradButton returnButton;
 	OptionMenu* optMenu;

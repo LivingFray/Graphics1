@@ -55,6 +55,10 @@ public:
 	void safeAdd(Platform* p);
 	// Safely remove a platform during an update call
 	void safeDelete(Platform* e);
+	// Sets a channel to be active next update
+	void setChannel(int c);
+	// Gets whether a channel is active
+	bool getChannel(int c);
 protected:
 	Player* player;
 	GLuint spawnBeam;
@@ -83,5 +87,7 @@ protected:
 	void drawIngameUI();
 	void handleChangedObjects();
 	void checkPlayerReachedGoal();
+	char* channels;
+	char* newChannels;
 };
 

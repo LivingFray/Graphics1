@@ -97,8 +97,15 @@ using std::vector;
 #define SHOOTING_VISION 5.0
 //The velocity of projectiles
 #define PROJECTILE_SPEED 3.0
-//Debug mode
+//The number of channels available for buttons/levers
+#define MAX_CHANNELS 256
+//The maximum range at which a player can interact with objects
+#define INTERACTION_RANGE 1
+//Uncomment to enter debug mode in release builds
+//#define DEBUG
+#ifdef _DEBUG
 #define DEBUG
+#endif
 extern GLFWwindow* gameWindow;
 extern int sWidth;
 extern int sHeight;
