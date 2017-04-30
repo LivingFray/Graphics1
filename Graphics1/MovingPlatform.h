@@ -32,5 +32,7 @@ protected:
 	char currentNode;
 	double progress;
 	double travelTime;
+	int channel;
+	Vec2D cVel;
 };
 

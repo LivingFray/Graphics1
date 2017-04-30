@@ -155,6 +155,7 @@
     <ClCompile Include="NANDGate.cpp" />
     <ClCompile Include="NORGate.cpp" />
     <ClCompile Include="ORGate.cpp" />
+    <ClCompile Include="PhasingPlatform.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="Scenery.cpp" />
     <ClCompile Include="SettingsMenu.cpp" />
@@ -214,6 +215,7 @@
     <ClInclude Include="NANDGate.h" />
     <ClInclude Include="NORGate.h" />
     <ClInclude Include="ORGate.h" />
+    <ClInclude Include="PhasingPlatform.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="Scenery.h" />
     <ClInclude Include="SettingsMenu.h" />

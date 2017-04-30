@@ -186,6 +186,9 @@
     <ClCompile Include="XNORGate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PhasingPlatform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataObject.h">
@@ -357,6 +360,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="XNORGate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PhasingPlatform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

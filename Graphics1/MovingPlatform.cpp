@@ -1,5 +1,5 @@
 #include "MovingPlatform.h"
-
+#include "Level.h"
 
 
 MovingPlatform::MovingPlatform() {
@@ -7,6 +7,7 @@ MovingPlatform::MovingPlatform() {
 	currentNode = 1;
 	travelTime = 1;
 	progress = 0;
+	channel = -1;
 }
 
 
@@ -60,6 +61,7 @@ DataObject MovingPlatform::save() {
 	platform.add("lastNodeX", nodes[1].getX());
 	platform.add("lastNodeY", nodes[1].getY());
 	platform.add("travelTime", travelTime);
+	platform.add("channel", channel);
 	return platform;
 }
 
@@ -72,6 +74,7 @@ void MovingPlatform::load(DataObject obj) {
 	nodes[1].setX(obj.getDouble("lastNodeX"));
 	nodes[1].setY(obj.getDouble("lastNodeY"));
 	setTravelTime(obj.getDouble("travelTime"));
+	channel = obj.getInt("channel");
 }
 
 
@@ -90,6 +93,8 @@ void MovingPlatform::setOptions(OptionMenu* menu) {
 	nodes[1].setY(atof(v.c_str()));
 	v = values["Travel Time"];
 	setTravelTime(atof(v.c_str()));
+	v = values["Channel"];
+	channel = atoi(v.c_str());
 }
 
 
@@ -101,23 +106,31 @@ void MovingPlatform::createOptions() {
 	options->addOption("Last Node X", true, to_string(nodes[1].getX()));
 	options->addOption("Last Node Y", true, to_string(nodes[1].getY()));
 	options->addOption("Travel Time", true, to_string(travelTime));
+	options->addOption("Channel", true, to_string(channel));
 }
 
 
 // Updates the platform
 void MovingPlatform::update() {
-	progress += TICKRATE;
-	if (progress > travelTime) {
-		//Make sure platform doesn't overshoot
-		vel = nodes[currentNode].subtract(pos).divide(TICKRATE);
-		//Change target
-		currentNode++;
-		currentNode %= 2;
-		//Reset progress
-		progress = 0;
-	} else if (progress == TICKRATE) {
-		//Start moving
-		vel = nodes[currentNode].subtract(pos).divide(travelTime);
+	Level* l = (Level*)state;
+	if (l->getChannel(channel)) {
+		vel.set(cVel.getX(), cVel.getY());
+		progress += TICKRATE;
+		if (progress > travelTime) {
+			//Make sure platform doesn't overshoot
+			vel = nodes[currentNode].subtract(pos).divide(TICKRATE);
+			//Change target
+			currentNode++;
+			currentNode %= 2;
+			//Reset progress
+			progress = 0;
+		} else if (progress == TICKRATE) {
+			//Start moving
+			vel = nodes[currentNode].subtract(pos).divide(travelTime);
+			cVel.set(vel.getX(), vel.getY());
+		}
+	} else {
+		vel = Vec2D(0.0, 0.0);
 	}
 	//Move platform and handle any other stuff
 	Platform::update();

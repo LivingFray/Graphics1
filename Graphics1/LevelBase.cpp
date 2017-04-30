@@ -17,6 +17,7 @@
 #include "NANDGate.h"
 #include "NORGate.h"
 #include "XNORGate.h"
+#include "PhasingPlatform.h"
 #define NUM_PANELS 8
 #define PARALLAX 0.5
 #define PANELS_X 9
@@ -456,6 +457,10 @@ void LevelBase::loadLevel(string filePath) {
 				XNORGate* g = new XNORGate();
 				g->load(item);
 				scenery.push_back(g);
+			} else if (id == "phase") {
+				PhasingPlatform* p = new PhasingPlatform();
+				p->load(item);
+				platforms.push_back(p);
 			}
 		}
 		//Get next item

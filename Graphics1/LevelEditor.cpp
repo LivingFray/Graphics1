@@ -20,6 +20,7 @@
 #include "NORGate.h"
 #include "XORGate.h"
 #include "XNORGate.h"
+#include "PhasingPlatform.h"
 #define EDITOR_MOVE_SPEED 1.00
 #define EDITOR_ROTATE_SPEED 30
 #define MOVE_SIZE 0.5
@@ -146,6 +147,7 @@ LevelEditor::LevelEditor() {
 	ADD_PLATFORM(BreakablePlatform, "Breakable Platform");
 	ADD_PLATFORM(MovingPlatform, "Moving Platform", pl->setFirstNode(l->getCameraPos()); pl->setLastNode(l->getCameraPos()));
 	ADD_PLATFORM(Slope, "Slope");
+	ADD_PLATFORM(PhasingPlatform, "Phasing Platform");
 	ADD_ENTITY(PointGiver, "Point Giver");
 	ADD_ENTITY(BombEntity, "Bomb");
 	ADD_ENTITY(StompableEntity, "Stompable");

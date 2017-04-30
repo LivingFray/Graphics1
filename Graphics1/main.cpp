@@ -14,7 +14,7 @@ TODO: --Entity touching button
 TODO: --Timed button
 TODO: Build demo levels
 TODO: Custom TextBox Validation?
-TODO: Phasing platforms (i.e. lever disables collisions)
+TODO: Automatically fix texture bleeding
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;

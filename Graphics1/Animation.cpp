@@ -24,6 +24,7 @@ Animation::~Animation() {
 // Sets the texture ID of the spritesheet
 void Animation::setSpriteSheet(string texture) {
 	spritesheet = ImageLoader::getImage(texture);
+
 }
 
 
