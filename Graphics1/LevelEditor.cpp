@@ -142,6 +142,7 @@ LevelEditor::LevelEditor() {
 		l->addGravityField(f);
 		l->setMenu(0);
 	};
+	menuItems.push_back(item);
 	ADD_PLATFORM(Platform, "Basic Platform");
 	ADD_PLATFORM(Spike, "Deadly Platform");
 	ADD_PLATFORM(BreakablePlatform, "Breakable Platform");
