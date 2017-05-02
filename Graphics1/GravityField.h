@@ -23,6 +23,8 @@ public:
 	virtual void load(DataObject obj);
 	// Creates an option menu using the current values as defaults
 	virtual void createOptions();
+	// Called when the selectable is resized
+	bool onResize(double dX, double dY);
 	// Sets the options for this selectable
 	virtual void setOptions(OptionMenu* menu);
 protected:

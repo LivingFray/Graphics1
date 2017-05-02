@@ -117,3 +117,11 @@ void GravityField::createOptions() {
 	Selectable::createOptions();
 	options->addOption("Strength", true, to_string(strength));
 }
+
+
+// Called when the selectable is resized
+bool GravityField::onResize(double dX, double dY) {
+	p.clear();
+	warmed = false;
+	return Selectable::onResize(dX, dY);;
+}

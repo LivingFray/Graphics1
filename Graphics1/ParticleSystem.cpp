@@ -284,7 +284,18 @@ void ParticleSystem::addColor(unsigned char sR, unsigned char sG,
 	presetColors.push_back(c);
 }
 
+
 // Sets the gravity
 void ParticleSystem::setGravity(Vec2D grav) {
 	this->grav = grav;
+}
+
+
+// Clears the particle system
+void ParticleSystem::clear() {
+	int i = 0;
+	while (particles[i].age > 0) {
+		particles[i].age = -1;
+		i++;
+	}
 }

@@ -114,6 +114,10 @@ void Entity::draw(double ex) {
 		glVertex2d(vecs[i].getX(), vecs[i].getY());
 	}
 	glEnd();
+	glLoadIdentity();
+	if (id == "player") {
+		freetype::print(fontSmall, 10, 200, "Angle: %02.2f VisAngle %02.2f", angle, visAngle);
+	}
 #endif
 	glPopMatrix();
 }
@@ -212,30 +216,41 @@ void Entity::setVisAngle(double angle) {
 
 // Updates the visible angle for ex seconds of motion
 double Entity::updatedVisAngle(double ex) {
+	//Normalise angle
+	if (angle < 0) {
+		angle += 360;
+	}
+	if (angle >= 360) {
+		angle -= 360;
+	}
 	if (visAngle == angle) {
 		return visAngle;
 	}
-	double a = visAngle;
-	double opp = 180 + angle;
-	if (opp >= 360) {
-		opp -= 360;
-	}
-	if (a > angle && a <= opp) {
-		a -= ex*ENTITY_ROTATE_SPEED;
-	} else {
-		a += ex*ENTITY_ROTATE_SPEED;
-	}
-	if (a < 0) {
-		a += 360;
-	}
-	if (a >= 360) {
+	double a = angle;
+	double v = visAngle;
+	if (angle > visAngle) {
 		a -= 360;
 	}
-	double dif = abs(angle - a);
-	if (dif <= ex*ENTITY_ROTATE_SPEED || abs(dif - 360) <= ex*ENTITY_ROTATE_SPEED) {
-		a = angle;
+	if (visAngle - a < 180) {
+		//Rotate clockwise
+		v -= ex*ENTITY_ROTATE_SPEED;
+	} else {
+		//Rotate anti clockwise
+		v += ex*ENTITY_ROTATE_SPEED;
 	}
-	return a;
+	//Keep angle within range
+	if (v < 0) {
+		v += 360;
+	}
+	if (v >= 360) {
+		v -= 360;
+	}
+	//Prevent overshooting
+	double dif = abs(angle - v);
+	if (dif <= ex*ENTITY_ROTATE_SPEED || abs(dif - 360) <= ex*ENTITY_ROTATE_SPEED) {
+		v = angle;
+	}
+	return v;
 }
 
 

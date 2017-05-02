@@ -15,6 +15,8 @@ TODO: --Timed button
 TODO: Build demo levels
 TODO: Custom TextBox Validation?
 TODO: Automatically fix texture bleeding
+TODO: Add drag and drop
+TODO: Add tutorial text for opening menu?
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;

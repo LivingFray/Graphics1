@@ -46,6 +46,8 @@ public:
 		unsigned char eG, unsigned char eB, unsigned char eA);
 	// Sets the gravity
 	void setGravity(Vec2D grav);
+	// Clears the particle system
+	void clear();
 protected:
 	Vec2D pos;
 	Vec2D grav;
