@@ -85,9 +85,15 @@ protected:
 	void drawCompletedScreen();
 	void drawPauseScreen();
 	void drawIngameUI();
+	void drawMinimap(double ex);
 	void handleChangedObjects();
 	void checkPlayerReachedGoal();
 	char* channels;
 	char* newChannels;
+	double mapMinX;
+	double mapMinY;
+	double mapMaxX;
+	double mapMaxY;
+	void calculateBounds();
 };
 

@@ -4,17 +4,13 @@
 #include "MainMenu.h"
 /*
 Task list intergration:
-TODO: Cleanup code (auto generated classes, import orders, etc)
-TODO: --Refactor monolithic code (LevelBase, Level, LevelEditor)
-TODO: Every stupid thing on the mark sheet
-TODO: --Space partioning for collision
-TODO: --Better AI?
 TODO: Buttons/Levers/etc
 TODO: --Timed button
+TODO: --Change strength of gravity fields
 TODO: Build demo levels
-TODO: Custom TextBox Validation?
-TODO: Automatically fix texture bleeding
+TODO: Fix texture bleeding
 TODO: Add drag and drop
+TODO: Not a companion cube
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;
@@ -81,7 +77,6 @@ void update() {
 ///Resizes the window
 void resize(GLFWwindow* window, int width, int height) {
 	//Fix the viewport
-	//TODO: Maybe fix for different resolutions
 	sWidth = width;
 	sHeight = height;
 	glViewport(0, 0, width, height);

@@ -168,6 +168,7 @@ void Level::loadLevel(string filePath) {
 	failed = false;
 	score = 0;
 	player = NULL;
+	calculateBounds();
 }
 
 
@@ -218,6 +219,7 @@ void Level::draw(double ex) {
 		drawPauseScreen();
 	} else {
 		drawIngameUI();
+		drawMinimap(ex);
 	}
 }
 
@@ -344,6 +346,52 @@ void inline Level::drawIngameUI() {
 }
 
 
+void inline Level::drawMinimap(double ex) {
+	int s = (int)((sWidth > sHeight ? sHeight : sWidth) * MINIMAP_SIZE);
+	//Outline
+	glColor3ub(0, 0, 0);
+	glLineWidth(1);
+	glBegin(GL_LINE_LOOP);
+	glVertex2d(sWidth, sHeight);
+	glVertex2d(sWidth - s, sHeight);
+	glVertex2d(sWidth - s, sHeight - s);
+	glVertex2d(sWidth, sHeight - s);
+	glEnd();
+	//Switch scale so only minimap is drawn
+	glPushMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	//Scale it such that I can draw 1 to 1
+	float maxDir = (mapMaxX - mapMinX) > (mapMaxY - mapMinY) ? (mapMaxX - mapMinX) : (mapMaxY - mapMinY);
+	float resize = (float)(maxDir/MINIMAP_SIZE) / (float)(sWidth < sHeight ? sWidth : sHeight);
+	glOrtho(0.0, resize * sWidth, 0.0, resize * sHeight, -1.0, 1.0);
+	glEnable(GL_SCISSOR_TEST);
+	glScissor((1 - MINIMAP_SIZE) * sWidth, (1 - MINIMAP_SIZE) * sHeight, MINIMAP_SIZE * sWidth, MINIMAP_SIZE * sHeight);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glColor3ub(0, 255, 0);
+	glTranslated(resize * sWidth - maxDir - mapMinX, resize * sHeight - maxDir - mapMinY, 0);
+	glColor3ub(0, 0, 0);
+	for (Platform* p : platforms) {
+		int v;
+		Vec2D* vert = p->getVertices(&v);
+		glBegin(GL_POLYGON);
+		for (int i = 0; i < v; i++) {
+			glVertex2d(vert[i].getX(), vert[i].getY());
+		}
+		glEnd();
+		delete[] vert;
+	}
+	Vec2D pos = getCameraAt(ex);
+	glPointSize(5);
+	glBegin(GL_POINTS);
+	glVertex2d(pos.getX(), pos.getY());
+	glEnd();
+	glDisable(GL_SCISSOR_TEST);
+	glPopMatrix();
+}
+
+
 void inline Level::handleChangedObjects() {
 	//Safely handle anything that was added this update
 	for (Entity* e : toAddE) {
@@ -379,6 +427,52 @@ void inline Level::checkPlayerReachedGoal() {
 			addScore(TIME_MULTIPLIER * (int)(targetTime - floor(levelTime - SPAWN_ANIM_END)));
 		}
 		alSourcePlay(goalSound);
+	}
+}
+
+
+void inline Level::calculateBounds() {
+	mapMinX = HUGE;
+	mapMinY = HUGE;
+	mapMaxX = -HUGE;
+	mapMaxY = -HUGE;
+	//Gets bounds of each platform
+	//Doesn't need to be exact so forget about rotation
+	//Just use the broadCheck distance
+	for (Platform* p : platforms) {
+		Vec2D pos = p->getPos();
+		double d = p->getWidth() * p->getWidth() + p->getHeight() * p->getHeight();
+		d = sqrt(d) / 2;
+		if (pos.getX() - d < mapMinX) {
+			mapMinX = pos.getX() - d;
+		}
+		if (pos.getX() + d > mapMaxX) {
+			mapMaxX = pos.getX() + d;
+		}
+		if (pos.getX() - d < mapMinY) {
+			mapMinY = pos.getY() - d;
+		}
+		if (pos.getY() + d > mapMaxY) {
+			mapMaxY = pos.getY() + d;
+		}
+	}
+	//Ditto for gravity fields
+	for (GravityField* p : gravFields) {
+		Vec2D pos = p->getPos();
+		double d = p->getWidth() * p->getHeight();
+		d = sqrt(d);
+		if (pos.getX() - d < mapMinX) {
+			mapMinX = pos.getX() - d;
+		}
+		if (pos.getX() + d > mapMaxX) {
+			mapMaxX = pos.getX() + d;
+		}
+		if (pos.getX() - d < mapMinY) {
+			mapMinY = pos.getY() - d;
+		}
+		if (pos.getY() + d > mapMaxY) {
+			mapMaxY = pos.getY() + d;
+		}
 	}
 }
 

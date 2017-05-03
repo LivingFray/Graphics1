@@ -101,6 +101,8 @@ using std::vector;
 #define MAX_CHANNELS 256
 //The maximum range at which a player can interact with objects
 #define INTERACTION_RANGE 1
+//How much of the screen is devoted to the minimap
+#define MINIMAP_SIZE 0.2
 //Uncomment to enter debug mode in release builds
 //#define DEBUG
 #ifdef _DEBUG
