@@ -114,10 +114,6 @@ void Entity::draw(double ex) {
 		glVertex2d(vecs[i].getX(), vecs[i].getY());
 	}
 	glEnd();
-	glLoadIdentity();
-	if (id == "player") {
-		freetype::print(fontSmall, 10, 200, "Angle: %02.2f VisAngle %02.2f", angle, visAngle);
-	}
 #endif
 	glPopMatrix();
 }

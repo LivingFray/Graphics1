@@ -21,6 +21,7 @@
 #include "XORGate.h"
 #include "XNORGate.h"
 #include "PhasingPlatform.h"
+#include "ButtonEntity.h"
 #define EDITOR_MOVE_SPEED 1.00
 #define EDITOR_ROTATE_SPEED 30
 #define MOVE_SIZE 0.5
@@ -154,6 +155,7 @@ LevelEditor::LevelEditor() {
 	ADD_ENTITY(StompableEntity, "Stompable");
 	ADD_ENTITY(ShieldGiver, "Shield Giver");
 	ADD_ENTITY(Turret, "Turret");
+	ADD_ENTITY(ButtonEntity, "Button");
 	ADD_SCENERY(Lever, "Lever");
 	ADD_SCENERY(TextItem, "Text Box");
 	ADD_SCENERY(ANDGate, "AND Gate");

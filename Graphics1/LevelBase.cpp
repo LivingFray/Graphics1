@@ -18,6 +18,7 @@
 #include "NORGate.h"
 #include "XNORGate.h"
 #include "PhasingPlatform.h"
+#include "ButtonEntity.h"
 #define NUM_PANELS 8
 #define PARALLAX 0.5
 #define PANELS_X 9
@@ -461,6 +462,10 @@ void LevelBase::loadLevel(string filePath) {
 				PhasingPlatform* p = new PhasingPlatform();
 				p->load(item);
 				platforms.push_back(p);
+			} else if (id == "button") {
+				ButtonEntity* b = new ButtonEntity();
+				b->load(item);
+				entities.push_back(b);
 			}
 		}
 		//Get next item
