@@ -446,6 +446,17 @@ void LevelEditor::mouseMoveEvent(GLFWwindow* window, double x, double y) {
 		selected->onRotate(RAD_TO_DEG * (angle - rotateFrom));
 		rotateFrom = angle;
 	}
+	//A selectable is being dragged
+	if (dragging) {
+		if (currentMenu != Menu::NONE) {
+			dragging = false;
+		} else {
+			Vec2D world = getWorldCoordinates(Vec2D(x, sHeight - y));
+			Vec2D dif = world.subtract(dragFrom);
+			selected->onMove(dif.getX(), dif.getY());
+			dragFrom = world;
+		}
+	}
 }
 
 
@@ -887,14 +898,13 @@ void inline LevelEditor::drawIngameUI(double ex) {
 	freetype::print(fontSmall, 10, fontSmall.h * 2.625f, "Position: (%.2f, %.2f)\nAngle: %.2f", camPos.getX(), camPos.getY(), camAngle);
 }
 
+
 void inline LevelEditor::clickHandles(double x, double y, int action) {
 	//Convert coords to world coords
 	Vec2D world = getWorldCoordinates(Vec2D(x, y));
 	switch (current) {
 	case 0: //Select
-		if (action == GLFW_PRESS) {
-			select(world);
-		}
+		dragClicked(world, action);
 	case 1: //Move
 		moveClicked(world, action);
 		break;
@@ -917,6 +927,19 @@ void inline LevelEditor::clickHandles(double x, double y, int action) {
 	case 5: //Delete
 		deleteClicked(world, action);
 		break;
+	}
+}
+
+
+void inline LevelEditor::dragClicked(Vec2D world, int action) {
+	if (action == GLFW_PRESS) {
+		select(world);
+		if (selected) {
+			dragFrom = world;
+			dragging = true;
+		}
+	} else {
+		dragging = false;
 	}
 }
 

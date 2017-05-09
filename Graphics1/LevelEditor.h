@@ -47,6 +47,8 @@ private:
 	double camAngle;
 	Vec2D panFrom;
 	bool panning;
+	Vec2D dragFrom;
+	bool dragging;
 	// Updates the camera position and rotation
 	void updateCamera(double time);
 	int current;
@@ -83,6 +85,7 @@ private:
 	void drawOptionsMenu(double ex);
 	void drawIngameUI(double ex);
 	void clickHandles(double x, double y, int action);
+	void dragClicked(Vec2D world, int action);
 	void moveClicked(Vec2D world, int action);
 	void resizeClicked(Vec2D world, int action);
 	void rotateClicked(Vec2D world, int action);

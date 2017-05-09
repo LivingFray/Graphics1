@@ -7,9 +7,9 @@
 Task list intergration:
 TODO: Buttons/Levers/etc
 TODO: --Timed button
+TODO: --Timer
 TODO: Build demo levels
 TODO: Fix texture bleeding
-TODO: Add drag and drop
 TODO: Not a companion cube
 TODO: Slope selection bad
 */
