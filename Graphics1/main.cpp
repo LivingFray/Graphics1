@@ -11,7 +11,6 @@ TODO: --Timer
 TODO: Build demo levels
 TODO: Fix texture bleeding
 TODO: Not a companion cube
-TODO: Slope selection bad
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;

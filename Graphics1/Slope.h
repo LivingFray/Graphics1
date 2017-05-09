@@ -11,5 +11,7 @@ public:
 	Vec2D* getNormals(int * numNormals);
 	// Gets the vertices of the bounding box
 	Vec2D* getVertices(int * numVertices);
+	// Returns if the selectable is selected
+	bool isInBoundingBox(double x, double y);
 };
 

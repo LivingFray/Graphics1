@@ -100,3 +100,17 @@ Vec2D* Slope::getVertices(int* numVertices) {
 	return r;
 }
 
+
+// Returns if the selectable is selected
+bool Slope::isInBoundingBox(double x, double y) {
+	int n;
+	Vec2D* p = getVertices(&n);
+	//Definitely not lifted form stack overflow
+	double alpha = ((p[1].getY() - p[2].getY())*(x - p[2].getX()) + (p[2].getX() - p[1].getX())*(y - p[2].getY())) /
+		((p[1].getY() - p[2].getY())*(p[0].getX() - p[2].getX()) + (p[2].getX() - p[1].getX())*(p[0].getY() - p[2].getY()));
+	double beta = ((p[2].getY() - p[0].getY())*(x - p[2].getX()) + (p[0].getX() - p[2].getX())*(y - p[2].getY())) /
+		((p[1].getY() - p[2].getY())*(p[0].getX() - p[2].getX()) + (p[2].getX() - p[1].getX())*(p[0].getY() - p[2].getY()));
+	double gamma = 1.0f - alpha - beta;
+	delete[] p;
+	return alpha > 0 && beta > 0 && gamma > 0;
+}
