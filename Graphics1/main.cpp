@@ -1,4 +1,5 @@
 #include <iostream>
+#include <filesystem>
 #include "Globals.h"
 #include "BaseState.h"
 #include "MainMenu.h"
@@ -9,7 +10,6 @@ TODO: --Timed button
 TODO: Build demo levels
 TODO: Fix texture bleeding
 TODO: Add drag and drop
-TODO: Fix level folder being missing not saving levels
 TODO: Not a companion cube
 TODO: Slope selection bad
 */
@@ -60,6 +60,8 @@ void init() {
 	cursorPan = glfwCreateStandardCursor(GLFW_CROSSHAIR_CURSOR);
 	//Set state to main menu
 	state = new MainMenu();
+	//Ensure level folder is present
+	std::experimental::filesystem::create_directory("Levels");
 }
 ///Draws the scene
 void draw(double ex) {
