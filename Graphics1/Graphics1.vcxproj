@@ -148,6 +148,7 @@
     <ClCompile Include="ButtonEntity.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="Crate.cpp" />
     <ClCompile Include="DataObject.cpp" />
     <ClCompile Include="Interactive.cpp" />
     <ClCompile Include="Lever.cpp" />
@@ -209,6 +210,7 @@
     <ClInclude Include="ButtonEntity.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="Crate.h" />
     <ClInclude Include="DataObject.h" />
     <ClInclude Include="Interactive.h" />
     <ClInclude Include="Lever.h" />

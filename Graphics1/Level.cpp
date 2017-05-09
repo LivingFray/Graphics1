@@ -169,6 +169,7 @@ void Level::loadLevel(string filePath) {
 	score = 0;
 	player = NULL;
 	calculateBounds();
+	goalOpen = getChannel(goalChannel);
 }
 
 
@@ -417,7 +418,8 @@ void inline Level::handleChangedObjects() {
 
 void inline Level::checkPlayerReachedGoal() {
 	//Bespoke collision detection for goal (other checks need to be met)
-	if (goalOpen && player && abs(player->getAngle() - goalAngle) < GOAL_ANGLE_DIF &&
+	if (goalOpen && player && (abs(player->getAngle() - goalAngle) < GOAL_ANGLE_DIF ||
+		abs(player->getAngle() - (360 + goalAngle)) < GOAL_ANGLE_DIF) &&
 		player->getPos().subtract(goal).magnitudeSquare() < GOAL_DISTANCE_SQR) {
 		reachedGoal = true;
 		removeEntity(player);
