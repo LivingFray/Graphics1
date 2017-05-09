@@ -11,7 +11,7 @@ public:
 	~GravityField();
 	// Draws the gravity field ex seconds after last update
 	virtual void draw(double ex);
-	// Updates the grabity field
+	// Updates the gravity field
 	virtual void update();
 	// Gets the strength of the gravity field
 	virtual double getStrength();
@@ -33,5 +33,8 @@ protected:
 	double lastTime;
 	ParticleSystem p;
 	bool warmed;
+	int channel;
+	double strengthOff;
+	double strengthOn;
 };
 

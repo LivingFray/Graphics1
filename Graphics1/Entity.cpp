@@ -45,6 +45,11 @@ void Entity::update() {
 	Vec2D g;
 	Level* level = (Level*)state;
 	level->getGravityAtPos(pos, &g);
+	//Fix gravity changing bug
+	if (lastGravity.getX() != g.getX() || lastGravity.getY() != g.getY()) {
+		onGround = false;
+	}
+	lastGravity = g;
 	if (!onGround) {
 		vel.addTo(g.multiply(TICKRATE * grav));
 	}

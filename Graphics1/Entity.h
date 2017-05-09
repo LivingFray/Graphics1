@@ -67,5 +67,6 @@ protected:
 	bool moving;
 	Animation* currentAnim;
 	double grav;
+	Vec2D lastGravity;
 };
 

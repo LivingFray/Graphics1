@@ -6,11 +6,12 @@
 Task list intergration:
 TODO: Buttons/Levers/etc
 TODO: --Timed button
-TODO: --Change strength of gravity fields
 TODO: Build demo levels
 TODO: Fix texture bleeding
 TODO: Add drag and drop
+TODO: Fix level folder being missing not saving levels
 TODO: Not a companion cube
+TODO: Slope selection bad
 */
 //----------------------------------Globals----------------------------------//
 BaseState* state;
