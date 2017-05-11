@@ -25,6 +25,7 @@
 #include "Crate.h"
 #include "Clock.h"
 #include "TimedButton.h"
+#include "Light.h"
 #define EDITOR_MOVE_SPEED 1.00
 #define EDITOR_ROTATE_SPEED 30
 #define MOVE_SIZE 0.5
@@ -171,6 +172,7 @@ LevelEditor::LevelEditor() {
 	ADD_SCENERY(XNORGate, "XNOR Gate");
 	ADD_SCENERY(Clock, "Clock");
 	ADD_SCENERY(TimedButton, "Timed Button");
+	ADD_SCENERY(Light, "Light");
 	//Create buttons for menu
 	for (MenuItem i : menuItems) {
 		Button* b = new Button();
@@ -485,7 +487,7 @@ void LevelEditor::resizeEvent(GLFWwindow * window, int width, int height) {
 		b->setWidth((4 * sWidth) / 10);
 		b->setHeight((int)(fontLarge.h * 1.75));
 		b->setX(sWidth / 4 + (i % 2) * (sWidth / 2));
-		b->setY(sHeight - (int)fontLarge.h * 4 - (int)(fontLarge.h * 1.75) * (i / 2));
+		b->setY(sHeight - (int)fontLarge.h * 2.5 - (int)(fontLarge.h * 1.75) * (i / 2));
 		i++;
 	}
 }

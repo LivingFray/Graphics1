@@ -152,6 +152,7 @@
     <ClCompile Include="DataObject.cpp" />
     <ClCompile Include="Interactive.cpp" />
     <ClCompile Include="Lever.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="LogicGate.cpp" />
     <ClCompile Include="MovingPlatform.cpp" />
     <ClCompile Include="NANDGate.cpp" />
@@ -216,6 +217,7 @@
     <ClInclude Include="DataObject.h" />
     <ClInclude Include="Interactive.h" />
     <ClInclude Include="Lever.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="LogicGate.h" />
     <ClInclude Include="MovingPlatform.h" />
     <ClInclude Include="NANDGate.h" />
