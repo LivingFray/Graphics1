@@ -1124,14 +1124,18 @@ void inline LevelEditor::deleteClicked(Vec2D world, int action) {
 
 void inline LevelEditor::copyClicked(Vec2D world, int action) {
 	//Don't copy if nothing selected
-	if (!selected) {
+	if (!selected || action != GLFW_PRESS) {
 		return;
 	}
 	//Iterate through and copy those that are being clicked on
 	auto entIt = entities.begin();
 	while (entIt != entities.end()) {
 		if ((*entIt)->isInBoundingBox(world.getX(), world.getY()) && (*entIt)->canDelete()) {
-			entities.push_back(new Entity(**entIt));
+			Entity* e = new Entity(**entIt);
+			selected = e;
+			current = 0;
+			dragClicked(world, action);
+			entities.push_back(e);
 			return;
 		} else {
 			entIt++;
@@ -1140,7 +1144,11 @@ void inline LevelEditor::copyClicked(Vec2D world, int action) {
 	auto platIt = platforms.begin();
 	while (platIt != platforms.end()) {
 		if ((*platIt)->isInBoundingBox(world.getX(), world.getY()) && (*platIt)->canDelete()) {
-			platforms.push_back(new Platform(**platIt));
+			Platform* p = new Platform(**platIt);
+			selected = p;
+			current = 0;
+			dragClicked(world, action);
+			platforms.push_back(p);
 			return;
 		} else {
 			platIt++;
@@ -1149,7 +1157,11 @@ void inline LevelEditor::copyClicked(Vec2D world, int action) {
 	auto scenIt = scenery.begin();
 	while (scenIt != scenery.end()) {
 		if ((*scenIt)->isInBoundingBox(world.getX(), world.getY()) && (*scenIt)->canDelete()) {
-			scenery.push_back(new Scenery(**scenIt));
+			Scenery* s = new Scenery(**scenIt);
+			selected = s;
+			current = 0;
+			dragClicked(world, action);
+			scenery.push_back(s);
 			return;
 		} else {
 			scenIt++;
@@ -1158,7 +1170,11 @@ void inline LevelEditor::copyClicked(Vec2D world, int action) {
 	auto gravIt = gravFields.begin();
 	while (gravIt != gravFields.end()) {
 		if ((*gravIt)->isInBoundingBox(world.getX(), world.getY()) && (*gravIt)->canCopy()) {
-			gravFields.push_back(new GravityField(**gravIt));
+			GravityField* g = new GravityField(**gravIt);
+			selected = g;
+			current = 0;
+			dragClicked(world, action);
+			gravFields.push_back(g);
 			return;
 		} else {
 			gravIt++;
