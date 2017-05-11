@@ -73,6 +73,7 @@ unsigned char TextItem::getAlpha() {
 
 // Draws the text ex seconds after last update
 void TextItem::draw(double ex) {
+	//Draw box for selecting text
 	if (editorMode) {
 		glPushMatrix();
 		glTranslated(pos.getX(), pos.getY(), 0);
@@ -87,27 +88,30 @@ void TextItem::draw(double ex) {
 		glEnd();
 		glPopMatrix();
 	}
+	//Text "helpfully" uses screen coordinates, regardless of changes made to viewport
 	glPushMatrix();
 	glLoadIdentity();
 	Level* l = (Level*)state;
 	Vec2D offset;
+	Vec2D screen;
 	freetype::font_data f = largeFont ? fontLarge : fontSmall;
-	int len = freetype::getLength(f, text.c_str());
-	double h = f.h * 0.625;
-	offset.setX(-len / 2.0);
-	offset.setY(-h);
-	offset.multiplyBy(WORLD_SIZE / (double)(sWidth < sHeight ? sWidth : sHeight));
-	//Add extrapolation
+	//Add position extrapolation
 	Player* p = l->getPlayer();
 	if (!editorMode && p) {
 		offset.subtractFrom(p->getVel().multiply(ex));
 	}
-	Vec2D screen = l->getScreenCoordinates(pos.add(offset));
-	glTranslated(len / 2 + screen.getX(), h + screen.getY(), 0);
-	glRotated(angle, 0, 0, 1);
-	glTranslated(-len / 2.0, -h, 0);
+	//Translate by text offset
+	//Rotate by text angle
+	//Translate by position
+	//Rotate by camera angle
+	//Translate by screen coords
+	//OpenGL is backwards, so do above in reverse
+	screen = pos.subtract(l->getCameraAt(ex)).multiply((double)(sWidth < sHeight ? sWidth : sHeight) / WORLD_SIZE).add(offset);
+	glTranslated(sWidth * 0.5, sHeight * 0.5, 0);
 	glRotated(-l->getCameraAngleAt(ex), 0, 0, 1);
-	glColor4ub(r, g, b, a);
+	glTranslated(screen.getX(), screen.getY(), 0);
+	glRotated(angle, 0, 0, 1);
+	glTranslated(-freetype::getLength(f, text.c_str()) * 0.5f, -f.h * 0.625f, 0);
 	freetype::print(f, 0, 0, text.c_str());
 	glPopMatrix();
 }
