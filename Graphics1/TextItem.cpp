@@ -99,7 +99,7 @@ void TextItem::draw(double ex) {
 	offset.multiplyBy(WORLD_SIZE / (double)(sWidth < sHeight ? sWidth : sHeight));
 	//Add extrapolation
 	Player* p = l->getPlayer();
-	if (p) {
+	if (!editorMode && p) {
 		offset.subtractFrom(p->getVel().multiply(ex));
 	}
 	Vec2D screen = l->getScreenCoordinates(pos.add(offset));
