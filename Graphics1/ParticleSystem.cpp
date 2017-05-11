@@ -98,7 +98,6 @@ void ParticleSystem::draw(double elapsed) {
 			GLfloat x = (GLfloat)particles[i].pos.getX();
 			GLfloat y = (GLfloat)particles[i].pos.getY();
 			GLfloat s = (GLfloat)particles[i].size / 2.0f;
-			//TODO: rotation?
 			vertices[totalAlive * 8 + 0] = x - s;
 			vertices[totalAlive * 8 + 1] = y - s;
 			vertices[totalAlive * 8 + 2] = x + s;

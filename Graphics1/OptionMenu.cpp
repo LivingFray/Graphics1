@@ -29,7 +29,6 @@ void OptionMenu::draw() {
 	bool newline = true;
 	float y = sHeight - fontSmall.h * 2;
 	//Loop through and draw each option
-	//TODO: scrolling?
 	for (Option* o : options) {
 		//Fit 2 numeric boxes on one line
 		newline = newline || !o->box.getNumeric();

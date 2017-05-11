@@ -401,7 +401,6 @@ void LevelEditor::mouseMoveEvent(GLFWwindow* window, double x, double y) {
 	//The camera is being moved
 	if (panning) {
 		double scale = WORLD_SIZE / (double)(sWidth < sHeight ? sWidth : sHeight);
-		//TODO: rotate camera
 		Vec2D dif = Vec2D(x, sHeight - y).subtract(panFrom);
 		dif.multiplyBy(scale);
 		double h = dif.magnitude();

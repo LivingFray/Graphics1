@@ -12,7 +12,6 @@ GradButton::~GradButton() {
 
 // Draws the button ex seconds after last update
 void GradButton::draw(double ex) {
-	//TODO: Hover animation
 	//Used to ensure clicking works
 	x = sWidth - width / 2;
 	glBegin(GL_POLYGON);
