@@ -11,6 +11,6 @@ namespace ImageLoader {
 	GLuint getImage(string path);
 	// Dynamically generate the classic missing texture checkerboard to fall back on
 	void makeMissingTexture();
-	//Frees every image stored
+	// Frees every image stored
 	void cleanup();
 }

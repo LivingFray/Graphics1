@@ -57,7 +57,7 @@ void ImageLoader::makeMissingTexture() {
 }
 
 
-//Frees every image stored
+// Frees every image stored
 void ImageLoader::cleanup() {
 	GLuint* textures = new GLuint[images.size()];
 	int p = 0;
