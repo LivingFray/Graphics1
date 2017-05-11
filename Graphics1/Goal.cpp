@@ -28,6 +28,12 @@ bool Goal::canDelete() {
 }
 
 
+// Returns if the selectable can by copied
+bool Goal::canCopy() {
+	return false;
+}
+
+
 // Called when the selectable is moved
 bool Goal::onMove(double dx, double dy) {
 	LevelEditor* editor = (LevelEditor*)state;

@@ -4,7 +4,7 @@
 #include "GradButton.h"
 #include "TextBox.h"
 //The number of buttons in the editor bar
-#define EDITOR_BAR_BUTTONS 6
+#define EDITOR_BAR_BUTTONS 7
 class LevelEditor:
 	public BaseState, 
 	public LevelBase {
@@ -90,5 +90,6 @@ private:
 	void resizeClicked(Vec2D world, int action);
 	void rotateClicked(Vec2D world, int action);
 	void deleteClicked(Vec2D world, int action);
+	void copyClicked(Vec2D world, int action);
 };
 

@@ -7,6 +7,11 @@ Selectable::Selectable() {
 }
 
 
+Selectable::Selectable(const Selectable& other) {
+	options = new OptionMenu();
+}
+
+
 Selectable::~Selectable() {
 	delete options;
 }
@@ -48,6 +53,12 @@ bool Selectable::onRotate(double dAngle) {
 
 // Returns if the selectable can be deleted
 bool Selectable::canDelete() {
+	return true;
+}
+
+
+// Returns if the selectable can by copied
+bool Selectable::canCopy() {
 	return true;
 }
 

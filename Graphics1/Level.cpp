@@ -526,7 +526,7 @@ Vec2D Level::getCameraAt(double ex) {
 // Gets the angle of the camera ex seconds after last update
 double Level::getCameraAngleAt(double ex) {
 	if (!player) {
-		return spawnAngle;
+		return reachedGoal?goalAngle:spawnAngle;
 	}
 	//Get the angle of the player after it has updated
 	return player->updatedVisAngle(ex);

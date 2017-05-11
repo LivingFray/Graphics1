@@ -104,8 +104,9 @@ void TextItem::draw(double ex) {
 	}
 	Vec2D screen = l->getScreenCoordinates(pos.add(offset));
 	glTranslated(len / 2 + screen.getX(), h + screen.getY(), 0);
-	glRotated(angle - l->getCameraAngleAt(0), 0, 0, 1);
+	glRotated(angle, 0, 0, 1);
 	glTranslated(-len / 2.0, -h, 0);
+	glRotated(-l->getCameraAngleAt(ex), 0, 0, 1);
 	glColor4ub(r, g, b, a);
 	freetype::print(f, 0, 0, text.c_str());
 	glPopMatrix();

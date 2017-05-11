@@ -5,6 +5,7 @@ class Selectable:
 	virtual public WorldObject {
 public:
 	Selectable();
+	Selectable(const Selectable& other);
 	virtual ~Selectable();
 	// Called when the selectable is moved
 	virtual bool onMove(double dX, double dY);
@@ -14,6 +15,8 @@ public:
 	virtual bool onRotate(double dAngle);
 	// Returns if the selectable can be deleted
 	virtual bool canDelete();
+	// Returns if the selectable can by copied
+	virtual bool canCopy();
 	// Returns if the selectable is selected
 	virtual bool isInBoundingBox(double x, double y);
 	// Creates an option menu using the current values as defaults

@@ -9,6 +9,8 @@ public:
 	bool canResize();
 	// Returns if the selectable can be deleted
 	bool canDelete();
+	// Returns if the selectable can by copied
+	bool canCopy();
 	// Called when the selectable is moved
 	bool onMove(double dx, double dy);
 	// Called when the selectable is rotated

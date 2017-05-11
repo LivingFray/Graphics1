@@ -28,6 +28,12 @@ bool SpawnPoint::canDelete() {
 }
 
 
+// Returns if the selectable can by copied
+bool SpawnPoint::canCopy() {
+	return false;
+}
+
+
 // Called when the selectable is moved
 bool SpawnPoint::onMove(double dx, double dy) {
 	LevelEditor* editor = (LevelEditor*)state;

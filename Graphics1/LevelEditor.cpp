@@ -131,6 +131,7 @@ LevelEditor::LevelEditor() {
 	barButtons[3] = ImageLoader::getImage("Resources\\buttons\\rotate.png");
 	barButtons[4] = ImageLoader::getImage("Resources\\buttons\\options.png");
 	barButtons[5] = ImageLoader::getImage("Resources\\buttons\\delete.png");
+	barButtons[6] = ImageLoader::getImage("Resources\\buttons\\copy.png");
 	//Create elements of spawn menu
 	MenuItem item;
 	item = MenuItem();
@@ -933,6 +934,9 @@ void inline LevelEditor::clickHandles(double x, double y, int action) {
 	case 5: //Delete
 		deleteClicked(world, action);
 		break;
+	case 6: //Copy
+		copyClicked(world, action);
+		break;
 	}
 }
 
@@ -1113,6 +1117,51 @@ void inline LevelEditor::deleteClicked(Vec2D world, int action) {
 			entIt = entities.erase(entIt);
 		} else {
 			entIt++;
+		}
+	}
+}
+
+
+void inline LevelEditor::copyClicked(Vec2D world, int action) {
+	//Don't copy if nothing selected
+	if (!selected) {
+		return;
+	}
+	//Iterate through and copy those that are being clicked on
+	auto entIt = entities.begin();
+	while (entIt != entities.end()) {
+		if ((*entIt)->isInBoundingBox(world.getX(), world.getY()) && (*entIt)->canDelete()) {
+			entities.push_back(new Entity(**entIt));
+			return;
+		} else {
+			entIt++;
+		}
+	}
+	auto platIt = platforms.begin();
+	while (platIt != platforms.end()) {
+		if ((*platIt)->isInBoundingBox(world.getX(), world.getY()) && (*platIt)->canDelete()) {
+			platforms.push_back(new Platform(**platIt));
+			return;
+		} else {
+			platIt++;
+		}
+	}
+	auto scenIt = scenery.begin();
+	while (scenIt != scenery.end()) {
+		if ((*scenIt)->isInBoundingBox(world.getX(), world.getY()) && (*scenIt)->canDelete()) {
+			scenery.push_back(new Scenery(**scenIt));
+			return;
+		} else {
+			scenIt++;
+		}
+	}
+	auto gravIt = gravFields.begin();
+	while (gravIt != gravFields.end()) {
+		if ((*gravIt)->isInBoundingBox(world.getX(), world.getY()) && (*gravIt)->canCopy()) {
+			gravFields.push_back(new GravityField(**gravIt));
+			return;
+		} else {
+			gravIt++;
 		}
 	}
 }

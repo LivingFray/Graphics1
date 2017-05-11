@@ -3,10 +3,6 @@
 #include "Globals.h"
 #include "BaseState.h"
 #include "MainMenu.h"
-/*
-Task list intergration:
-TODO: Build demo levels
-*/
 //----------------------------------Globals----------------------------------//
 BaseState* state;
 BaseState* newState;
