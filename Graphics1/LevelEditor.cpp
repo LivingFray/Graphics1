@@ -24,6 +24,7 @@
 #include "ButtonEntity.h"
 #include "Crate.h"
 #include "Clock.h"
+#include "TimedButton.h"
 #define EDITOR_MOVE_SPEED 1.00
 #define EDITOR_ROTATE_SPEED 30
 #define MOVE_SIZE 0.5
@@ -168,6 +169,7 @@ LevelEditor::LevelEditor() {
 	ADD_SCENERY(NORGate, "NOR Gate");
 	ADD_SCENERY(XNORGate, "XNOR Gate");
 	ADD_SCENERY(Clock, "Clock");
+	ADD_SCENERY(TimedButton, "Timed Button");
 	//Create buttons for menu
 	for (MenuItem i : menuItems) {
 		Button* b = new Button();

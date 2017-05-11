@@ -1,11 +1,11 @@
 #pragma once
-#include "Interactive.h"
-class Lever :
-	public Interactive {
+#include "Lever.h"
+class TimedButton :
+	public Lever {
 public:
-	Lever();
-	virtual ~Lever();
-	// Updates the entity
+	TimedButton();
+	~TimedButton();
+	// Updates the object
 	void update();
 	// Sets the options for this selectable
 	void setOptions(OptionMenu* menu);
@@ -15,17 +15,9 @@ public:
 	DataObject save();
 	// Loads the storable object from the DataObject
 	void load(DataObject obj);
-	// Returns if the selectable can be resized
-	bool canResize();
 protected:
-	Animation sOffAnim;
-	Animation nOffAnim;
-	Animation sOnAnim;
-	Animation nOnAnim;
-	bool selected;
-	bool active;
-	bool wasDown;
-	int channel;
-	ALuint clickSound;
+	double activeTime;
+	double cooldown;
+	ALuint offSound;
 };
 

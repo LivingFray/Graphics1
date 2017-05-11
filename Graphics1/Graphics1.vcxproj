@@ -162,6 +162,7 @@
     <ClCompile Include="Scenery.cpp" />
     <ClCompile Include="SettingsMenu.cpp" />
     <ClCompile Include="Clock.cpp" />
+    <ClCompile Include="TimedButton.cpp" />
     <ClCompile Include="Turret.cpp" />
     <ClCompile Include="Slope.cpp" />
     <ClCompile Include="SoundLoader.cpp" />
@@ -225,6 +226,7 @@
     <ClInclude Include="Scenery.h" />
     <ClInclude Include="SettingsMenu.h" />
     <ClInclude Include="Clock.h" />
+    <ClInclude Include="TimedButton.h" />
     <ClInclude Include="Turret.h" />
     <ClInclude Include="Slope.h" />
     <ClInclude Include="SoundLoader.h" />

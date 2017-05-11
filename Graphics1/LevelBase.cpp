@@ -21,6 +21,7 @@
 #include "ButtonEntity.h"
 #include "Crate.h"
 #include "Clock.h"
+#include "TimedButton.h"
 #define NUM_PANELS 8
 #define PARALLAX 0.5
 #define PANELS_X 9
@@ -476,6 +477,10 @@ void LevelBase::loadLevel(string filePath) {
 				Clock* c = new Clock();
 				c->load(item);
 				scenery.push_back(c);
+			} else if (id == "timedbutton") {
+				TimedButton* t = new TimedButton();
+				t->load(item);
+				scenery.push_back(t);
 			}
 		}
 		//Get next item
