@@ -363,11 +363,11 @@ void inline Level::drawMinimap(double ex) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	//Scale it such that I can draw 1 to 1
-	float maxDir = (mapMaxX - mapMinX) > (mapMaxY - mapMinY) ? (mapMaxX - mapMinX) : (mapMaxY - mapMinY);
-	float resize = (float)(maxDir/MINIMAP_SIZE) / (float)(sWidth < sHeight ? sWidth : sHeight);
+	double maxDir = (mapMaxX - mapMinX) > (mapMaxY - mapMinY) ? (mapMaxX - mapMinX) : (mapMaxY - mapMinY);
+	double resize = (maxDir/MINIMAP_SIZE) / (sWidth < sHeight ? sWidth : sHeight);
 	glOrtho(0.0, resize * sWidth, 0.0, resize * sHeight, -1.0, 1.0);
 	glEnable(GL_SCISSOR_TEST);
-	glScissor((1 - MINIMAP_SIZE) * sWidth, (1 - MINIMAP_SIZE) * sHeight, MINIMAP_SIZE * sWidth, MINIMAP_SIZE * sHeight);
+	glScissor((int)((1 - MINIMAP_SIZE) * sWidth), (int)((1 - MINIMAP_SIZE) * sHeight), (int)(MINIMAP_SIZE * sWidth), (int)(MINIMAP_SIZE * sHeight));
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glColor3ub(0, 255, 0);

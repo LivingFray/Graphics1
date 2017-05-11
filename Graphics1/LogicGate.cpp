@@ -85,7 +85,7 @@ void LogicGate::load(DataObject obj) {
 }
 
 
-// Returns if the selectable can be rotated
+// Returns if the selectable can be resized
 bool LogicGate::canResize() {
 	return false;
 }

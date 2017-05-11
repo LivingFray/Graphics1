@@ -127,3 +127,7 @@ enum class Damage {EXPLOSION, SPIKE, ENEMYCOLLISION, PROJECTILE, INSTAKILL};
 								} while(0)
 //Macro function to generate a random double
 #define randD(min, max) (min) + (((max) - (min)) * (((double)rand()) / (double)RAND_MAX))
+
+#ifndef DEBUG
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#endif // !DEBUG

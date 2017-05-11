@@ -23,6 +23,7 @@
 #include "PhasingPlatform.h"
 #include "ButtonEntity.h"
 #include "Crate.h"
+#include "Clock.h"
 #define EDITOR_MOVE_SPEED 1.00
 #define EDITOR_ROTATE_SPEED 30
 #define MOVE_SIZE 0.5
@@ -166,10 +167,10 @@ LevelEditor::LevelEditor() {
 	ADD_SCENERY(NANDGate, "NAND Gate");
 	ADD_SCENERY(NORGate, "NOR Gate");
 	ADD_SCENERY(XNORGate, "XNOR Gate");
+	ADD_SCENERY(Clock, "Clock");
 	//Create buttons for menu
 	for (MenuItem i : menuItems) {
 		Button* b = new Button();
-		int h = (int)fontLarge.h * 2;
 		b->setLabel(i.name);
 		b->setCallback(i.create);
 		buttons.push_back(b);
@@ -476,11 +477,12 @@ void LevelEditor::textEvent(GLFWwindow *, unsigned int ch) {
 
 void LevelEditor::resizeEvent(GLFWwindow * window, int width, int height) {
 	int i = 0;
+	//Resize item menu
 	for (Button* b : buttons) {
 		b->setWidth((4 * sWidth) / 10);
-		b->setHeight((int)fontLarge.h * 2);
+		b->setHeight((int)(fontLarge.h * 1.75));
 		b->setX(sWidth / 4 + (i % 2) * (sWidth / 2));
-		b->setY(sHeight - (int)fontLarge.h * 4 - (int)fontLarge.h * 2 * (i / 2));
+		b->setY(sHeight - (int)fontLarge.h * 4 - (int)(fontLarge.h * 1.75) * (i / 2));
 		i++;
 	}
 }

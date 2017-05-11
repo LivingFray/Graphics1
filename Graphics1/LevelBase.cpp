@@ -20,6 +20,7 @@
 #include "PhasingPlatform.h"
 #include "ButtonEntity.h"
 #include "Crate.h"
+#include "Clock.h"
 #define NUM_PANELS 8
 #define PARALLAX 0.5
 #define PANELS_X 9
@@ -471,6 +472,10 @@ void LevelBase::loadLevel(string filePath) {
 				Crate* c = new Crate();
 				c->load(item);
 				entities.push_back(c);
+			} else if (id == "clock") {
+				Clock* c = new Clock();
+				c->load(item);
+				scenery.push_back(c);
 			}
 		}
 		//Get next item
