@@ -93,12 +93,19 @@ void TextItem::draw(double ex) {
 	Vec2D offset;
 	freetype::font_data f = largeFont ? fontLarge : fontSmall;
 	int len = freetype::getLength(f, text.c_str());
+	double h = f.h * 0.625;
 	offset.setX(-len / 2.0);
-	offset.setY(-f.h * 0.625);
+	offset.setY(-h);
 	offset.multiplyBy(WORLD_SIZE / (double)(sWidth < sHeight ? sWidth : sHeight));
+	//Add extrapolation
+	Player* p = l->getPlayer();
+	if (p) {
+		offset.subtractFrom(p->getVel().multiply(ex));
+	}
 	Vec2D screen = l->getScreenCoordinates(pos.add(offset));
-	glTranslated(screen.getX(), screen.getY(), 0);
+	glTranslated(len / 2 + screen.getX(), h + screen.getY(), 0);
 	glRotated(angle - l->getCameraAngleAt(0), 0, 0, 1);
+	glTranslated(-len / 2.0, -h, 0);
 	glColor4ub(r, g, b, a);
 	freetype::print(f, 0, 0, text.c_str());
 	glPopMatrix();
