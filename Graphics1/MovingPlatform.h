@@ -25,6 +25,10 @@ public:
 	virtual void createOptions();
 	// Updates the platform
 	virtual void update();
+	// Called when the selectable is moved
+	bool onMove(double dX, double dY);
+	// Draws the platform
+	void draw(double ex);
 	// Sets the options for this selectable
 	virtual void setOptions(OptionMenu* menu);
 protected:
