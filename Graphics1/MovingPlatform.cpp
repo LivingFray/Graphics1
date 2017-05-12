@@ -135,3 +135,37 @@ void MovingPlatform::update() {
 	//Move platform and handle any other stuff
 	Platform::update();
 }
+
+
+// Called when the selectable is moved
+bool MovingPlatform::onMove(double dX, double dY) {
+	bool r = Platform::onMove(dX, dY);
+	nodes[0] = pos;
+	return r;
+}
+
+
+// Draws the platform
+void MovingPlatform::draw(double ex) {
+	if (editorMode) {
+		glColor4ub(255, 255, 255, 127);
+		glPushMatrix();
+		glTranslated(nodes[1].getX(), nodes[1].getY(), 0.0);
+		glRotated(angle, 0.0, 0.0, 1.0);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glBegin(GL_QUADS);
+		glTexCoord2d(0.0, 0.0);
+		glVertex2d(-width / 2, -height / 2);
+		glTexCoord2d(0.0, texY);
+		glVertex2d(-width / 2, height / 2);
+		glTexCoord2d(texX, texY);
+		glVertex2d(width / 2, height / 2);
+		glTexCoord2d(texX, 0.0);
+		glVertex2d(width / 2, -height / 2);
+		glEnd();
+		glDisable(GL_TEXTURE_2D);
+		glPopMatrix();
+	}
+	Platform::draw(ex);
+}
