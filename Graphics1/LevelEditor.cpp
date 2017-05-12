@@ -1184,17 +1184,14 @@ void inline LevelEditor::copyClicked(Vec2D world, int action) {
 			scenIt++;
 		}
 	}
-	auto gravIt = gravFields.begin();
-	while (gravIt != gravFields.end()) {
-		if ((*gravIt)->isInBoundingBox(world.getX(), world.getY()) && (*gravIt)->canCopy()) {
-			GravityField* g = new GravityField(**gravIt);
+	for(GravityField* grav: gravFields) {
+		if (grav->isInBoundingBox(world.getX(), world.getY()) && grav->canCopy()) {
+			GravityField* g = new GravityField(*grav);
 			selected = g;
 			current = 0;
 			dragClicked(world, action);
 			gravFields.push_back(g);
 			return;
-		} else {
-			gravIt++;
 		}
 	}
 }
