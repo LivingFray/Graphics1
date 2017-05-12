@@ -1153,8 +1153,7 @@ void inline LevelEditor::deleteClicked(Vec2D world, int action) {
 
 
 void inline LevelEditor::copyClicked(Vec2D world, int action) {
-	//Don't copy if nothing selected
-	if (!selected || action != GLFW_PRESS) {
+	if (action != GLFW_PRESS) {
 		return;
 	}
 	//Iterate through and copy those that are being clicked on
