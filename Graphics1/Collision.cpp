@@ -79,10 +79,6 @@ double Collision::distance(Collider* a, Collider* b, Vec2D n) {
 
 //Performs a rough check to see if the colliders have collided
 bool Collision::broadCheck(Collider* a, Collider* b) {
-	//If both are stationary, assume no collsion
-	if (a->getVel().subtract(b->getVel()).magnitudeSquare() < FLOAT_ZERO) {
-		return false;
-	}
 	//Perform circle check using circles that contain the hitboxes
 	double w1, w2, h1, h2;
 	w1 = a->getWidth();

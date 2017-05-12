@@ -97,7 +97,7 @@ void Explosion::update() {
 
 // Called when a collision occurs
 void Explosion::onCollide(Collider* other) {
-	if (time < TICKRATE) {
+	if (time < TICKRATE * 2) {
 		other->onDamage(Damage::EXPLOSION);
 	}
 }
