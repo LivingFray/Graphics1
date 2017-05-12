@@ -96,5 +96,6 @@ private:
 	void copyClicked(Vec2D world, int action);
 	void cloneEntity(Entity* e);
 	void clonePlatform(Platform* p);
+	void cloneScenery(Scenery* s);
 };
 

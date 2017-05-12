@@ -1171,17 +1171,11 @@ void inline LevelEditor::copyClicked(Vec2D world, int action) {
 			return;
 		}
 	}
-	auto scenIt = scenery.begin();
-	while (scenIt != scenery.end()) {
-		if ((*scenIt)->isInBoundingBox(world.getX(), world.getY()) && (*scenIt)->canCopy()) {
-			Scenery* s = new Scenery(**scenIt);
-			selected = s;
-			current = 0;
+	for(Scenery* scen: scenery) {
+		if (scen->isInBoundingBox(world.getX(), world.getY()) && scen->canCopy()) {
+			cloneScenery(scen);
 			dragClicked(world, action);
-			scenery.push_back(s);
 			return;
-		} else {
-			scenIt++;
 		}
 	}
 	for(GravityField* grav: gravFields) {
@@ -1260,3 +1254,32 @@ inline void LevelEditor::clonePlatform(Platform* p) {
 	}
 }
 
+
+inline void LevelEditor::cloneScenery(Scenery* s) {
+	string id = s->getId();
+	Scenery* s2 = NULL;
+	if (dynamic_cast<LogicGate*>(s)) {
+		LogicGate* g = new LogicGate(*(LogicGate*)s);
+		s2 = g;
+	} else if (id == "clock") {
+		Clock* c = new Clock(*(Clock*)s);
+		s2 = c;
+	} else if (id == "lever") {
+		Lever* l = new Lever(*(Lever*)s);
+		s2 = l;
+	} else if (id == "light") {
+		Light* l = new Light(*(Light*)s);
+		s2 = l;
+	} else if (id == "text") {
+		TextItem* t = new TextItem(*(TextItem*)s);
+		s2 = t;
+	} else if (id == "timedbutton") {
+		TimedButton* t = new TimedButton(*(TimedButton*)s);
+		s2 = t;
+	}
+	if (s2) {
+		selected = s2;
+		current = 0;
+		scenery.push_back(s2);
+	}
+}
