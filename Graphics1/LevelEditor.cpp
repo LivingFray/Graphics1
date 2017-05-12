@@ -1157,22 +1157,16 @@ void inline LevelEditor::copyClicked(Vec2D world, int action) {
 		return;
 	}
 	//Iterate through and copy those that are being clicked on
-	auto entIt = entities.begin();
-	while (entIt != entities.end()) {
-		if ((*entIt)->isInBoundingBox(world.getX(), world.getY()) && (*entIt)->canDelete()) {
-			Entity* e = new Entity(**entIt);
-			selected = e;
-			current = 0;
+	for (Entity* ent : entities) {
+		if (ent->isInBoundingBox(world.getX(), world.getY()) && ent->canCopy()) {
+			cloneEntity(ent);
 			dragClicked(world, action);
-			entities.push_back(e);
 			return;
-		} else {
-			entIt++;
 		}
 	}
 	auto platIt = platforms.begin();
 	while (platIt != platforms.end()) {
-		if ((*platIt)->isInBoundingBox(world.getX(), world.getY()) && (*platIt)->canDelete()) {
+		if ((*platIt)->isInBoundingBox(world.getX(), world.getY()) && (*platIt)->canCopy()) {
 			Platform* p = new Platform(**platIt);
 			selected = p;
 			current = 0;
@@ -1185,7 +1179,7 @@ void inline LevelEditor::copyClicked(Vec2D world, int action) {
 	}
 	auto scenIt = scenery.begin();
 	while (scenIt != scenery.end()) {
-		if ((*scenIt)->isInBoundingBox(world.getX(), world.getY()) && (*scenIt)->canDelete()) {
+		if ((*scenIt)->isInBoundingBox(world.getX(), world.getY()) && (*scenIt)->canCopy()) {
 			Scenery* s = new Scenery(**scenIt);
 			selected = s;
 			current = 0;
@@ -1208,5 +1202,38 @@ void inline LevelEditor::copyClicked(Vec2D world, int action) {
 		} else {
 			gravIt++;
 		}
+	}
+}
+
+
+inline void LevelEditor::cloneEntity(Entity* e) {
+	string id = e->getId();
+	Entity* e2 = NULL;
+	if (id == "bomb") {
+		BombEntity* b = new BombEntity(*(BombEntity*)e);
+		e2 = b;
+	} else if (id == "button") {
+		ButtonEntity* b = new ButtonEntity(*(ButtonEntity*)e);
+		e2 = b;
+	} else if (id == "crate") {
+		Crate* c = new Crate(*(Crate*)e);
+		e2 = c;
+	} else if (id == "points") {
+		PointGiver* p = new PointGiver(*(PointGiver*)e);
+		e2 = p;
+	} else if (id == "shieldgiver") {
+		ShieldGiver* s = new ShieldGiver(*(ShieldGiver*)e);
+		e2 = s;
+	} else if (id == "stomp") {
+		StompableEntity* s = new StompableEntity(*(StompableEntity*)e);
+		e2 = s;
+	} else if (id == "turret") {
+		Turret* t = new Turret(*(Turret*)e);
+		e2 = t;
+	}
+	if (e2) {
+		selected = e2;
+		current = 0;
+		entities.push_back(e2);
 	}
 }

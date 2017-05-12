@@ -16,6 +16,13 @@ Turret::Turret() {
 }
 
 
+Turret::Turret(const Turret& other) : WorldObject(other), StompableEntity(other) {
+	cooldown = other.cooldown;
+	idleAnim = other.idleAnim;
+	deadAnim = other.deadAnim;
+}
+
+
 Turret::~Turret() {
 }
 

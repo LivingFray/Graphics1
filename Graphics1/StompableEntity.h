@@ -4,6 +4,7 @@ class StompableEntity :
 	public EntityAI {
 public:
 	StompableEntity();
+	StompableEntity(const StompableEntity& other);
 	virtual ~StompableEntity();
 	// Called when damage is inflicted on the object
 	void onDamage(Damage d);

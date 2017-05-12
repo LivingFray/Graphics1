@@ -23,6 +23,14 @@ StompableEntity::StompableEntity() {
 }
 
 
+StompableEntity::StompableEntity(const StompableEntity& other) : WorldObject(other), EntityAI(other) {
+	idleAnim = other.idleAnim;
+	currentAnim = &idleAnim;
+	deadAnim = other.deadAnim;
+	dead = other.dead;
+}
+
+
 StompableEntity::~StompableEntity() {
 }
 

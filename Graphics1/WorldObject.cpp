@@ -11,6 +11,15 @@ WorldObject::WorldObject() {
 	id = "object";
 }
 
+WorldObject::WorldObject(const WorldObject& other) {
+	pos = other.pos;
+	vel = other.vel;
+	id = other.id;
+	width = other.width;
+	height = other.height;
+	angle = other.angle;
+}
+
 
 WorldObject::~WorldObject() {
 }
@@ -163,4 +172,3 @@ void WorldObject::update() {
 void WorldObject::setEditor() {
 	editorMode = true;
 }
-

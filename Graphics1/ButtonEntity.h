@@ -4,6 +4,7 @@ class ButtonEntity :
 	public Entity {
 public:
 	ButtonEntity();
+	ButtonEntity(const ButtonEntity& other);
 	~ButtonEntity();
 	// Called when a collision occurs
 	void onCollide(Collider* other);

@@ -26,6 +26,15 @@ ButtonEntity::ButtonEntity() {
 }
 
 
+ButtonEntity::ButtonEntity(const ButtonEntity& other) : WorldObject(other), Entity(other) {
+	channel = other.channel;
+	grav = other.grav;
+	upAnim = other.upAnim;
+	downAnim = other.downAnim;
+	currentAnim = &upAnim;
+}
+
+
 ButtonEntity::~ButtonEntity() {
 
 }

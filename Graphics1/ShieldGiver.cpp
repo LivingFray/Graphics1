@@ -40,7 +40,21 @@ ShieldGiver::ShieldGiver() {
 }
 
 
+ShieldGiver::ShieldGiver(const ShieldGiver& other) : WorldObject(other), Entity(other){
+	following = NULL;
+	anim = other.anim;
+	currentAnim = &anim;
+	deathTime = 0;
+	lastTime = 0;
+	dead = false;
+	sparks = other.sparks;
+	sparkSound = SoundLoader::getSound("Resources\\sounds\\spark.wav");
+	desiredPos = Vec2D(0, 0);
+}
+
+
 ShieldGiver::~ShieldGiver() {
+	alDeleteSources(1, &sparkSound);
 }
 
 

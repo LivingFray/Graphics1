@@ -3,6 +3,7 @@
 class WorldObject {
 public:
 	WorldObject();
+	WorldObject(const WorldObject & other);
 	virtual ~WorldObject();
 	// Gets the id of the object
 	virtual string getId();

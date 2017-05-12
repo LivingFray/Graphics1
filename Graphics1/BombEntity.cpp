@@ -40,6 +40,17 @@ BombEntity::BombEntity() {
 }
 
 
+BombEntity::BombEntity(const BombEntity& other): WorldObject(other), EntityAI(other) {
+	idleAnim = other.idleAnim;
+	currentAnim = &idleAnim;
+	explodeAnim = other.explodeAnim;
+	triggered = other.triggered;
+	fuse = other.fuse;
+	tickSound = SoundLoader::getSound("Resources\\soudns\\tick.wav");
+	tickTime = 0;
+}
+
+
 BombEntity::~BombEntity() {
 	alDeleteSources(1, &tickSound);
 }

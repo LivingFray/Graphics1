@@ -13,6 +13,15 @@ Entity::Entity() {
 }
 
 
+Entity::Entity(const Entity& other){
+	maxSpeed = other.maxSpeed;
+	onGround = other.onGround;
+	moving = other.onGround;
+	visAngle = other.onGround;
+	grav = other.grav;
+}
+
+
 Entity::~Entity() {
 }
 

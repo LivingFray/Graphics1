@@ -5,6 +5,7 @@ class ShieldGiver :
 	public Entity {
 public:
 	ShieldGiver();
+	ShieldGiver(const ShieldGiver & other);
 	~ShieldGiver();
 	// Updates the entity
 	void update();

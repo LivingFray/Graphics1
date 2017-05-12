@@ -17,5 +17,11 @@ Crate::Crate() {
 }
 
 
+Crate::Crate(const Crate& other) : WorldObject(other), Entity(other) {
+	anim = other.anim;
+	currentAnim = &anim;
+}
+
+
 Crate::~Crate() {
 }

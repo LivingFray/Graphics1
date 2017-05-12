@@ -4,6 +4,7 @@ class BombEntity :
 	public EntityAI {
 public:
 	BombEntity();
+	BombEntity(const BombEntity& other);
 	~BombEntity();
 	//Updates the entity
 	void update();

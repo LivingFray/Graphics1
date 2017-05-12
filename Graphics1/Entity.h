@@ -12,6 +12,7 @@ class Entity:
 	public Storable {
 public:
 	Entity();
+	Entity(const Entity & other);
 	virtual ~Entity();
 	// Gets the x-coordinate of the entity
 	double getX();

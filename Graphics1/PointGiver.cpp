@@ -16,6 +16,11 @@ PointGiver::PointGiver() {
 }
 
 
+PointGiver::PointGiver(const PointGiver& other) : WorldObject(other), Entity(other) {
+	anim = other.anim;
+	currentAnim = &anim;
+}
+
 PointGiver::~PointGiver() {
 }
 

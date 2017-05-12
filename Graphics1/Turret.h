@@ -4,6 +4,7 @@ class Turret :
 	public StompableEntity {
 public:
 	Turret();
+	Turret(const Turret& other);
 	~Turret();
 	// Updates the entity
 	void update();
