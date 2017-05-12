@@ -70,6 +70,9 @@ private:
 	TextBox gravBox;
 	TextBox targetBox;
 	TextBox goalBox;
+	TextBox camXBox;
+	TextBox camYBox;
+	TextBox camABox;
 	GradButton exitButton;
 	GradButton returnButton;
 	OptionMenu* optMenu;

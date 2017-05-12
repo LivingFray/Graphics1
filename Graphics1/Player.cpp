@@ -74,9 +74,9 @@ void Player::update() {
 	}
 	if (!onGround) {
 		offCount++;
-		if (offCount > 5) {
+		if (offCount > 2) {
 			currentAnim = &jumpAnim;
-			offCount = 5; //Prevent overflows
+			offCount = 2; //Prevent overflows
 		}
 	} else {
 		offCount = 0;

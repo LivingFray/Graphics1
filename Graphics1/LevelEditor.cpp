@@ -31,7 +31,7 @@
 #define MOVE_SIZE 0.5
 #define SELECT_RADIUS 0.1
 #define POS_SNAP 0.05
-#define ANG_SNAP 0.05
+#define ANG_SNAP 1
 #define ROTATE_SEGMENTS 36
 //Make the compiler shut up about missing parameters in the platform macro
 #pragma warning(disable:4003)
@@ -202,6 +202,18 @@ LevelEditor::LevelEditor() {
 	goalBox.setText("");
 	goalBox.setNumeric(true);
 	textBoxes.push_back(&goalBox);
+	camXBox = TextBox();
+	camXBox.setText("0");
+	camXBox.setNumeric(true);
+	textBoxes.push_back(&camXBox);
+	camYBox = TextBox();
+	camYBox.setText("0");
+	camYBox.setNumeric(true);
+	textBoxes.push_back(&camYBox);
+	camABox = TextBox();
+	camABox.setText("0");
+	camABox.setNumeric(true);
+	textBoxes.push_back(&camABox);
 	//Initialise menu buttons
 	exitButton = GradButton();
 	exitButton.setLabel("Exit to menu");
@@ -287,7 +299,7 @@ void LevelEditor::draw(double ex) {
 }
 
 
-void LevelEditor::keyEvent(GLFWwindow * window, int key, int scan, int action, int mods) {
+void LevelEditor::keyEvent(GLFWwindow* window, int key, int scan, int action, int mods) {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
 		if (currentMenu != Menu::NONE) {
 			currentMenu = Menu::NONE;
@@ -302,11 +314,20 @@ void LevelEditor::keyEvent(GLFWwindow * window, int key, int scan, int action, i
 				glfwSetCursor(window, cursorNormal);
 				panning = false;
 			}
+			//Update camera boxes
+			camXBox.setText(to_string(camPos.getX()));
+			camYBox.setText(to_string(camPos.getY()));
+			camABox.setText(to_string(camAngle));
 		}
 	}
 	if (currentMenu == Menu::SAVE) {
 		for (TextBox* t : textBoxes) {
 			t->keyDown(key, scan, action, mods);
+		}
+		if (key == GLFW_KEY_ESCAPE || key == GLFW_KEY_ENTER) {
+			camPos.setX(atof(camXBox.getText().c_str()));
+			camPos.setY(atof(camYBox.getText().c_str()));
+			camAngle = atof(camABox.getText().c_str());
 		}
 	} else if (currentMenu == Menu::OPTIONS) {
 		optMenu->keyEvent(key, scan, action, mods);
@@ -467,7 +488,7 @@ void LevelEditor::mouseMoveEvent(GLFWwindow* window, double x, double y) {
 }
 
 
-void LevelEditor::textEvent(GLFWwindow *, unsigned int ch) {
+void LevelEditor::textEvent(GLFWwindow*, unsigned int ch) {
 	//Pass text input to textboxes
 	if (currentMenu == Menu::SAVE) {
 		for (TextBox* t : textBoxes) {
@@ -479,14 +500,14 @@ void LevelEditor::textEvent(GLFWwindow *, unsigned int ch) {
 }
 
 
-void LevelEditor::resizeEvent(GLFWwindow * window, int width, int height) {
+void LevelEditor::resizeEvent(GLFWwindow* window, int width, int height) {
 	int i = 0;
 	//Resize item menu
 	for (Button* b : buttons) {
 		b->setWidth((4 * sWidth) / 10);
 		b->setHeight((int)(fontLarge.h * 1.75));
 		b->setX(sWidth / 4 + (i % 2) * (sWidth / 2));
-		b->setY(sHeight - (int)fontLarge.h * 2.5 - (int)(fontLarge.h * 1.75) * (i / 2));
+		b->setY(sHeight - (int)(fontLarge.h * 2.5) - (int)(fontLarge.h * 1.75) * (i / 2));
 		i++;
 	}
 }
@@ -793,7 +814,7 @@ void inline LevelEditor::drawSaveMenu(double ex) {
 	glColor3ub(255, 255, 255);
 	freetype::print(fontLarge, 10, sHeight - fontLarge.h * 1.325f, "Settings");
 	int w = (int)(sWidth * 0.25);
-	int h = (int)(sHeight * 0.1);
+	int h = (int)(fontLarge.h * 1.75);
 	int y = (int)(sHeight * 0.3);
 	//Save button
 	saveButton.setWidth(w);
@@ -811,19 +832,27 @@ void inline LevelEditor::drawSaveMenu(double ex) {
 	y = sHeight - (int)fontLarge.h * 4;
 	drawTextBox("Level name", levelBox, y);
 	//File location
-	y -= (int)fontSmall.h * 4;
+	y -= (int)fontSmall.h * 3;
 	drawTextBox("File location", fileBox, y);
 	//Default gravity
-	y -= (int)fontSmall.h * 4;
+	y -= (int)fontSmall.h * 3;
 	drawSmallTextBox("Default gravity", gravBox, true, y);
 	//Target time
 	drawSmallTextBox("Target time", targetBox, false, y);
 	//Next level
-	y -= (int)fontSmall.h * 4;
+	y -= (int)fontSmall.h * 3;
 	drawTextBox("Next level", nextBox, y);
 	//Goal channel
-	y -= (int)fontSmall.h * 4;
+	y -= (int)fontSmall.h * 3;
 	drawSmallTextBox("Goal channel", goalBox, true, y);
+	//Camera x
+	y -= (int)fontSmall.h * 3;
+	drawSmallTextBox("Camera X", camXBox, true, y);
+	//Camera y
+	drawSmallTextBox("Camera Y", camYBox, false, y);
+	//Camera angle
+	y -= (int)fontSmall.h * 3;
+	drawSmallTextBox("Camera Angle", camABox, true, y);
 	//Exit button
 	exitButton.setY((int)(fontLarge.h * 2));
 	exitButton.setHeight((int)(fontLarge.h * 1.9));
