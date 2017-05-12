@@ -112,6 +112,7 @@ void TextItem::draw(double ex) {
 	glTranslated(screen.getX(), screen.getY(), 0);
 	glRotated(angle, 0, 0, 1);
 	glTranslated(-freetype::getLength(f, text.c_str()) * 0.5f, -f.h * 0.625f, 0);
+	glColor4ub(r, g, b, a);
 	freetype::print(f, 0, 0, text.c_str());
 	glPopMatrix();
 }
