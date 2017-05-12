@@ -9,6 +9,7 @@ class Platform:
 	public Storable {
 public:
 	Platform();
+	Platform(const Platform& other);
 	virtual ~Platform();
 	// Sets the width of the platform
 	void setWidth(double width);

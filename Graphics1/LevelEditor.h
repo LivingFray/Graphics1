@@ -94,6 +94,7 @@ private:
 	void rotateClicked(Vec2D world, int action);
 	void deleteClicked(Vec2D world, int action);
 	void copyClicked(Vec2D world, int action);
-	void cloneEntity(Entity * e);
+	void cloneEntity(Entity* e);
+	void clonePlatform(Platform* p);
 };
 

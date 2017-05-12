@@ -4,8 +4,8 @@
 
 Explosion::Explosion() {
 	id = "explosion";
-	width = 1;
-	height = 1;
+	width = 2;
+	height = 2;
 	age = 1;
 	lastTime = 0;
 	time = 0;
@@ -34,10 +34,10 @@ Explosion::~Explosion() {
 
 // Sets the width of the explosion
 void Explosion::setRadius(double r) {
-	this->width = r;
-	this->height = r;
+	this->width = r * 2;
+	this->height = r * 2;
 	ps.setMinVelocity(0);
-	ps.setMaxVelocity((width / age));
+	ps.setMaxVelocity((r / age));
 }
 
 
@@ -60,8 +60,8 @@ Vec2D* Explosion::getVertices(int* numVertices) {
 	Vec2D* r = new Vec2D[8];
 	//Due to the lack of rotation I can hard code the directions
 	//and simply multiply by the radius
-	double cos225 = 0.92387953251 * width;
-	double sin225 = 0.38268343236 * width;
+	double cos225 = 0.92387953251 * width / 2;
+	double sin225 = 0.38268343236 * width / 2;
 	//22.5 deg (anti clockwise)
 	r[0] = Vec2D(-sin225, cos225).add(pos);
 	//67.5 deg (anti clockwise)
@@ -110,7 +110,7 @@ void Explosion::setMaxAge(double age) {
 	lastTime = 0;
 	ps.setMinLife(0);
 	ps.setMaxLife(age);
-	ps.setMaxVelocity((width / age));
+	ps.setMaxVelocity((0.5 * width / age));
 }
 
 

@@ -1164,17 +1164,11 @@ void inline LevelEditor::copyClicked(Vec2D world, int action) {
 			return;
 		}
 	}
-	auto platIt = platforms.begin();
-	while (platIt != platforms.end()) {
-		if ((*platIt)->isInBoundingBox(world.getX(), world.getY()) && (*platIt)->canCopy()) {
-			Platform* p = new Platform(**platIt);
-			selected = p;
-			current = 0;
+	for(Platform* plat: platforms) {
+		if (plat->isInBoundingBox(world.getX(), world.getY()) && plat->canCopy()) {
+			clonePlatform(plat);
 			dragClicked(world, action);
-			platforms.push_back(p);
 			return;
-		} else {
-			platIt++;
 		}
 	}
 	auto scenIt = scenery.begin();
@@ -1237,3 +1231,35 @@ inline void LevelEditor::cloneEntity(Entity* e) {
 		entities.push_back(e2);
 	}
 }
+
+
+inline void LevelEditor::clonePlatform(Platform* p) {
+	string id = p->getId();
+	Platform* p2 = NULL;
+	if (id == "breakable") {
+		BreakablePlatform* b = new BreakablePlatform(*(BreakablePlatform*)p);
+		p2 = b;
+	} else if (id == "movingplatform") {
+		MovingPlatform* b = new MovingPlatform(*(MovingPlatform*)p);
+		p2 = b;
+	} else if (id == "phase") {
+		PhasingPlatform* b = new PhasingPlatform(*(PhasingPlatform*)p);
+		p2 = b;
+	} else if (id == "platform") {
+		Platform* b = new Platform(*(Platform*)p);
+		p2 = b;
+	} else if (id == "slope") {
+		Slope* b = new Slope(*(Slope*)p);
+		p2 = b;
+
+	} else if (id == "spike") {
+		Spike* b = new Spike(*(Spike*)p);
+		p2 = b;
+	}
+	if (p2) {
+		selected = p2;
+		current = 0;
+		platforms.push_back(p2);
+	}
+}
+

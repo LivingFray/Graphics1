@@ -17,6 +17,16 @@ Platform::Platform() {
 }
 
 
+Platform::Platform(const Platform& other) : WorldObject(other) {
+	textureString = other.textureString;
+	texture = other.texture;
+	texX = other.texX;
+	texY = other.texY;
+	texXSize = other.texXSize;
+	texYSize = other.texYSize;
+}
+
+
 Platform::~Platform() {
 }
 

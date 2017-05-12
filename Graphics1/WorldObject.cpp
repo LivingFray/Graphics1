@@ -18,6 +18,7 @@ WorldObject::WorldObject(const WorldObject& other) {
 	width = other.width;
 	height = other.height;
 	angle = other.angle;
+	editorMode = other.editorMode;
 }
 
 
