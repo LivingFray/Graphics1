@@ -75,7 +75,6 @@ void resize(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	//Invert y-axis for screen coords
 	glOrtho(0.0, width, 0.0, height, -1.0, 1.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -98,16 +97,50 @@ int main() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 	gameWindow = glfwCreateWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, TITLE, NULL, NULL);
-	if (!gameWindow) {
-		std::cerr << "Failed to create window";
-		glfwTerminate();
-		exit(EXIT_FAILURE);
-	}
 	glfwMakeContextCurrent(gameWindow);
 	//I am given to understand this is glfw's way of enabling v-sync
 	glfwSwapInterval(1);
 	//Handle window events
 	glfwSetWindowSizeCallback(gameWindow, resize);
+	//Behold a magical bodge that turns an OpenGL image into a GLFWimage
+	int width = 256, height = 256;
+	GLuint icon = ImageLoader::getImage("Resources\\icon.png");
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0.0, width, 0.0, height, -1.0, 1.0);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glClearColor(1.0, 0.0, 1.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glColor3ub(255, 255, 255);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, icon);
+	glBegin(GL_QUADS);
+	glTexCoord2d(0.0, 1.0);
+	glVertex2i(0, 0);
+	glTexCoord2d(1.0, 1.0);
+	glVertex2i(width / 2, 0);
+	glTexCoord2d(1.0, 0.0);
+	glVertex2i(width / 2, height / 2);
+	glTexCoord2d(0.0, 0.0);
+	glVertex2i(0, height / 2);
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+	GLFWimage glfwIcon;
+	glfwIcon.width = width;
+	glfwIcon.height = height;
+	unsigned char *data = new unsigned char[4 * width * height];
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	unsigned char r = data[0];
+	glfwIcon.pixels = data;
+	//Set window icon
+	glfwSetWindowIcon(gameWindow, 1, &glfwIcon);
+	if (!gameWindow) {
+		std::cerr << "Failed to create window";
+		glfwTerminate();
+		exit(EXIT_FAILURE);
+	}
 	//Initialise the game
 	init();
 	//Call resize to initialise display

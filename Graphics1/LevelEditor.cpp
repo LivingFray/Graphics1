@@ -1118,6 +1118,7 @@ void inline LevelEditor::deleteClicked(Vec2D world, int action) {
 		if ((*gravIt)->isInBoundingBox(world.getX(), world.getY()) && (*gravIt)->canDelete()) {
 			delete *gravIt;
 			gravIt = gravFields.erase(gravIt);
+			return;
 		} else {
 			gravIt++;
 		}
@@ -1127,6 +1128,7 @@ void inline LevelEditor::deleteClicked(Vec2D world, int action) {
 		if ((*platIt)->isInBoundingBox(world.getX(), world.getY()) && (*platIt)->canDelete()) {
 			delete *platIt;
 			platIt = platforms.erase(platIt);
+			return;
 		} else {
 			platIt++;
 		}
@@ -1136,6 +1138,7 @@ void inline LevelEditor::deleteClicked(Vec2D world, int action) {
 		if ((*scenIt)->isInBoundingBox(world.getX(), world.getY()) && (*scenIt)->canDelete()) {
 			delete *scenIt;
 			scenIt = scenery.erase(scenIt);
+			return;
 		} else {
 			scenIt++;
 		}
@@ -1145,6 +1148,7 @@ void inline LevelEditor::deleteClicked(Vec2D world, int action) {
 		if ((*entIt)->isInBoundingBox(world.getX(), world.getY()) && (*entIt)->canDelete()) {
 			delete *entIt;
 			entIt = entities.erase(entIt);
+			return;
 		} else {
 			entIt++;
 		}
