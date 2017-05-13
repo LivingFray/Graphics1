@@ -142,6 +142,7 @@ void Collision::handle(Level* l, Entity* a, Platform* b, bool &onGround) {
 				double cosAngle = grav.dot(res) / (grav.magnitude() * res.magnitude());
 				if (cosAngle >= COS_GROUND_ANGLE_MIN && cosAngle <= COS_GROUND_ANGLE_MAX) {
 					onGround = true;
+					b->addSupporting(a);
 				}
 			}
 		}

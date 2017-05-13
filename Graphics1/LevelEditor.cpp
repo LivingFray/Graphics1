@@ -43,6 +43,7 @@ item.create = [](BaseState* s) { \
 	type* e = new type(); \
 	e->setPos(l->getCameraPos()); \
 	e->setAngle(l->getCameraAngleAt(0)); \
+	e->setVisAngle(l->getCameraAngleAt(0)); \
 	e->setEditor(); \
 	l->addEntity(e); \
 	l->setMenu(0); \

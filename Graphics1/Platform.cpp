@@ -28,6 +28,10 @@ Platform::Platform(const Platform& other) : WorldObject(other) {
 
 
 Platform::~Platform() {
+	//If platform is destroyed it can no longer support entities
+	for (Entity* e : supporting) {
+		e->setOnGround(false);
+	}
 }
 
 
@@ -223,6 +227,10 @@ void Platform::setOptions(OptionMenu* menu) {
 	setTexScaleY(atof(v.c_str()));
 }
 
+void Platform::addSupporting(Entity* e) {
+	supporting.push_back(e);
+}
+
 
 // Creates an option menu using the current values as defaults
 void Platform::createOptions() {
@@ -236,4 +244,18 @@ void Platform::createOptions() {
 // Updates the platform
 void Platform::update() {
 	pos.addTo(vel.multiply(TICKRATE));
+}
+
+
+// Updates the list of supported entities
+void Platform::updateSupporting() {
+	auto entIt = supporting.begin();
+	while (entIt != supporting.end()) {
+		if (!(*entIt)->getOnGround()) {
+			entIt = supporting.erase(entIt);
+		} else {
+			entIt++;
+		}
+
+	}
 }

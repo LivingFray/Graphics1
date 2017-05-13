@@ -60,6 +60,8 @@ public:
 	virtual bool canRotate();
 	// Returns whether the entity is currently moving
 	bool isMoving();
+	// Called when the selectable is rotated
+	bool onRotate(double dAngle);
 protected:
 	double visAngle;
 	bool onGround;

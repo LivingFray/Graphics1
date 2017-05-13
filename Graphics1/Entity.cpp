@@ -286,3 +286,11 @@ bool Entity::canRotate() {
 bool Entity::isMoving() {
 	return moving;
 }
+
+
+// Called when the selectable is rotated
+bool Entity::onRotate(double dAngle) {
+	bool r = Selectable::onRotate(dAngle);
+	visAngle = angle;
+	return r;
+}

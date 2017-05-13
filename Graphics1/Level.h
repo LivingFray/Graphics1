@@ -81,6 +81,12 @@ protected:
 	Animation spawnAnim;
 	ALuint spawnSound;
 	ALuint goalSound;
+	char* channels;
+	char* newChannels;
+	double mapMinX;
+	double mapMinY;
+	double mapMaxX;
+	double mapMaxY;
 	void drawBeam();
 	void drawCompletedScreen();
 	void drawPauseScreen();
@@ -88,12 +94,6 @@ protected:
 	void drawMinimap(double ex);
 	void handleChangedObjects();
 	void checkPlayerReachedGoal();
-	char* channels;
-	char* newChannels;
-	double mapMinX;
-	double mapMinY;
-	double mapMaxX;
-	double mapMaxY;
 	void calculateBounds();
 };
 

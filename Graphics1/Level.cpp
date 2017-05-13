@@ -118,6 +118,7 @@ void Level::update() {
 	//Update the platforms
 	for (Platform* p : platforms) {
 		p->update();
+		p->updateSupporting();
 	}
 	//Update the entities
 	for (unsigned int i = 0; i < entities.size(); i++) {
@@ -395,6 +396,16 @@ void inline Level::drawMinimap(double ex) {
 
 void inline Level::handleChangedObjects() {
 	//Safely handle anything that was added this update
+	for (Platform* p : toAddP) {
+		addPlatform(p);
+	}
+	toAddP.clear();
+	//Safely handle anything that was removed this update
+	for (Platform* p : toRemoveP) {
+		removePlatform(p);
+	}
+	toRemoveP.clear();
+	//Safely handle anything that was added this update
 	for (Entity* e : toAddE) {
 		addEntity(e);
 	}
@@ -402,15 +413,6 @@ void inline Level::handleChangedObjects() {
 	//Safely handle anything that was removed this update
 	for (Entity* e : toRemoveE) {
 		removeEntity(e);
-	}
-	toRemoveE.clear();
-	for (Platform* p : toAddP) {
-		addPlatform(p);
-	}
-	toAddE.clear();
-	//Safely handle anything that was removed this update
-	for (Platform* p : toRemoveP) {
-		removePlatform(p);
 	}
 	toRemoveE.clear();
 }

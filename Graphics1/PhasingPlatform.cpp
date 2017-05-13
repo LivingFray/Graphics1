@@ -71,3 +71,16 @@ void PhasingPlatform::draw(double ex) {
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 }
+
+
+// Updates the list of supported entities
+void PhasingPlatform::updateSupporting() {
+	if (!isSolid()) {
+		for (Entity* e : supporting) {
+			e->setOnGround(false);
+		}
+		supporting.clear();
+	} else {
+		Platform::updateSupporting();
+	}
+}

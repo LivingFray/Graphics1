@@ -2,6 +2,7 @@
 #include "Collider.h"
 #include "Selectable.h"
 #include "Storable.h"
+#include "Entity.h"
 
 class Platform:
 	virtual public Collider,
@@ -47,8 +48,12 @@ public:
 	virtual void createOptions();
 	// Updates the platform
 	virtual void update();
+	// Updates the list of supported entities
+	virtual void updateSupporting();
 	// Sets the options for this selectable
 	virtual void setOptions(OptionMenu* menu);
+	// Adds an entity to the list of entities this platform is supporting
+	virtual void addSupporting(Entity* e);
 protected:
 	GLuint texture;
 	string textureString;
@@ -56,4 +61,5 @@ protected:
 	double texY;
 	double texXSize;
 	double texYSize;
+	vector<Entity*> supporting;
 };
