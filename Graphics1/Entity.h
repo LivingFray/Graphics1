@@ -62,6 +62,8 @@ public:
 	bool isMoving();
 	// Called when the selectable is rotated
 	bool onRotate(double dAngle);
+	// Loads the storable object from the DataObject
+	void load(DataObject obj);
 protected:
 	double visAngle;
 	bool onGround;

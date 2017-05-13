@@ -294,3 +294,10 @@ bool Entity::onRotate(double dAngle) {
 	visAngle = angle;
 	return r;
 }
+
+
+// Loads the storable object from the DataObject
+void Entity::load(DataObject obj) {
+	Storable::load(obj);
+	visAngle = angle;
+}
