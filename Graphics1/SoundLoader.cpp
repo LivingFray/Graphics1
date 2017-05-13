@@ -21,6 +21,7 @@ void SoundLoader::init() {
 	getSound("Resources\\sounds\\fire.wav", true);
 	getSound("Resources\\sounds\\beep.wav", true);
 	getSound("Resources\\sounds\\beep2.wav", true);
+	getSound("Resources\\sounds\\error.wav", true);
 }
 
 

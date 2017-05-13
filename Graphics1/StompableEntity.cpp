@@ -20,6 +20,7 @@ StompableEntity::StompableEntity() {
 	deadAnim.addFrame(0, 1);
 	deadAnim.setRepeat(false);
 	dead = false;
+	deathSound = SoundLoader::getSound("Resources\\sounds\\error.wav");
 }
 
 
@@ -28,10 +29,12 @@ StompableEntity::StompableEntity(const StompableEntity& other) : WorldObject(oth
 	currentAnim = &idleAnim;
 	deadAnim = other.deadAnim;
 	dead = other.dead;
+	deathSound = SoundLoader::getSound("Resources\\sounds\\error.wav");
 }
 
 
 StompableEntity::~StompableEntity() {
+	alDeleteSources(1, &deathSound);
 }
 
 
@@ -42,6 +45,7 @@ void StompableEntity::onDamage(Damage d) {
 		l->addScore(SCORE_KILL);
 		dead = true;
 		currentAnim = &deadAnim;
+		alSourcePlay(deathSound);
 	}
 }
 
@@ -66,6 +70,7 @@ void StompableEntity::onCollide(Collider* other) {
 			l->addScore(SCORE_KILL);
 			dead = true;
 			currentAnim = &deadAnim;
+			alSourcePlay(deathSound);
 		} else {
 			other->onDamage(Damage::ENEMYCOLLISION);
 		}

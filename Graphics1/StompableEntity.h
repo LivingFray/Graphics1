@@ -16,5 +16,6 @@ protected:
 	Animation idleAnim;
 	Animation deadAnim;
 	bool dead;
+	ALuint deathSound;
 };
 
