@@ -32,7 +32,10 @@ LevelSelect::LevelSelect() {
 		}
 	}
 	page = 0;
-	numPages = levels.size() / BUTTONS_PER_PAGE + 1;
+	numPages = (levels.size()-1) / BUTTONS_PER_PAGE + 1;
+	if (numPages == 0) {
+		numPages = 1;
+	}
 	menuButton = new GradButton();
 	menuButton->setLabel("Return to menu");
 	auto menuCall = [](BaseState* s) {
