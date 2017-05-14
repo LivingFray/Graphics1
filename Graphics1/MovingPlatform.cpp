@@ -114,6 +114,10 @@ void MovingPlatform::createOptions() {
 void MovingPlatform::update() {
 	Level* l = (Level*)state;
 	if (l->getChannel(channel)) {
+		for (Entity* e : supporting) {
+			e->setGravCheck(true);
+		}
+		supporting.clear();
 		vel.set(cVel.getX(), cVel.getY());
 		progress += TICKRATE;
 		if (progress > travelTime) {

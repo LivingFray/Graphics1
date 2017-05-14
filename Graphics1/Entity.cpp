@@ -16,8 +16,8 @@ Entity::Entity() {
 Entity::Entity(const Entity& other){
 	maxSpeed = other.maxSpeed;
 	onGround = other.onGround;
-	moving = other.onGround;
-	visAngle = other.onGround;
+	moving = other.moving;
+	visAngle = other.visAngle;
 	grav = other.grav;
 }
 
@@ -59,9 +59,10 @@ void Entity::update() {
 		onGround = false;
 	}
 	lastGravity = g;
-	if (!onGround) {
+	if (!onGround || checkGrav) {
 		vel.addTo(g.multiply(TICKRATE * grav));
 	}
+	checkGrav = false;
 	//Rotation
 	if (abs(g.getX()) > FLOAT_ZERO || abs(g.getY()) > FLOAT_ZERO) {
 		angle = atan2(g.getY(), g.getX()) * RAD_TO_DEG + 90;
@@ -98,7 +99,11 @@ void Entity::update() {
 
 // Draws the entity
 void Entity::draw(double ex) {
-	visAngle = updatedVisAngle(ex);
+	if (editorMode) {
+		visAngle = angle;
+	} else {
+		visAngle = updatedVisAngle(ex);
+	}
 	double f = flip ? -1.0 : 1.0;
 	glPushMatrix();
 	glTranslated(pos.getX() + vel.getX()*ex, pos.getY() + vel.getY()*ex, 0.0);
@@ -300,4 +305,16 @@ bool Entity::onRotate(double dAngle) {
 void Entity::load(DataObject obj) {
 	Storable::load(obj);
 	visAngle = angle;
+}
+
+
+// Sets whether to check gravity next update
+void Entity::setGravCheck(bool c) {
+	checkGrav = c;
+}
+
+
+// Gets whether to check gravity next update
+bool Entity::getGravCheck() {
+	return checkGrav;
 }

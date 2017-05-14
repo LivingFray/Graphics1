@@ -64,6 +64,10 @@ public:
 	bool onRotate(double dAngle);
 	// Loads the storable object from the DataObject
 	void load(DataObject obj);
+	// Sets whether to check gravity next update
+	void setGravCheck(bool c);
+	// Gets whether to check gravity next update
+	bool getGravCheck();
 protected:
 	double visAngle;
 	bool onGround;
@@ -73,5 +77,6 @@ protected:
 	Animation* currentAnim;
 	double grav;
 	Vec2D lastGravity;
+	bool checkGrav;
 };
 
