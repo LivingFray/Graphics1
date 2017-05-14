@@ -121,9 +121,11 @@ void Level::update() {
 		p->updateSupporting();
 	}
 	//Update the entities
+	for (Entity* e : entities) {
+		e->update();
+	}
 	for (unsigned int i = 0; i < entities.size(); i++) {
 		Entity* e = entities.at(i);
-		e->update();
 		bool onGround = e->getOnGround();
 		if (e->getVel().magnitudeSquare() > FLOAT_ZERO) {
 			onGround = false;

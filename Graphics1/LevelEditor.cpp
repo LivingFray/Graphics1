@@ -1114,14 +1114,14 @@ void inline LevelEditor::deleteClicked(Vec2D world, int action) {
 		return;
 	}
 	//Iterate through and remove those that are being clicked on
-	auto gravIt = gravFields.begin();
-	while (gravIt != gravFields.end()) {
-		if ((*gravIt)->isInBoundingBox(world.getX(), world.getY()) && (*gravIt)->canDelete()) {
-			delete *gravIt;
-			gravIt = gravFields.erase(gravIt);
+	auto entIt = entities.begin();
+	while (entIt != entities.end()) {
+		if ((*entIt)->isInBoundingBox(world.getX(), world.getY()) && (*entIt)->canDelete()) {
+			delete *entIt;
+			entIt = entities.erase(entIt);
 			return;
 		} else {
-			gravIt++;
+			entIt++;
 		}
 	}
 	auto platIt = platforms.begin();
@@ -1144,14 +1144,14 @@ void inline LevelEditor::deleteClicked(Vec2D world, int action) {
 			scenIt++;
 		}
 	}
-	auto entIt = entities.begin();
-	while (entIt != entities.end()) {
-		if ((*entIt)->isInBoundingBox(world.getX(), world.getY()) && (*entIt)->canDelete()) {
-			delete *entIt;
-			entIt = entities.erase(entIt);
+	auto gravIt = gravFields.begin();
+	while (gravIt != gravFields.end()) {
+		if ((*gravIt)->isInBoundingBox(world.getX(), world.getY()) && (*gravIt)->canDelete()) {
+			delete *gravIt;
+			gravIt = gravFields.erase(gravIt);
 			return;
 		} else {
-			entIt++;
+			gravIt++;
 		}
 	}
 }

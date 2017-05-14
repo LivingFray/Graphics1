@@ -58,7 +58,6 @@ ShieldGiver::~ShieldGiver() {
 }
 
 
-
 // Updates the player
 void ShieldGiver::update() {
 	if (dead) {
@@ -70,10 +69,12 @@ void ShieldGiver::update() {
 	} else if (following) {
 		Vec2D dir = following->getPos().subtract(pos);
 		Level* l = (Level*)state;
+		//Calculate where player's head is
 		Vec2D g;
 		l->getGravityAtPos(following->getPos(), &g);
 		g.toUnit();
 		Vec2D g2 = Vec2D(g.getY(), -g.getX());
+		//Offset position by position in line
 		dir.addTo(g.multiply(-desiredPos.getY()));
 		dir.addTo(g2.multiply(-desiredPos.getX()));
 		double d = dir.magnitude();

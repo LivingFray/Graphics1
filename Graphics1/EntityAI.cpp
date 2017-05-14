@@ -3,7 +3,7 @@
 
 
 #define ENTITY_ACCELERATION 0.10
-#define ENTITY_FOLLOW_RANGE 6.0
+#define ENTITY_FOLLOW_RANGE 12.0
 #define ENTITY_SLOWEST_SPEED 1.00
 
 EntityAI::EntityAI() {
@@ -46,9 +46,11 @@ void EntityAI::update() {
 			if (det < 0) {
 				move.multiplyBy(ENTITY_ACCELERATION);
 				flip = false;
-			} else {
+			} else if (det > 0) {
 				move.multiplyBy(-ENTITY_ACCELERATION);
 				flip = true;
+			} else {
+				move.multiplyBy(0);
 			}
 			if (distance > stoppingDistance * stoppingDistance || speed<ENTITY_SLOWEST_SPEED * ENTITY_SLOWEST_SPEED) {
 				vel.addTo(move);

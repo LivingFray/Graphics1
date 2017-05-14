@@ -13,7 +13,7 @@ Player::Player() {
 	walkAnim.setSize(1.0, 2.0);
 	walkAnim.setSpriteSheet("Resources\\entities\\playerWalk.png");
 	for (int i = 0; i < 8; i++) {
-		walkAnim.addFrame(i, (36/(32.0*DEFAULT_ENTITY_MAXSPEED*8)));
+		walkAnim.addFrame(i, (36 / (32.0*DEFAULT_ENTITY_MAXSPEED * 8)));
 	}
 	walkAnim.setSpritesheetSize(4, 2);
 	idleAnim = Animation();
@@ -48,6 +48,7 @@ void Player::update() {
 	if (KeyConfig::isDown("moveLeft")) {
 		dX -= PLAYER_ACCELERATION;
 		if (!flip) {
+			flip = true;
 			updateShields();
 		}
 		flip = true;
@@ -55,6 +56,7 @@ void Player::update() {
 	if (KeyConfig::isDown("moveRight")) {
 		dX += PLAYER_ACCELERATION;
 		if (flip) {
+			flip = false;
 			updateShields();
 		}
 		flip = false;
@@ -162,8 +164,9 @@ void Player::onDamage(Damage d) {
 
 // Gives the player a shield granting immunity to 1 attack
 void Player::giveShield(ShieldGiver* giver) {
+	double offset = (double)shields.size() * (flip ? 1 : -1);
+	giver->setDesiredPos(Vec2D(offset, 1.5));
 	shields.push_back(giver);
-	giver->setDesiredPos(Vec2D(shields.size(), 1.5));
 }
 
 
@@ -171,7 +174,7 @@ void Player::giveShield(ShieldGiver* giver) {
 void Player::updateShields() {
 	int i = 0;
 	for (ShieldGiver* s : shields) {
-		s->setDesiredPos(Vec2D(i * (flip?-1:1),1.5));
+		s->setDesiredPos(Vec2D(i * (flip ? 1 : -1), 1.5));
 		i++;
 	}
 }
