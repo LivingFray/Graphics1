@@ -119,7 +119,7 @@ void ParticleSystem::draw(double elapsed) {
 			GLubyte r, g, b, a;
 			//Interpolate the colours
 			Color c = presetColors[particles[i].color];
-			double t = (particles[i].maxAge - particles[i].age)/particles[i].maxAge;
+			double t = (particles[i].maxAge - particles[i].age) / particles[i].maxAge;
 			r = c.sR + (int)((c.eR - c.sR) * t);
 			g = c.sG + (int)((c.eG - c.sG) * t);
 			b = c.sB + (int)((c.eB - c.sB) * t);
@@ -172,7 +172,7 @@ void inline ParticleSystem::newParticle(int i) {
 	double rY = randD(-height / 2, height / 2);
 	p.pos = pos.add(dX.multiply(rX)).add(dY.multiply(rY));
 	p.size = (GLfloat)(randD(minSize, maxSize));
-	p.age = randD(minLife,maxLife);
+	p.age = randD(minLife, maxLife);
 	p.maxAge = p.age;
 	p.angle = randD(minAngle, maxAngle);
 	p.vel = Vec2D(cos(p.angle * DEG_TO_RAD), sin(p.angle * DEG_TO_RAD));
@@ -268,9 +268,9 @@ void ParticleSystem::setMaxSize(double size) {
 
 
 // Adds a pair of colours a particle can be
-void ParticleSystem::addColor(unsigned char sR, unsigned char sG, 
-	unsigned char sB, unsigned char sA, unsigned char eR, 
-	unsigned char eG,unsigned char eB, unsigned char eA) {
+void ParticleSystem::addColor(unsigned char sR, unsigned char sG,
+	unsigned char sB, unsigned char sA, unsigned char eR,
+	unsigned char eG, unsigned char eB, unsigned char eA) {
 	Color c = Color();
 	c.sR = sR;
 	c.sG = sG;
@@ -292,9 +292,7 @@ void ParticleSystem::setGravity(Vec2D grav) {
 
 // Clears the particle system
 void ParticleSystem::clear() {
-	int i = 0;
-	while (particles[i].age > 0) {
+	for (int i = 0; i < MAX_PARTICLES; i++) {
 		particles[i].age = -1;
-		i++;
 	}
 }

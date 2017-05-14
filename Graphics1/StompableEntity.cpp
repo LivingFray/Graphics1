@@ -49,7 +49,7 @@ void StompableEntity::onDamage(Damage d) {
 	}
 }
 
-
+#include "Collision.h"
 // Called when a collision occurs
 void StompableEntity::onCollide(Collider* other) {
 	//No corpses murdering players
@@ -64,6 +64,8 @@ void StompableEntity::onCollide(Collider* other) {
 		Vec2D dir = other->getPos().subtract(pos);
 		//If player is above entity
 		bool stomped = (dir.dot(grav) / (grav.magnitude() * dir.magnitude()))<0;
+		//Ensure player isn't falling next to stompable and just grazing it
+		stomped = stomped && Collision::distance(this, other, grav) < (height + other->getHeight()) / 2;
 		//If player is moving down
 		stomped = stomped && (other->getVel().dot(grav) / (grav.magnitude() * other->getVel().magnitude()))>0;
 		if (stomped) {

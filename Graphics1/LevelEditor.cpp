@@ -252,7 +252,8 @@ void LevelEditor::update() {
 void LevelEditor::draw(double ex) {
 	//Move camera (extrapolation only)
 	updateCamera(ex);
-	//Draw the level thus far 
+	//Draw the level thus far
+	goalOpen = goalChannel < 0;
 	LevelBase::draw(0);
 	//Draw movement arrows/resize arrows
 	if (selected) {
