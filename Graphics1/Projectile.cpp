@@ -28,7 +28,7 @@ Projectile::~Projectile() {
 // Called when a collision occurs
 void Projectile::onCollide(Collider* other) {
 	//Don't collide with the entity that created you
-	if (other == owner) {
+	if (other == owner || other->getId() == id) {
 		return;
 	}
 	other->onDamage(Damage::PROJECTILE);

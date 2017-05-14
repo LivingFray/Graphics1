@@ -144,6 +144,7 @@ LevelEditor::LevelEditor() {
 		f->setPos(l->getCameraPos());
 		f->setWidth(10.00);
 		f->setHeight(10.00);
+		f->setEditor();
 		f->setAngle(l->getCameraAngleAt(0));
 		f->setStrength(10.00);
 		l->addGravityField(f);
